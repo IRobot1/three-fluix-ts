@@ -1,10 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
+import { ThreeJSApp } from './threejs-app';
+import { HomeScene } from './home';
+
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  template: '',
 })
 export class AppComponent {
-  title = 'three-fluix-ts';
+  title = 'test'
+  constructor(zone: NgZone) {
+
+    zone.runOutsideAngular(() => {
+
+      const app = new ThreeJSApp()
+
+      app.router.add('/', () => { return new HomeScene(app) })
+    })
+  }
 }
