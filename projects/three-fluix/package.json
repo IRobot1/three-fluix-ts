@@ -1,6 +1,6 @@
 {
   "name": "three-fluix",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "peerDependencies": {
     "three": "^0.160.1"

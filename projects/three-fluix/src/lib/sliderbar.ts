@@ -1,10 +1,11 @@
+import { MathUtils, Mesh, Vector3 } from "three";
+
 import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
 import { PanelOptions } from "./panel";
 import { UIOrientationType, SliderbarParameters } from "./model";
-import { MathUtils, Mesh, Vector3 } from "three";
 import { UIEntry } from "./input-field";
 import { UIKeyboardEvent } from "./keyboard";
-import { RoundedRectangleGeometry } from "three-fluix";
+import { RoundedRectangleGeometry } from "./shapes/rounded-rectangle-geometry";
 
 export enum SliderbarEventType {
   VALUE_CHANGED = 'value_changed'

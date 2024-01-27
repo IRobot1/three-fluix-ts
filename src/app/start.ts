@@ -1,13 +1,9 @@
-import { AmbientLight, AxesHelper, BoxGeometry, CircleGeometry, Color, ExtrudeGeometry, ExtrudeGeometryOptions, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, PointLight, Scene, Vector3 } from "three";
+import { AxesHelper, BoxGeometry, CircleGeometry, Color, ExtrudeGeometry, ExtrudeGeometryOptions, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, Scene } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { ThreeJSApp } from "../app/threejs-app";
 
-import { InteractiveEventType, MenuItemParameters, MenuParameters, UILabel, UIMaterials, UIMiniMenu, UITextButton } from 'three-fluix'
-import { UIOptions } from "../../projects/three-fluix/src/lib/model";
-import { FontCache } from "../../projects/three-fluix/src/lib/cache";
-
-import { RoundedRectangleBorderShape } from 'three-fluix'
+import { RoundedRectangleBorderShape,UIOptions,FontCache, MenuItemParameters, MenuParameters, UIMaterials, UIMiniMenu } from 'three-fluix'
 
 export class StartScene extends Scene {
 

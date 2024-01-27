@@ -1,10 +1,12 @@
+import { ColorRepresentation, Material, Mesh, MeshBasicMaterial } from "three";
+
 import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
 import { PanelEventType, PanelOptions } from "./panel";
 import { CheckboxParameters } from "./model";
-import { ColorRepresentation, Material, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, ShapeGeometry } from "three";
 import { UIEntry } from "./input-field";
 import { UIKeyboardEvent } from "./keyboard";
-import { RoundedRectangleGeometry } from "three-fluix";
+import { RoundedRectangleGeometry } from "./shapes/rounded-rectangle-geometry";
+
 
 
 export enum CheckboxEventType {

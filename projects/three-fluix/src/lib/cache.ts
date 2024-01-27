@@ -1,5 +1,3 @@
-import { Material, MaterialParameters, MeshBasicMaterial, MeshBasicMaterialParameters } from "three"
-import { LineMaterial, LineMaterialParameters } from "three/examples/jsm/lines/LineMaterial"
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader"
 
 interface WaitingContext {
