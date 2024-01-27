@@ -28,6 +28,8 @@ export * from './lib/select';
 export * from './lib/sliderbar';
 export * from './lib/text-entry';
 
+export * from './lib/color-picker';
+
 export * from './lib/gui-model';
 export * from './lib/properties';
 

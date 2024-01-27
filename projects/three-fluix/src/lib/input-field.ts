@@ -19,6 +19,7 @@ export interface InputField extends Mesh {
   width: number
   height: number
   depth: number
+  dispose: () => void
 }
 
 

@@ -1,17 +1,16 @@
-import { MeshBasicMaterialParameters, SRGBColorSpace, Scene, TextureLoader } from "three";
+import { Scene, TextureLoader } from "three";
 import { ThreeJSApp } from "../app/threejs-app";
 
 import { FontCache, UIOptions, UIMaterials, UITextButton, TextButtonParameters } from 'three-fluix'
+import { PropertiesScene } from "../examples/properties";
 
 interface Tile {
-  description: string
   route: string  // looks for asset with same name
+  description: string
+  scene: () => Scene
 }
 
-const examples1: Array<Tile> = [
-  { description: 'First', route: 'first' },
-  { description: 'Second', route: 'second' },
-]
+
 
 export class HomeScene extends Scene {
 
@@ -19,6 +18,15 @@ export class HomeScene extends Scene {
 
   constructor(app: ThreeJSApp) {
     super()
+
+    const examples1: Array<Tile> = [
+      { route: 'properties', description: 'Properties', scene: () => { return new PropertiesScene(app) } },
+    ]
+
+    examples1.forEach(example => {
+      app.router.add(example.route, example.scene)
+    })
+
 
     this.position.set(0, 1.5, -0.5)
 
@@ -39,7 +47,7 @@ export class HomeScene extends Scene {
 
     examples1.forEach(example => {
       const params: TextButtonParameters = {
-        width: buttonwidth, height: 0.05, radius:0.01,
+        width: buttonwidth, height: 0.05, radius: 0.01,
         label: { text: example.description, size: 0.02 }
       }
 

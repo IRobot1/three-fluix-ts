@@ -31,10 +31,10 @@ export class StartScene extends Scene {
         orbit.enableRotate = !orbit.enableRotate
     })
 
-    const disableRotate = () => { orbit.enableRotate = false }
-    const enableRotate = () => { orbit.enableRotate = true }
-    app.interactive.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
-    app.interactive.addEventListener(InteractiveEventType.DRAGEND, enableRotate)
+    //const disableRotate = () => { orbit.enableRotate = false }
+    //const enableRotate = () => { orbit.enableRotate = true }
+    //app.interactive.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
+    //app.interactive.addEventListener(InteractiveEventType.DRAGEND, enableRotate)
 
     //scene.add(new AxesHelper(3))
 
@@ -116,6 +116,7 @@ export class StartScene extends Scene {
     menu.position.set(-menu.width / 2, -screenheight / 2, 0.03)
     menu.scale.setScalar(0.4)
 
+    app.enableStats()
     app.enableVR()
 
 

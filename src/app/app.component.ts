@@ -1,7 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { ThreeJSApp } from './threejs-app';
 import { StartScene } from './start';
-import { FirstScene } from './first';
 import { HomeScene } from './home';
 
 
@@ -19,9 +18,6 @@ export class AppComponent {
       const app = new ThreeJSApp()
       app.startscene = new StartScene(app)
       app.homescene = new HomeScene(app)
-
-      //app.router.add('/', () => {})
-      app.router.add('first', () => { return new FirstScene(app) })
 
     })
 

@@ -502,6 +502,10 @@ export class UIProperties extends UIPanel {
   dispose() {
     if (this.options.keyboard)
       this.options.keyboard.remove(...this.inputs)
+
+    this.inputs.forEach(input => {
+      input.dispose()
+    })
   }
 
   // overridables
