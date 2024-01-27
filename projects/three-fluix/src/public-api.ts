@@ -4,6 +4,8 @@
 
 export * from './lib/materials';
 export * from './lib/three-interactive';
+export * from './lib/model';
+export * from './lib/cache';
 
 export * from './lib/shapes/rounded-rectangle-shape';
 export * from './lib/shapes/rounded-rectangle-geometry';
