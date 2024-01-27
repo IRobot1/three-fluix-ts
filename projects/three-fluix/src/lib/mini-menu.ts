@@ -1,7 +1,7 @@
 import { MeshBasicMaterialParameters, Object3D, Vector3 } from "three"
 import { InteractiveEventType, ThreeInteractive } from "./three-interactive"
 import { UILabel } from "./label"
-import { TextButtonParameters, UIOptions } from "./model"
+import { LabelParameters, TextButtonParameters, UIOptions } from "./model"
 import { ButtonEventType, UIButton } from "./button"
 import { UITextButton } from "./button-text"
 
@@ -21,33 +21,40 @@ export enum MenuItemEventType {
   MENU_MISSED = 'menu_missed',
 
 }
+
+
 export interface MenuParameters {
   spacing?: number                      // default is 0.02
   fill?: MeshBasicMaterialParameters    // default is gray
   items: Array<MenuItemParameters>
+  hintbelow?: boolean                    // default is true (below buttons)
+  hintLabel?: LabelParameters            // hint label parmaters
 }
 
 export class UIMiniMenu extends Object3D {
   buttons: Array<UIButton> = []
+  width: number
 
   constructor(parameters: MenuParameters, private interactive: ThreeInteractive, private options: UIOptions) {
     super()
 
-    const hint = new UILabel({ alignX: 'left' }, options)
-    hint.position.y = -0.12
+    const below = parameters.hintbelow != undefined ? parameters.hintbelow : true
+    const labelparams = parameters.hintLabel != undefined ? parameters.hintLabel : <LabelParameters>{ alignX: 'left' }
+    const hint = new UILabel(labelparams, options)
+    hint.position.y = below ? -0.12 : 0.12
     this.add(hint)
 
     const spacing = parameters.spacing != undefined ? parameters.spacing : 0.02
 
     const position = new Vector3()
-    let lasthalf = 0
+    let width = 0
     parameters.items.forEach(item => {
       if (!item.fill) item.fill = parameters.fill
 
       const isicon = item.isicon != undefined ? item.isicon : false
       if (!item.width) item.width = isicon ? 0.1 : 1
 
-      position.x += lasthalf + item.width / 2
+      position.x += width + item.width / 2
 
       const button = this.createButton(item)
       button.position.copy(position)
@@ -76,9 +83,9 @@ export class UIMiniMenu extends Object3D {
       this.buttons.push(button)
 
       position.x += spacing
-      lasthalf = item.width / 2
+      width = item.width / 2
     })
-
+    this.width = width
   }
 
   // overridables

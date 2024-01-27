@@ -1,9 +1,9 @@
-import { AmbientLight, AxesHelper, BoxGeometry, CircleGeometry, Color, ExtrudeGeometry, ExtrudeGeometryOptions, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, PointLight, Scene } from "three";
+import { AmbientLight, AxesHelper, BoxGeometry, CircleGeometry, Color, ExtrudeGeometry, ExtrudeGeometryOptions, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, PointLight, Scene, Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { ThreeJSApp } from "../app/threejs-app";
 
-import { UILabel, UIMaterials, UITextButton } from 'three-fluix'
+import { InteractiveEventType, MenuItemParameters, MenuParameters, UILabel, UIMaterials, UIMiniMenu, UITextButton } from 'three-fluix'
 import { UIOptions } from "../../projects/three-fluix/src/lib/model";
 import { FontCache } from "../../projects/three-fluix/src/lib/cache";
 
@@ -23,7 +23,7 @@ export class StartScene extends Scene {
 
     const orbit = new OrbitControls(app.camera, app.domElement);
     orbit.target.set(0, app.camera.position.y, 0)
-    //    orbit.enableRotate = false;
+    orbit.enableRotate = false;
     orbit.update();
 
     window.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -31,10 +31,10 @@ export class StartScene extends Scene {
         orbit.enableRotate = !orbit.enableRotate
     })
 
-    //const disableRotate = () => { orbit.enableRotate = false }
-    //const enableRotate = () => { orbit.enableRotate = true }
-    //app.interactive.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
-    //app.interactive.addEventListener(InteractiveEventType.DRAGEND, enableRotate)
+    const disableRotate = () => { orbit.enableRotate = false }
+    const enableRotate = () => { orbit.enableRotate = true }
+    app.interactive.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
+    app.interactive.addEventListener(InteractiveEventType.DRAGEND, enableRotate)
 
     //scene.add(new AxesHelper(3))
 
@@ -45,18 +45,19 @@ export class StartScene extends Scene {
     const bordersize = 0.03
     {
       const geometry = new Frame(16 / 9, 1, 0.01, bordersize)
-      const frame = new Mesh(geometry, new MeshBasicMaterial({ color: 'black' }))
+      const frame = new Mesh(geometry, new MeshBasicMaterial({ color: '#444' }))
       this.add(frame)
       frame.position.set(0, 1.5, -0.5)
     }
 
 
-    const screenwidth = 16 / 9 - bordersize * 2
-    const screenheight = 1 - bordersize * 2
+    const screenwidth = 16 / 9 - bordersize
+    const screenheight = 1 - bordersize
+    const screencolor = '#cceecc'
 
     const screen = new Mesh(
       new PlaneGeometry(screenwidth, screenheight),
-      new MeshBasicMaterial({ color: '#cceecc', transparent: true, opacity: 0.3 })
+      new MeshBasicMaterial({ color: screencolor, transparent: true, opacity: 0.3 })
     )
     this.add(screen)
     screen.position.set(0, 1.5, -0.502)
@@ -65,28 +66,55 @@ export class StartScene extends Scene {
       const geometry = new BoxGeometry(16 / 9 - 0.4, 1, 0.1)
       const stand = new Mesh(geometry, new MeshBasicMaterial({ color: '#666' }))
       this.add(stand)
-      stand.position.set(0, 0.5, -0.45)
+      stand.position.set(0, 0.48, -0.45)
     }
 
+
+    let power = true
+    const togglepower = () => {
+      if (power) {
+        app.homescene!.position.y = -10
+        if (app.examplescene)
+          app.examplescene.position.y = -10
+        screen.material.color.set('black')
+        screen.material.opacity = 1
+      }
+      else {
+        app.homescene!.position.y = 1.5
+        if (app.examplescene)
+          app.examplescene.position.y = 1.5
+        screen.material.color.set(screencolor)
+        screen.material.opacity = 0.3
+      }
+      power = !power
+    }
 
     const options: UIOptions = {
       fontCache: new FontCache(),
       materials: new UIMaterials(),
     }
-    //const label = new UILabel({ text: 'Unlit UI', material: { color: 'white' }, size: 0.5 }, options)
-    //this.add(label)
-    //label.position.set(0, 1.5, -3)
 
-    const buttonsize = 0.05
-    const button = new UITextButton({
-      width: buttonsize, height: buttonsize,
-      label: { text: 'arrow_back', isicon: true, size: 0.03 }
-    }, app.interactive, options)
-    screen.add(button)
-    button.position.set(-screenwidth / 2 + buttonsize / 2 + 0.01, screenheight / 2 - buttonsize / 2 - 0.01, 0.001)
-    button.pressed = () => {
-      app.navigateback()
+    const items: Array<MenuItemParameters> = [
+      {
+        text: 'arrow_back', isicon: true, hint: 'Back', selected: () => { app.navigateback() }
+      },
+      {
+        text: 'power_settings_new', isicon: true, hint: 'Power', selected: togglepower
+      },
+      {
+        text: 'flip_camera_android', isicon: true, hint: 'Orbit On/Off', selected: () => { orbit.enableRotate = !orbit.enableRotate }
+      },
+    ]
+
+    const menuparams: MenuParameters = {
+      items,
+      hintbelow: false,
+      hintLabel: { alignX: 'left', size: 0.05 }
     }
+    const menu = new UIMiniMenu(menuparams, app.interactive, options)
+    screen.add(menu)
+    menu.position.set(-menu.width / 2, -screenheight / 2, 0.03)
+    menu.scale.setScalar(0.4)
 
     app.enableVR()
 
