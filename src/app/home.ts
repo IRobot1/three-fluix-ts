@@ -3,6 +3,7 @@ import { ThreeJSApp } from "../app/threejs-app";
 
 import { FontCache, UIOptions, UIMaterials, UITextButton, TextButtonParameters } from 'three-fluix'
 import { PropertiesScene } from "../examples/properties";
+import { CustomPropertiesScene } from "../examples/custom-properties";
 
 interface Tile {
   route: string  // looks for asset with same name
@@ -21,6 +22,7 @@ export class HomeScene extends Scene {
 
     const examples1: Array<Tile> = [
       { route: 'properties', description: 'Properties', scene: () => { return new PropertiesScene(app) } },
+      { route: 'customproperties', description: 'Custom Properties', scene: () => { return new CustomPropertiesScene(app) } },
     ]
 
     examples1.forEach(example => {
