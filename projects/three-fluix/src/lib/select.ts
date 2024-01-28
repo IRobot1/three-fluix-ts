@@ -27,19 +27,18 @@ export class UISelect extends UITextButton {
   constructor(parameters: SelectParameters, interactive: ThreeInteractive, options: ButtonOptions) {
     parameters.disableScaleOnClick = false
     parameters.label.alignX = 'left'
-    parameters.label.padding = 0.05
     parameters.list.selectable = false
     super(parameters, interactive, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'select'
 
     const radius = this.height * 0.9 / 2
-    this.label.maxwidth = this.width - (radius + this.label.padding)
+    this.label.maxwidth = this.width - radius * 2 - this.label.padding*2
 
     const indicatorMaterial = parameters.indicatorMaterial ? parameters.indicatorMaterial : { color: 'black' }
     const mesh = this.createIndicator(radius)
     mesh.material = this.materials.getMaterial('geometry', 'select-indicator', indicatorMaterial)
-    mesh.position.set((this.width - radius - this.label.padding) / 2, 0, 0.001)
+    mesh.position.set(this.width /2 - radius - this.label.padding / 2, 0, 0.001)
     mesh.rotation.z = this.indicatorRotation(false)
     this.add(mesh)
     this.indicator = mesh

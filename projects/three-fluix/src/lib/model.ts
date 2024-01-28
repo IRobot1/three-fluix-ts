@@ -84,7 +84,7 @@ export interface LabelParameters {
   visible?: boolean
 
   maxwidth?: number
-  overflow?: LabelOverflow   // when text longer than max width, either clip or slice to show end text
+  //overflow?: LabelOverflow   // when text longer than max width, either clip or slice to show end text
 }
 
 export interface InputParameters extends PanelParameters {

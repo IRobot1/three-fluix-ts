@@ -60,7 +60,7 @@ export class UIProperties extends UIPanel {
 
     this.spacing = parameters.spacing != undefined ? parameters.spacing : 0.02
     this.propertyHeight = parameters.propertyHeight != undefined ? parameters.propertyHeight : 0.1
-    this.fontSize = parameters.fontSize != undefined ? parameters.fontSize : 0.04
+    this.fontSize = parameters.fontSize != undefined ? parameters.fontSize : 0.06
 
     let x = -this.width / 2
     this.labelwidth = parameters.labelwidth != undefined ? parameters.labelwidth : this.width / 2
@@ -136,9 +136,10 @@ export class UIProperties extends UIPanel {
     if (controller.classname == 'function') {
       const params: TextButtonParameters = {
         label: {
-          text: controller.title, maxwidth: this.parameters.width, size,
+          text: controller.title,
+          size,
         },
-        width: this.width - this.spacing*2,
+        width: this.width - this.spacing * 2,
         height,
         disabled,
         fill,
@@ -159,7 +160,10 @@ export class UIProperties extends UIPanel {
         spacing: 0,
         width: this.width,
         height,
-        label: { text: controller.title, size },
+        label: {
+          text: controller.title,
+          size,
+        },
         fill,
         panel: {
           width: this.width,
@@ -193,7 +197,6 @@ export class UIProperties extends UIPanel {
 
     const labelparams: LabelParameters = {
       alignX: 'right',
-      overflow: 'slice',
       maxwidth: this.labelwidth - this.spacing * 2,
       text: controller.title,
       size,
@@ -270,11 +273,13 @@ export class UIProperties extends UIPanel {
       }
 
       case 'string': {
+        const maxwidth = this.pickwidth + this.inputwidth - this.spacing * 2
         const params: TextEntryParameters = {
-          width: this.pickwidth + this.inputwidth - this.spacing * 2,
+          width: maxwidth,
           height,
           label: {
             text: controller.getValue(),
+            size,
           },
           disabled: !controller.enabled,
           fill,
@@ -343,22 +348,24 @@ export class UIProperties extends UIPanel {
         else
           initialvalue = initialvalue.toString()
 
+        const maxwidth = this.pickwidth + this.inputwidth - this.spacing * 3
         const listparams: ListParameters = {
-          width: this.pickwidth + this.inputwidth - this.spacing * 2,
+          width: maxwidth,
           data: options,
           field: 'label',
           itemheight: height,
           itemcount: 5,
           disabled: !controller.enabled,
           fontSize: size,
+          maxwidth,
         }
 
         const selectparams: SelectParameters = {
-          width: this.pickwidth + this.inputwidth - this.spacing * 2,
+          width: maxwidth,
           height,
           label: {
             text: initialvalue,
-            size
+            size,
           },
           list: listparams,
           disabled: !controller.enabled,
@@ -374,7 +381,7 @@ export class UIProperties extends UIPanel {
 
         const select = this.createSelect(selectparams, controller.title)
         data.group.add(select)
-        select.position.set(this.labelx + (this.pickwidth + this.inputwidth)/2, 0, 0.001)
+        select.position.set(this.labelx + (this.pickwidth + this.inputwidth) / 2, 0, 0.001)
 
         select.addEventListener(SelectEventType.SELECTED_CHANGED, (e: any) => {
           controller.setValue(select.selected)
@@ -423,12 +430,13 @@ export class UIProperties extends UIPanel {
           colorpicker.setColorEntry(colorentry)
         })
 
-
+        const maxwidth = this.inputwidth - this.spacing * 2
         const params: TextEntryParameters = {
-          width: this.inputwidth - this.spacing * 2,
+          width: maxwidth,
           height,
           label: {
-            text: color, size
+            text: color,
+            size,
           },
           disabled: !controller.enabled,
           fill,

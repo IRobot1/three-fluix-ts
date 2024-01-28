@@ -143,7 +143,7 @@ class CustomProperties extends UIProperties {
   }
 
   override createNumberEntry(parameters: NumberEntryParameters, title: string): UINumberEntry {
-    parameters.label = { material: { color: 'orange' } }
+    parameters.label!.material= { color: 'orange' } 
     if (title == 'level') {
       return new CustomNumberEntry(parameters, this.interactive, this.options, this.radius * 3, this.radius)
     }

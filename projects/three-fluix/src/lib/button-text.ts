@@ -25,21 +25,21 @@ export class UITextButton extends UIButton {
 
   constructor(parameters: TextButtonParameters, interactive: ThreeInteractive, options: ButtonOptions) {
     if (!parameters.height) parameters.height = 0.1
-
+    
     super(parameters, interactive, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'text-button'
 
+    const padding = parameters.label.padding != undefined ? parameters.label.padding : 0.02
+    if (parameters.label.maxwidth == undefined) parameters.label.maxwidth = this.width - padding * 2
+
     const label = new UILabel(parameters.label, { fontCache: this.fontCache, materials: this.materials })
     this.add(label)
 
-    let width = this.width
-    if (label.maxwidth < width) width = label.maxwidth
-
     if (label.alignX == 'left')
-      label.position.x = -(width - label.padding) / 2
+      label.position.x = -this.width / 2 +  label.padding
     else if (label.alignX == 'right')
-      label.position.x = (width + label.padding) / 2
+      label.position.x = this.width /2 - label.padding
 
     label.position.z = 0.001
     this.label = label

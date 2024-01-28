@@ -65,10 +65,9 @@ export class UITextEntry extends UIEntry implements InputField {
     const padding = (this.height / 0.1) * 0.02
 
     if (!parameters.label) parameters.label = {}
-    parameters.label.size = (this.height - padding) / 2
+    if (parameters.label.size == undefined) parameters.label.size = (this.height - padding) / 2
     parameters.label.padding = padding
-    parameters.label.maxwidth = this.width - padding
-    parameters.label.overflow = 'slice'
+    parameters.label.maxwidth = this.width - padding * 2
 
     this._passwordChar = parameters.passwordChar != undefined ? parameters.passwordChar : '*'
 
@@ -111,7 +110,7 @@ export class UITextEntry extends UIEntry implements InputField {
     this.addEventListener(InputFieldEventType.ACTIVE_CHANGED, textChanged)
 
     this.addEventListener(PanelEventType.WIDTH_CHANGED, () => {
-      label.maxwidth = this.width - this.label.padding
+      label.maxwidth = this.width - this.label.padding * 2
       label.position.x = -this.width / 2 + this.label.padding
     })
 

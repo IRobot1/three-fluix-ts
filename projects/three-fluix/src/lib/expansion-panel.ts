@@ -30,8 +30,8 @@ export class UIExpansionPanel extends UITextButton {
     }
   }
 
-  private expandedIndicator!: Mesh
-  private collapsedIndicator!: Mesh
+  private expandedIndicator!: UILabel
+  private collapsedIndicator!: UILabel
 
   constructor(parameters: ExpansionPanelParameters, interactive: ThreeInteractive, options: PanelOptions) {
     parameters.disableScaleOnClick = true
@@ -117,11 +117,11 @@ export class UIExpansionPanel extends UITextButton {
     return new UIPanel(parameters, this.options)
   }
 
-  createExpandedIndicator(radius: number): Mesh {
+  createExpandedIndicator(radius: number): UILabel {
     return new UILabel({ text: 'expand_more', isicon: true }, this.options)
   }
 
-  createCollapsedIndicator(radius: number): Mesh {
+  createCollapsedIndicator(radius: number): UILabel {
     return new UILabel({ text: 'expand_less', isicon: true }, this.options)
   }
 

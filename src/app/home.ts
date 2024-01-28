@@ -1,9 +1,10 @@
-import { Scene, TextureLoader } from "three";
+import { Scene } from "three";
 import { ThreeJSApp } from "../app/threejs-app";
 
-import { FontCache, UIOptions, UIMaterials, UITextButton, TextButtonParameters } from 'three-fluix'
+import { FontCache, UIOptions, UIMaterials, UITextButton, TextButtonParameters, UILabel } from 'three-fluix'
 import { PropertiesScene } from "../examples/properties";
 import { CustomPropertiesScene } from "../examples/custom-properties";
+import { LabelPerformanceScene } from "../examples/label-performance";
 
 interface Tile {
   route: string  // looks for asset with same name
@@ -15,7 +16,7 @@ interface Tile {
 
 export class HomeScene extends Scene {
 
-  dispose = () => { }
+  dispose() { }
 
   constructor(app: ThreeJSApp) {
     super()
@@ -23,6 +24,7 @@ export class HomeScene extends Scene {
     const examples1: Array<Tile> = [
       { route: 'properties', description: 'Properties', scene: () => { return new PropertiesScene(app) } },
       { route: 'customproperties', description: 'Custom Properties', scene: () => { return new CustomPropertiesScene(app) } },
+      { route: 'labelperformance', description: 'Label Performance', scene: () => { return new LabelPerformanceScene(app) } },
     ]
 
     examples1.forEach(example => {
@@ -36,8 +38,6 @@ export class HomeScene extends Scene {
       fontCache: new FontCache(),
       materials: new UIMaterials(),
     }
-
-    const loader = new TextureLoader()
 
     const bordersize = 0.03
     const screenwidth = 16 / 9 - bordersize * 2
@@ -65,7 +65,5 @@ export class HomeScene extends Scene {
       y -= 0.07
     })
 
-    this.dispose = () => {
-    }
   }
 }

@@ -87,7 +87,7 @@ export class UINumberEntry extends UITextEntry {
     }
   }
 
-  constructor(parameters: NumberEntryParameters = {}, interactive: ThreeInteractive, options: NumberOptions = {}) {
+  constructor(parameters: NumberEntryParameters, interactive: ThreeInteractive, options: NumberOptions = {}) {
     super(parameters, interactive, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'number-entry'

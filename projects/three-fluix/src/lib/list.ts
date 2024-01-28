@@ -342,7 +342,6 @@ export class UIList extends UIEntry implements Pagination {
     const label: LabelParameters = {
       alignX: 'left',
       maxwidth: width - this.spacing * 2,
-      overflow: 'clip',
       size: fontSize
     }
 
