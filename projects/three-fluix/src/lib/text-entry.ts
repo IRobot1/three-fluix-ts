@@ -116,6 +116,10 @@ export class UITextEntry extends UIEntry implements InputField {
 
   }
 
+  override dispose() {
+    super.dispose()
+    this.label.dispose()
+  }
   override handleKeyDown(e: UIKeyboardEvent) {
     if (this.disabled) return
 

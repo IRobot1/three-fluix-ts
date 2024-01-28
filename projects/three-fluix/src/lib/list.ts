@@ -272,6 +272,7 @@ export class UIList extends UIEntry implements Pagination {
     this.visuals.forEach(visual => visual.dispose())
     if (this.scrollbar) this.scrollbar.dispose()
     this.interactive.selectable.remove(this)
+    this.empty.dispose()
   }
 
   moveFirst() {

@@ -92,6 +92,8 @@ export class UILabel extends Object3D {
 
     label.text = parameters.text ? parameters.text : '';
     label.fontSize = parameters.size != undefined ? parameters.size : 0.07
+    label.whiteSpace = 'nowrap'
+
     if (this.isicon) {
       label.font = 'https://fonts.gstatic.com/s/materialicons/v139/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.woff'
       label.anchorX = 'center'
@@ -123,6 +125,9 @@ export class UILabel extends Object3D {
 
   }
 
+  dispose() {
+    this.label.dispose()
+  }
 }
 
 

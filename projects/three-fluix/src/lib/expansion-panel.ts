@@ -33,6 +33,12 @@ export class UIExpansionPanel extends UITextButton {
   private expandedIndicator!: UILabel
   private collapsedIndicator!: UILabel
 
+  override dispose() {
+    super.dispose()
+    this.expandedIndicator.dispose()
+    this.collapsedIndicator.dispose()
+  }
+
   constructor(parameters: ExpansionPanelParameters, interactive: ThreeInteractive, options: PanelOptions) {
     parameters.disableScaleOnClick = true
     parameters.label.alignX = 'left'

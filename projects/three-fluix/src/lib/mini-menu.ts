@@ -35,6 +35,10 @@ export class UIMiniMenu extends Object3D {
   buttons: Array<UIButton> = []
   width: number
 
+  private hint: UILabel;
+  dispose() {
+    this.hint.dispose()
+  }
   constructor(parameters: MenuParameters, private interactive: ThreeInteractive, private options: UIOptions) {
     super()
 
@@ -43,6 +47,7 @@ export class UIMiniMenu extends Object3D {
     const hint = new UILabel(labelparams, options)
     hint.position.y = below ? -0.12 : 0.12
     this.add(hint)
+    this.hint = hint
 
     const spacing = parameters.spacing != undefined ? parameters.spacing : 0.02
 

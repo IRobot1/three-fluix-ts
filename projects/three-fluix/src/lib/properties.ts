@@ -52,6 +52,7 @@ export class UIProperties extends UIPanel {
   private inputwidth: number
 
   private inputs: Array<InputField> = []
+  private labels: Array<UILabel> = []
 
   constructor(parameters: PropertiesParameters, protected interactive: ThreeInteractive, options: PanelOptions, gui: GUI) {
     super(parameters, options)
@@ -205,6 +206,7 @@ export class UIProperties extends UIPanel {
     const label = this.createLabel(labelparams, controller.title)
     label.position.set(this.labelx - this.spacing, 0, 0.001)
     data.group.add(label)
+    this.labels.push(label)
 
     switch (controller.classname) {
 
@@ -511,9 +513,8 @@ export class UIProperties extends UIPanel {
     if (this.options.keyboard)
       this.options.keyboard.remove(...this.inputs)
 
-    this.inputs.forEach(input => {
-      input.dispose()
-    })
+    this.inputs.forEach(input => { input.dispose() })
+    this.labels.forEach(label => { label.dispose() })
   }
 
   // overridables
