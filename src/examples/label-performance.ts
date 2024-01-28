@@ -1,6 +1,6 @@
 import { Scene } from "three";
 import { ThreeJSApp } from "../app/threejs-app";
-import { UILabel, FontCache, LabelParameters, UIMaterials, UIOptions, TextButtonParameters, UITextButton, SelectParameters, UISelect, KeyboardInteraction, TextEntryParameters, UITextEntry } from "three-fluix";
+import { UILabel, FontCache, LabelParameters, UIMaterials, UIOptions, TextButtonParameters, UITextButton, SelectParameters, UISelect, KeyboardInteraction, TextEntryParameters, UITextEntry, UINumberEntry, NumberEntryParameters } from "three-fluix";
 
 
 
@@ -24,26 +24,27 @@ export class LabelPerformanceScene extends Scene {
     const screenheight = 1 - bordersize * 2
 
 
-    const params: LabelParameters = {}
-    for (let i = 0; i < 500; i++) {
-      params.text = i.toString()
+    //const params: LabelParameters = {}
+    //for (let i = 0; i < 500; i++) {
+    //  params.text = i.toString()
 
-      const label = new UILabel(params, options)
-      this.add(label)
-      label.position.set(-screenwidth / 2 + Math.random() * screenwidth, -screenheight / 2 + Math.random() * screenheight, 0.001)
+    //  const label = new UILabel(params, options)
+    //  this.add(label)
+    //  label.position.set(-screenwidth / 2 + Math.random() * screenwidth, -screenheight / 2 + Math.random() * screenheight, 0.001)
 
-      this.labels.push(label)
-    }
-
-    //const buttonparams: TextEntryParameters = {
-    //  width: 0.3, 
-    //  label: { text: 'Three Fluix Three Fluix' }
+    //  this.labels.push(label)
     //}
 
-    //const button = new UITextEntry(buttonparams, app.interactive, options)
-    //this.add(button)
+    const buttonparams: NumberEntryParameters = {
+      width: 0.3,
+      initialvalue: Math.PI
+      //label: { text: 'The quick brown fox jumped over the lazy dog' }
+    }
 
-    //options.keyboard?.add(button)
+    const button = new UINumberEntry(buttonparams, app.interactive, options)
+    this.add(button)
+
+    options.keyboard?.add(button)
   }
 
   dispose = () => {

@@ -23,7 +23,12 @@ export class UINumberEntry extends UITextEntry {
       if (this.step != undefined && this.step > 0)
         newvalue = Math.round(newvalue / this.step) * this.step
 
-      const text = newvalue.toFixed(this.decimals)
+      let text: string
+      if (this.decimals != undefined)
+        text = newvalue.toFixed(this.decimals)
+      else
+        text = newvalue.toString()
+
       this.text = text
 
       if (this.inRange(text, this.minvalue, this.maxvalue)) {
