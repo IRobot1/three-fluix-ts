@@ -7,7 +7,7 @@ import { InteractiveEventType } from "./three-interactive";
 
 export interface OffsetParameters {
   axis: 'x' | 'y',    // default is x
-  offset: number      // default is -0.03
+  offset: number      // default is -0.01
 }
 
 export interface KeyboardInteractionOptions extends UIOptions {
@@ -75,7 +75,7 @@ export class KeyboardInteraction extends EventDispatcher {
 
 
     this.showSelected = options.showSelected != undefined ? options.showSelected : true
-    this.offsetParams = options.selectedOffset ? options.selectedOffset : { axis: 'x', offset: -0.03 }
+    this.offsetParams = options.selectedOffset ? options.selectedOffset : { axis: 'x', offset: -0.01 }
 
     // TODO: listen for entering and leaving VR
     // make sure input methods are hidden for now
@@ -213,7 +213,6 @@ export class KeyboardInteraction extends EventDispatcher {
   dispose: () => void
 
   createSelectedGeometry(selectedWidth: number, selectedHeight: number): BufferGeometry {
-    return new PlaneGeometry(0.04, selectedHeight)
-    //return new PlaneGeometry(selectedWidth, 0.04)
+    return new PlaneGeometry(0.02, selectedHeight)
   }
 }

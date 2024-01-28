@@ -196,7 +196,7 @@ export class UIPanel extends Mesh {
 
     const highlightParams = parameters.highlight ? parameters.highlight : {}
     if (!highlightParams.material) highlightParams.material = { color: 'black' }
-    this.highlightWidth = highlightParams.width != undefined ? highlightParams.width : 0.02
+    this.highlightWidth = highlightParams.width != undefined ? highlightParams.width : 0.005
 
     const highlightMesh = new Mesh()
     highlightMesh.material = this.materials.getMaterial('geometry', 'highlight', highlightParams.material);
