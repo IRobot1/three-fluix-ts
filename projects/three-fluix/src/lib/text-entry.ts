@@ -107,7 +107,10 @@ export class UITextEntry extends UIEntry implements InputField {
     }
 
     this.addEventListener(InputFieldEventType.TEXT_CHANGED, textChanged)
-    this.addEventListener(InputFieldEventType.ACTIVE_CHANGED, textChanged)
+    this.addEventListener(InputFieldEventType.ACTIVE_CHANGED, () => {
+      label.scrollToEnd = this.active
+      textChanged()
+    })
 
     this.addEventListener(PanelEventType.WIDTH_CHANGED, () => {
       label.maxwidth = this.width - this.label.padding * 2

@@ -35,16 +35,25 @@ export class LabelPerformanceScene extends Scene {
     //  this.labels.push(label)
     //}
 
-    const buttonparams: NumberEntryParameters = {
+    const numberparams: NumberEntryParameters = {
       width: 0.3,
       initialvalue: Math.PI
       //label: { text: 'The quick brown fox jumped over the lazy dog' }
     }
 
-    const button = new UINumberEntry(buttonparams, app.interactive, options)
-    this.add(button)
+    const numberEntry = new UINumberEntry(numberparams, app.interactive, options)
+    this.add(numberEntry)
+    numberEntry.position.y = 0.2
 
-    options.keyboard?.add(button)
+    const textparams: TextEntryParameters = {
+      width: 0.3,
+      label: { text: 'The quick brown fox jumped over the lazy dog' }
+    }
+
+    const textEntry = new UITextEntry(textparams, app.interactive, options)
+    this.add(textEntry)
+
+    options.keyboard?.add(numberEntry, textEntry)
   }
 
   dispose = () => {

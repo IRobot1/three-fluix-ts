@@ -68,6 +68,33 @@ export class UILabel extends Object3D {
     }
   }
 
+  private _scrollToEnd = false
+  get scrollToEnd() { return this._scrollToEnd }
+  set scrollToEnd(newvalue: boolean) {
+    if (this._scrollToEnd != newvalue) {
+      this._scrollToEnd = newvalue
+      this.positionText()
+    }
+  }
+
+  private scrollOffset = 0
+  private positionText() {
+    if (this.scrollToEnd) {
+      if (this.scrollOffset > 0) {
+        this.cliptowidth(this.scrollOffset)
+        this.label.position.x = -this.width + this.maxwidth
+      }
+      else if (this.label.position.x) {
+        this.label.position.x = 0
+        this.cliptowidth()
+      }
+    }
+    else {
+      this.label.position.x = 0
+      this.cliptowidth()
+    }
+  }
+
   constructor(parameters: LabelParameters, protected options: LabelOptions = {}) {
     super()
 
@@ -111,15 +138,10 @@ export class UILabel extends Object3D {
       this.height = (bounds[3] - bounds[1])
       this.width = (bounds[2] - bounds[0])
 
-      const offset = this.width - this.maxwidth
-      if (offset > 0) {
-        this.cliptowidth(offset)
-        this.label.position.x = -this.width + this.maxwidth
-      }
-      else if (this.label.position.x) {
-        this.cliptowidth(0)
-        this.label.position.x = 0
-      }
+      if (this.isicon) return
+
+      this.scrollOffset = this.width - this.maxwidth
+      this.positionText()
     })
 
     label.sync();
