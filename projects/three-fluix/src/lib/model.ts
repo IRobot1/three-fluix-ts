@@ -70,21 +70,23 @@ export interface PanelParameters extends TranformParameters, SizeParameters {
 
 export type LabelAlignX = 'center' | 'left' | 'right'
 export type LabelAlignY = 'middle' | 'top' | 'bottom'
-export type LabelOverflow = 'clip' | 'slice'
+export type LabelFontStyle = 'normal' | 'italic'
+export type LabelFontWeight = 'normal' | 'bold'
 export interface LabelParameters {
   id?: string
   text?: string
   isicon?: boolean // text is the name of an icon. see https://fonts.google.com/icons
-  size?: number
   material?: MeshBasicMaterialParameters
-  font?: string
+  font?: string                       // default is Roboto
+  size?: number                       // default is 0.07
+  fontStyle?: LabelFontStyle          // default is normal
+  fontWeight?: LabelFontWeight        // default is bold
   padding?: number
   alignX?: LabelAlignX
   alignY?: LabelAlignY
   visible?: boolean
 
   maxwidth?: number
-  //overflow?: LabelOverflow   // when text longer than max width, either clip or slice to show end text
 }
 
 export interface InputParameters extends PanelParameters {

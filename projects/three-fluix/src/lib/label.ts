@@ -1,6 +1,6 @@
-import { ColorRepresentation, Material, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, Vector3 } from "three";
+import { ColorRepresentation, Material, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D } from "three";
 
-import { LabelParameters, UIOptions } from "./model";
+import { LabelFontStyle, LabelFontWeight, LabelParameters, UIOptions } from "./model";
 
 // @ts-ignore
 import { Text } from "troika-three-text";
@@ -42,17 +42,28 @@ export class UILabel extends Object3D {
     this.label.material = newvalue
   }
 
+  get font() { return this.label.font }
+  set font(newvalue: string) { this.label.font = newvalue }
+
+  get fontStyle() { return this.label.fontStyle }
+  set fontStyle(newvalue: LabelFontStyle) { this.label.fontStyle = newvalue }
+
+  get fontWeight() { return this.label.fontWeight }
+  set fontWeight(newvalue: LabelFontWeight) { this.label.fontWeight = newvalue }
+
+
   private _matparams!: MeshBasicMaterialParameters
-  get color() { return this._matparams.color! }
+  get color() { return this.label.color }
   set color(newvalue: ColorRepresentation) {
+    this.label.color.set(newvalue)
     if (this._matparams.color != newvalue) {
       this._matparams.color = newvalue;
       (this.label.material as MeshBasicMaterial).color.set(newvalue)
     }
   }
 
-  width!: number
-  height!: number
+  private width!: number
+  private height!: number
 
   cliptowidth(offset = 0) {
     switch (this.label.anchorX) {
@@ -111,11 +122,13 @@ export class UILabel extends Object3D {
     this.add(label)
     this.label = label
 
-    this._matparams = parameters.material ? parameters.material : { color: 'black' }
-    label.material = options.materials.getMaterial('geometry', this.name, this._matparams)!;
+    const materialparams = parameters.material ? parameters.material : { color: 'black' }
+    label.material = options.materials.getMaterial('geometry', this.name, materialparams)!;
 
     label.text = parameters.text ? parameters.text : '';
     label.fontSize = parameters.size != undefined ? parameters.size : 0.07
+    if (parameters.fontStyle) label.fontStyle = parameters.fontStyle
+    if (parameters.fontWeight) label.fontWeight = parameters.fontWeight
     label.whiteSpace = 'nowrap'
 
     if (this.isicon) {
@@ -149,7 +162,7 @@ export class UILabel extends Object3D {
 
     this.visible = parameters.visible != undefined ? parameters.visible : true
 
-    //this._fontName = parameters.font != undefined ? parameters.font : 'assets/helvetiker_regular.typeface.json'
+    if (parameters.font) this.font = parameters.font 
 
   }
 

@@ -1,10 +1,9 @@
 import { InputField, InputFieldEventType, UIEntry } from "./input-field"
 import { PanelEventType, PanelOptions } from "./panel"
 import { UIKeyboardEvent } from "./keyboard"
-import { LabelEventType, UILabel } from "./label"
+import { UILabel } from "./label"
 import { TextEntryParameters } from "./model"
 import { ThreeInteractive } from "./three-interactive"
-import { Box3, Box3Helper } from "three"
 
 export interface TextOptions extends PanelOptions {
 }
