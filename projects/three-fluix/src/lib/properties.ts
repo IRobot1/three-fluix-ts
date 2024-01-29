@@ -20,6 +20,7 @@ import { UIColorPicker } from "./color-picker";
 export interface PropertiesParameters extends PanelParameters {
   spacing?: number             // defaults to 0.02
   propertyHeight?: number      // defaults to 0.1
+  font?: string                // default is Roboto
   fontSize?: number            // defaults to 0.04
   disabledMaterial?: MeshBasicMaterialParameters  // default is gray
   inputMaterial?: MeshBasicMaterialParameters     // default is dark gray
@@ -42,6 +43,7 @@ export class UIProperties extends UIPanel {
   private spacing: number
   private propertyHeight: number
   private fontSize: number
+  private font?: string
   private disabledMaterial: MeshBasicMaterialParameters
   private inputMaterial: MeshBasicMaterialParameters
   private labelx: number
@@ -62,6 +64,7 @@ export class UIProperties extends UIPanel {
     this.spacing = parameters.spacing != undefined ? parameters.spacing : 0.02
     this.propertyHeight = parameters.propertyHeight != undefined ? parameters.propertyHeight : 0.1
     this.fontSize = parameters.fontSize != undefined ? parameters.fontSize : 0.06
+    if (parameters.font) this.font = parameters.font
 
     let x = -this.width / 2
     this.labelwidth = parameters.labelwidth != undefined ? parameters.labelwidth : this.width / 2
@@ -129,6 +132,7 @@ export class UIProperties extends UIPanel {
   }
 
   addChild(parent: UIPanel, controller: Controller, data: HeightData) {
+    const font = this.font
     const size = this.fontSize
     const height = this.propertyHeight
     const disabled = !controller.enabled
@@ -139,6 +143,7 @@ export class UIProperties extends UIPanel {
         label: {
           text: controller.title,
           size,
+          font,
         },
         width: this.width - this.spacing * 2,
         height,
@@ -163,7 +168,8 @@ export class UIProperties extends UIPanel {
         height,
         label: {
           text: controller.title,
-          size,
+          size, 
+          font,
         },
         fill,
         panel: {
@@ -201,6 +207,7 @@ export class UIProperties extends UIPanel {
       maxwidth: this.labelwidth - this.spacing * 2,
       text: controller.title,
       size,
+      font,
       material: { color }
     }
     const label = this.createLabel(labelparams, controller.title)
@@ -245,7 +252,10 @@ export class UIProperties extends UIPanel {
           initialvalue: controller.getValue(),
           width,
           height,
-          label: { size },
+          label: {
+            size,
+            font,
+          },
           decimals: controller._decimals,
           disabled: !controller.enabled,
           min: controller._min as number,
@@ -282,6 +292,7 @@ export class UIProperties extends UIPanel {
           label: {
             text: controller.getValue(),
             size,
+            font,
           },
           disabled: !controller.enabled,
           fill,
@@ -368,6 +379,7 @@ export class UIProperties extends UIPanel {
           label: {
             text: initialvalue,
             size,
+            font,
           },
           list: listparams,
           disabled: !controller.enabled,
@@ -439,6 +451,7 @@ export class UIProperties extends UIPanel {
           label: {
             text: color,
             size,
+            font,
           },
           disabled: !controller.enabled,
           fill,

@@ -142,9 +142,10 @@ export interface ListParameters extends InputParameters {
   selected?: string             // default is none, if there's a default selected item
   spacing?: number              // default is 0.02, spacing between items
   orientation?: UIOrientationType // default is vertical
-  emptyText?: string             // default is 'List is empty'
+  emptyText?: string            // default is 'List is empty'
   selectedMaterial?: MeshBasicMaterialParameters // default is 'black'
-  fontSize?: number               // default is 0.07
+  font?: string                 // default is Roboto
+  fontSize?: number             // default is 0.07
 }
 
 export interface SelectParameters extends TextButtonParameters {
