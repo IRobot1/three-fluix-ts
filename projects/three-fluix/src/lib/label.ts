@@ -17,20 +17,40 @@ export enum LabelEventType {
 }
 
 export class UILabel extends Object3D {
-  isicon = false
 
   private label: Text
 
   get text() { return this.label.text }
   set text(newvalue: string) { this.label.text = newvalue }
 
+  private _isicon = false
+  private lastfont: string | undefined
+  get isicon() { return this._isicon }
+  set isicon(newvalue: boolean) {
+    if (this._isicon != newvalue) {
+      this._isicon = newvalue
+
+      if (this.isicon) {
+        this.lastfont = this.label.font
+        this.label.font = 'https://fonts.gstatic.com/s/materialicons/v139/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.woff'
+        this.label.anchorX = 'center'
+        this.label.anchorY = 'middle'
+      }
+      else {
+        this.label.font = this.lastfont
+      }
+    }
+  }
   get maxwidth() { return this.label.maxWidth }
   set maxwidth(newvalue: number) {
     this.label.maxWidth = newvalue
     this.cliptowidth()
   }
   get alignX() { return this.label.anchorX }
-  get aligny() { return this.label.anchorY }
+  set alignX(newvalue: string) { this.label.anchorX = newvalue }
+
+  get alignY() { return this.label.anchorY }
+  set alignY(newvalue: string) { this.label.anchorY = newvalue }
 
   public padding: number
 
@@ -45,6 +65,9 @@ export class UILabel extends Object3D {
   get font() { return this.label.font }
   set font(newvalue: string) { this.label.font = newvalue }
 
+  get fontSize() { return this.label.fontSize }
+  set fontSize(newvalue: number) { this.label.fontSize = newvalue }
+
   get fontStyle() { return this.label.fontStyle }
   set fontStyle(newvalue: LabelFontStyle) { this.label.fontStyle = newvalue }
 
@@ -53,9 +76,8 @@ export class UILabel extends Object3D {
 
 
   private _matparams!: MeshBasicMaterialParameters
-  get color() { return this.label.color }
+  get color() { return this._matparams.color! }
   set color(newvalue: ColorRepresentation) {
-    this.label.color.set(newvalue)
     if (this._matparams.color != newvalue) {
       this._matparams.color = newvalue;
       (this.label.material as MeshBasicMaterial).color.set(newvalue)
@@ -110,7 +132,6 @@ export class UILabel extends Object3D {
     super()
 
     this.name = parameters.id != undefined ? parameters.id : 'label'
-    this.isicon = parameters.isicon ? parameters.isicon : false
     this.padding = parameters.padding != undefined ? parameters.padding : 0.02
 
     if (!options.materials) {
@@ -122,8 +143,9 @@ export class UILabel extends Object3D {
     this.add(label)
     this.label = label
 
-    const materialparams = parameters.material ? parameters.material : { color: 'black' }
-    label.material = options.materials.getMaterial('geometry', this.name, materialparams)!;
+
+    this._matparams = parameters.material ? parameters.material : { color: 0x000000 }
+    label.material = options.materials.getMaterial('geometry', this.name, this._matparams)!;
 
     label.text = parameters.text ? parameters.text : '';
     label.fontSize = parameters.size != undefined ? parameters.size : 0.07
@@ -131,16 +153,10 @@ export class UILabel extends Object3D {
     if (parameters.fontWeight) label.fontWeight = parameters.fontWeight
     label.whiteSpace = 'nowrap'
 
-    if (this.isicon) {
-      label.font = 'https://fonts.gstatic.com/s/materialicons/v139/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.woff'
-      label.anchorX = 'center'
-      label.anchorY = 'middle'
-    }
-    else {
+    this.isicon = parameters.isicon ? parameters.isicon : false
+    if (!this.isicon) {
       label.anchorX = parameters.alignX ? parameters.alignX : 'center'
       label.anchorY = parameters.alignY ? parameters.alignY : 'middle'
-      label.textAlign = label.anchorX
-
     }
 
     const maxwidth = parameters.maxwidth != undefined ? parameters.maxwidth : Infinity
@@ -158,11 +174,10 @@ export class UILabel extends Object3D {
     })
 
     label.sync();
-    //this._overflow = parameters.overflow != undefined ? parameters.overflow : 'clip'
 
     this.visible = parameters.visible != undefined ? parameters.visible : true
 
-    if (parameters.font) this.font = parameters.font 
+    if (parameters.font) this.font = parameters.font
 
   }
 

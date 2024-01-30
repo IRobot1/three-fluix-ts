@@ -1,6 +1,7 @@
 import { Scene } from "three";
 import { ThreeJSApp } from "../app/threejs-app";
-import { UILabel, FontCache, UIMaterials, UIOptions, SelectParameters, UISelect, ListParameters, SelectEventType, KeyboardInteraction } from "three-fluix";
+import { UIProperties, UILabel, FontCache, UIMaterials, UIOptions, SelectParameters, UISelect, ListParameters, SelectEventType, KeyboardInteraction, GUI, UIColorPicker } from "three-fluix";
+
 
 
 
@@ -25,7 +26,6 @@ export class LabelPerformanceScene extends Scene {
     const screenheight = 1 - bordersize * 2
 
     const FONTS: any = {
-      'Noto Sans (none)': null,
       'Roboto': 'https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxM.woff',
       'Alex Brush': 'https://fonts.gstatic.com/s/alexbrush/v8/SZc83FzrJKuqFbwMKk6EhUXz6w.woff',
       'Comfortaa': 'https://fonts.gstatic.com/s/comfortaa/v12/1Ptsg8LJRfWJmhDAuUs4TYFs.woff',
@@ -47,41 +47,82 @@ export class LabelPerformanceScene extends Scene {
       'Sirin Stencil': 'https://fonts.gstatic.com/s/sirinstencil/v6/mem4YaWwznmLx-lzGfN7MdRyRc9MAQ.woff'
     }
 
-    const fonts: Array<{ label: string, value: number }> = []
+    const fonts: Array<string> = []
     for (let key in FONTS) {
-      fonts.push({ label: key, value: FONTS[key] })
+      fonts.push(key)
     }
-    let initialvalue = 'Roboto'
+    //let initialvalue = 'Roboto'
 
-    const maxwidth = 1
-    const listparams: ListParameters = {
-      width: maxwidth,
-      data: fonts,
-      field: 'label',
-      maxwidth,
-    }
+    //const maxwidth = 1
+    //const listparams: ListParameters = {
+    //  width: maxwidth,
+    //  data: fonts,
+    //  field: 'label',
+    //  maxwidth,
+    //}
 
-    const selectparams: SelectParameters = {
-      width: maxwidth,
-      label: {
-        text: initialvalue,
-      },
-      list: listparams,
-      initialselected: initialvalue,
-    }
+    //const selectparams: SelectParameters = {
+    //  width: maxwidth,
+    //  label: {
+    //    text: initialvalue,
+    //  },
+    //  list: listparams,
+    //  initialselected: initialvalue,
+    //}
 
-    const select = new UISelect(selectparams, app.interactive, options)
-    this.add(select)
-    select.position.y = 0.3
+    //const select = new UISelect(selectparams, app.interactive, options)
+    //this.add(select)
+    //select.position.y = 0.3
 
-    select.addEventListener(SelectEventType.SELECTED_DATA_CHANGED, (e: any) => {
-      //console.warn(e.data.value)
-      label.font = e.data.value
-    })
+    //select.addEventListener(SelectEventType.SELECTED_DATA_CHANGED, (e: any) => {
+    //  //console.warn(e.data.value)
+    //  label.font = e.data.value
+    //})
 
-    const label = new UILabel({ text: 'Three Fluix' }, options)
+    const label = new UILabel({ text: 'Three Fluix', font: 'https://fonts.gstatic.com/s/cookie/v8/syky-y18lb0tSbf9kgqU.woff' }, options)
     this.add(label)
     label.position.y = 0.4
+
+
+    const fake = { font: 'Cookie', isicon: false }
+
+    let lasttext = ''
+    const gui = new GUI({})
+    gui.add(label, 'text').name('Text').listen()
+    gui.add(label, 'alignX', ['left', 'center', 'right']).name('X Alignment')
+    gui.add(label, 'alignY', ['top', 'middle', 'bottom']).name('Y Alignment')
+
+    let alignX = ''
+    let alignY = ''
+    gui.add(fake, 'isicon').name('Icon').onChange(() => {
+      if (!label.isicon) {
+        alignX = label.alignX
+        alignY = label.alignY
+        lasttext = label.text
+        label.isicon = true
+        label.text = 'bar_chart'
+      }
+      else {
+        label.isicon = false
+        label.alignX = alignX
+        label.alignY = alignY
+        label.text = lasttext
+      }
+    })
+    gui.add(label, 'fontSize', 0.03, 0.1, 0.01).name('Font Size')
+    gui.addColor(label, 'color').name('Color')
+
+    gui.add(fake, 'font', fonts).name('Font').onChange((e) => {
+      label.font = FONTS[fake.font]
+    })
+    //gui.add(label, 'fontStyle', ['normal', 'italic']).name('Font Style')
+    //gui.add(label, 'fontWeight', ['normal', 'bold']).name('Font Weight')
+    gui.add(label, 'maxwidth', 0.1, 1, 0.1).name('Maximum Width')
+
+    const properties = new UIProperties({}, app.interactive, options, gui)
+    properties.getColorPicker = () => { return new UIColorPicker({}, app.interactive, options) }
+    this.add(properties)
+    properties.scale.setScalar(0.5)
 
     //const params: LabelParameters = {}
     //for (let i = 0; i < 500; i++) {

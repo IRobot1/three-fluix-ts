@@ -358,7 +358,7 @@ export class UIProperties extends UIPanel {
         let match = options.find(x => x.value == initialvalue)
         if (match)
           initialvalue = match.label
-        else
+        else if (initialvalue)
           initialvalue = initialvalue.toString()
 
         const maxwidth = this.pickwidth + this.inputwidth - this.spacing * 3
