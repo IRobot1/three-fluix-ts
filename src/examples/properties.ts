@@ -1,8 +1,9 @@
-import { AmbientLight, AxesHelper, Color, PointLight, Scene } from "three";
+import { AmbientLight, AxesHelper, Color, Group, PointLight, Scene } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { ThreeJSApp } from "../app/threejs-app";
 import { UIColorPicker, KeyboardInteraction, UIOptions, GUI, UIMaterials, FontCache, UIProperties } from "three-fluix";
+import { Component, OnDestroy } from "@angular/core";
 
 //
 // adapted from https://github.com/georgealways/lil-gui/blob/master/examples/kitchen-sink/kitchen-sink.js
@@ -13,66 +14,71 @@ class GUIData {
 }
 
 
-export class PropertiesScene extends Scene {
+@Component({
+  template: '',
+})
+export class PropertiesScene extends Scene implements OnDestroy {
 
   guis: Array<GUIData> = []
   properties: Array<UIProperties> = []
   colorpicker: UIColorPicker
 
-  constructor(private app: ThreeJSApp) {
+  constructor(app: ThreeJSApp) {
     super()
+    const z = -0.5
 
-    this.scale.setScalar(0.2)
-    const z = 0
-    const y = 1.5
+    app.scene = this
+
+    const home = app.showHome(this)
+    home.position.set(-0.1, 1.62, z + 0.01)
+    home.scale.setScalar(0.4)
 
     const col1 = -3.2
-    this.makeNumbers(col1, 3 - y, z, true);
-    this.makeImplicitStep(col1, 1.7 - y, z, true);
-    this.makeExplicitStep(col1, 0.5 - y, z, true);
+    this.makeNumbers(col1, 3, z, true);
+    this.makeImplicitStep(col1, 1.7, z, true);
+    this.makeExplicitStep(col1, 0.5, z, true);
 
     const col2 = -1.6
-    this.makeMiscNumbers(col2, 3 - y, z, true);
-    this.makeOptions(col2, 1.7 - y, z, true);
-    this.makeColors(col2, 0.5 - y, z, true);
+    this.makeMiscNumbers(col2, 3, z, true);
+    this.makeOptions(col2, 1.7, z, true);
+    this.makeColors(col2, 0.5, z, true);
 
-    const col3 = -0
-    this.makeColorStrings(col3, 3.1 - y, z, true);
-    this.makeFolders(col3, 1.7 - y, z, true);
+    const col3 = 0
+    this.makeColorStrings(col3, 3.1, z, true);
+    this.makeFolders(col3, 1.4, z, true);
 
     const col4 = 1.6
-    this.makeNestedFolders(col4, 2.7 - y, z, true);
-    this.makeDisable(col4, 0.8 - y, z, true);
+    this.makeNestedFolders(col4, 2.7, z, true);
+    this.makeDisable(col4, 0.8, z, true);
 
     const col5 = 3.2
-    this.makeListen(col5, 3.1 - y, z, true);
-    this.makeOnChange(col5, 1.8 - y, z, true);
+    this.makeListen(col5, 3.1, z, true);
+    this.makeOnChange(col5, 1.8, z, true);
 
-    const options: UIOptions = {
-      materials: new UIMaterials(),
-      fontCache: new FontCache(),
-      keyboard: new KeyboardInteraction(app)
-    }
-
-    const colorpicker = new UIColorPicker({}, app.interactive, options)
+    const colorpicker = new UIColorPicker({}, app.interactive, app.uioptions)
     this.add(colorpicker)
     colorpicker.visible = false
 
+    const group = new Group()
     this.guis.forEach((data, index) => {
-      const ui = new UIProperties({ width: 1.5 }, app.interactive, options, data.gui)
-      this.add(ui)
-      ui.position.set(data.x, data.y, data.z)
+      const ui = new UIProperties({ width: 1.5 }, app.interactive, app.uioptions, data.gui)
+      group.add(ui)
+      ui.position.set(data.x, data.y, 0)
       ui.getColorPicker = () => { return colorpicker }
       this.properties.push(ui)
     })
+    group.position.set(0, 1.25, z)
+    group.scale.setScalar(0.15)
+    this.add(group)
 
     this.colorpicker = colorpicker
   }
 
-  dispose = () => {
+  ngOnDestroy(): void {
     this.properties.forEach(ui => ui.dispose())
     this.colorpicker.dispose()
   }
+
 
   make(options: any, callback = (gui: GUI): any => { }): GUI {
     const gui = new GUI(options);

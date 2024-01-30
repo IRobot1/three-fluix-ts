@@ -2,51 +2,57 @@ import { Scene, Shape } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
 import { ExpansionPanelParameters, FontCache, GUI, KeyboardInteraction, LabelParameters, NumberEntryParameters, NumberOptions, PanelOptions, PropertiesParameters, SelectParameters, SliderbarParameters, TextButtonParameters, TextEntryParameters, ThreeInteractive, UIButton, UIColorPicker, UIExpansionPanel, UILabel, UIMaterials, UINumberEntry, UIOptions, UIProperties, UISelect, UISliderbar, UITextButton, UITextEntry } from "three-fluix";
+import { Component, OnDestroy } from "@angular/core";
 
-export class CustomPropertiesScene extends Scene {
+@Component({
+  template: '',
+})
+export class CustomPropertiesScene extends Scene implements OnDestroy {
 
   colorpicker: UIColorPicker
-  properties : UIProperties
+  properties: UIProperties
 
   constructor(private app: ThreeJSApp) {
     super()
 
-    this.scale.setScalar(0.3)
+    const z = -0.5
 
-    const options: UIOptions = {
-      materials: new UIMaterials(),
-      fontCache: new FontCache(),
-      keyboard: new KeyboardInteraction(app)
-    }
+    app.scene = this
 
-    const colorpicker = new UIColorPicker({}, app.interactive, options)
+    const home = app.showHome(this)
+    home.position.set(-0.1, 1.3, z + 0.01)
+    home.scale.setScalar(0.5)
+
+    const colorpicker = new UIColorPicker({}, app.interactive, app.uioptions)
     this.add(colorpicker)
     colorpicker.visible = false
 
     //requestAnimationFrame(() => {
-      const gui = this.makeCustomGUI()
-      const params: PropertiesParameters = {
-        width: 1.3,
-        fill: { color: 'black' },
-        inputMaterial: { color: '#424242' },
-        labelwidth: 0.45,
-        pickwidth: 0.6,
-        inputwidth:0.25
-      }
-      const properties1 = new CustomProperties(params, app.interactive, options, gui)
-      this.add(properties1)
-      properties1.position.set(-1, 0, 0)
+    const gui = this.makeCustomGUI()
+    const params: PropertiesParameters = {
+      width: 1.3,
+      fill: { color: 'black' },
+      inputMaterial: { color: '#424242' },
+      labelwidth: 0.45,
+      pickwidth: 0.6,
+      inputwidth: 0.25
+    }
+    const properties1 = new CustomProperties(params, app.interactive, app.uioptions, gui)
+    this.add(properties1)
+    properties1.position.set(0, 1.6, z)
+    properties1.scale.setScalar(0.2)
+
     properties1.getColorPicker = () => { return colorpicker }
-      this.properties = properties1
+    this.properties = properties1
+
     //})
     this.colorpicker = colorpicker
   }
-
-  dispose() {
+  ngOnDestroy(): void {
     this.properties.dispose()
     this.colorpicker.dispose()
-    //console.warn(this.app.interactive.selectable)
   }
+
 
   makeCustomGUI() {
     const gui = new GUI({})
@@ -143,7 +149,7 @@ class CustomProperties extends UIProperties {
   }
 
   override createNumberEntry(parameters: NumberEntryParameters, title: string): UINumberEntry {
-    parameters.label!.material= { color: 'orange' } 
+    parameters.label!.material = { color: 'orange' }
     if (title == 'level') {
       return new CustomNumberEntry(parameters, this.interactive, this.options, this.radius * 3, this.radius)
     }

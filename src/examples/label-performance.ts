@@ -1,11 +1,14 @@
 import { Scene } from "three";
 import { ThreeJSApp } from "../app/threejs-app";
 import { UIProperties, UILabel, FontCache, UIMaterials, UIOptions, SelectParameters, UISelect, ListParameters, SelectEventType, KeyboardInteraction, GUI, UIColorPicker } from "three-fluix";
+import { Component, OnDestroy } from "@angular/core";
 
 
 
-
-export class LabelPerformanceScene extends Scene {
+@Component({
+  template: ''
+})
+export class LabelPerformanceScene extends Scene implements OnDestroy {
   labels: Array<UILabel> = []
   inputwidth: any;
 
@@ -13,17 +16,14 @@ export class LabelPerformanceScene extends Scene {
   constructor(private app: ThreeJSApp) {
     super()
 
-    //this.scale.setScalar(0.2)
+    const z = -0.5
 
-    const options: UIOptions = {
-      fontCache: new FontCache(),
-      materials: new UIMaterials(),
-      keyboard: new KeyboardInteraction(app)
-    }
+    app.scene = this
+    const home = app.showHome(this)
+    home.position.set(-0.1, 1.4, z + 0.01)
+    home.scale.setScalar(0.5)
 
     const bordersize = 0.03
-    const screenwidth = 16 / 9 - bordersize * 2
-    const screenheight = 1 - bordersize * 2
 
     const FONTS: any = {
       'Roboto': 'https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxM.woff',
@@ -79,9 +79,13 @@ export class LabelPerformanceScene extends Scene {
     //  label.font = e.data.value
     //})
 
-    const label = new UILabel({ text: 'Three Fluix', font: 'https://fonts.gstatic.com/s/cookie/v8/syky-y18lb0tSbf9kgqU.woff' }, options)
+    const label = new UILabel({
+      text: 'Three Fluix', material: { color: 0xffffff },
+      font: 'https://fonts.gstatic.com/s/cookie/v8/syky-y18lb0tSbf9kgqU.woff',
+      size: 0.1,
+    }, app.uioptions)
     this.add(label)
-    label.position.y = 0.4
+    label.position.set(0, 1.8, z)
 
 
     const fake = { font: 'Cookie', isicon: false }
@@ -119,10 +123,11 @@ export class LabelPerformanceScene extends Scene {
     //gui.add(label, 'fontWeight', ['normal', 'bold']).name('Font Weight')
     gui.add(label, 'maxwidth', 0.1, 1, 0.1).name('Maximum Width')
 
-    const properties = new UIProperties({}, app.interactive, options, gui)
-    properties.getColorPicker = () => { return new UIColorPicker({}, app.interactive, options) }
+    const properties = new UIProperties({}, app.interactive, app.uioptions, gui)
+    properties.getColorPicker = () => { return new UIColorPicker({}, app.interactive, app.uioptions) }
     this.add(properties)
-    properties.scale.setScalar(0.5)
+    properties.scale.setScalar(0.3)
+    properties.position.set(0, 1.6, z)
 
     //const params: LabelParameters = {}
     //for (let i = 0; i < 500; i++) {
@@ -156,7 +161,7 @@ export class LabelPerformanceScene extends Scene {
     //options.keyboard?.add(numberEntry, textEntry)
   }
 
-  dispose = () => {
+  ngOnDestroy(): void {
     this.labels.forEach(label => label.dispose())
   }
 }

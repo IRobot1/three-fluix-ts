@@ -1,36 +1,45 @@
-import { NgZone } from "@angular/core";
+import { Injectable, NgZone } from "@angular/core";
+import { Router } from "@angular/router";
 
 import { ACESFilmicToneMapping, BufferGeometry, Camera, Line, Object3D, PCFSoftShadowMap, PerspectiveCamera, SRGBColorSpace, Scene, Vector2, Vector3, WebGLRenderer } from "three";
 
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { VRButton } from "three/examples/jsm/webxr/VRButton";
 import Stats from 'three/examples/jsm/libs/stats.module.js';
-
-import { UIRouter } from "./ui-routes";
-
 import { EffectComposer, Pass } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { ThreeInteractive } from "three-fluix";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
+import { FontCache, InteractiveEventType, KeyboardInteraction, MenuItemParameters, MenuParameters, ThreeInteractive, UIMaterials, UIMiniMenu, UIOptions } from "three-fluix";
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
 
+@Injectable()
 export class ThreeJSApp extends WebGLRenderer {
   public camera!: Camera;
   readonly interactive: ThreeInteractive
-  public router = new UIRouter()
 
-  startscene?: Scene
-  homescene?: Scene
-  hidehome = false
-  examplescene?: Scene
+  uioptions: UIOptions
 
-  constructor() {
+
+  private _scene: Scene | undefined
+  get scene() { return this._scene }
+  set scene(newvalue: Scene | undefined) {
+    if (this._scene != newvalue) {
+      if (this._scene) {
+        this.interactive.selectable.clear()
+        this.interactive.draggable.clear()
+        if (this.home) this.home.dispose()
+      }
+      this._scene = newvalue
+      this.camera.position.set(0, 1.5, 0)
+      this.orbit.target.set(0, 1.5, -1)
+      this.enableVR()
+    }
+  }
+
+  constructor(private router: Router, zone: NgZone) {
     super({ alpha: true, antialias: true })
-
-    this.router.addEventListener('load', () => {
-      this.camera.position.set(0, 0, 0)
-      this.camera.rotation.set(0, 0, 0)
-    })
 
     this.camera = new PerspectiveCamera(
       75,
@@ -64,63 +73,75 @@ export class ThreeJSApp extends WebGLRenderer {
     this.interactive = new ThreeInteractive(this, this.camera)
 
     const animate = () => {
-
+      if (!this.scene) return
 
       if (this.stats) this.stats.update()
 
-      this.autoClear = false
-      if (this.startscene) this.render(this.startscene, this.camera);
-      if (this.homescene && !this.hidehome) this.render(this.homescene, this.camera);
-      if (this.examplescene) this.render(this.examplescene, this.camera)
+      this.render(this.scene, this.camera);
 
       if (this.composer) this.composer.render()
 
     };
 
-    this.setAnimationLoop(animate);
+    zone.runOutsideAngular(() => {
+      this.setAnimationLoop(animate);
+    })
 
-    window.addEventListener('popstate', (event) => {
-      if (event.state && event.state.path) {
-        this.navigateback()
-      }
-    });
+    const orbit = new OrbitControls(this.camera, this.domElement);
+    orbit.enableRotate = true;
+    orbit.update();
+    this.orbit = orbit
 
-    window.addEventListener('load', () => {
-      const url = window.location.pathname.slice(1)
-      if (!url) return
-      try {
-        this.navigateto(url)
-      } catch (error) {
-        console.error(`Invalid route ${url}`)
-      }
-    });
+    const disableRotate = () => { orbit.enableRotate = false }
+    this.interactive.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
 
-
-  }
-
-  vrbutton?: HTMLElement
-
-  // short-cut
-  navigateto(route: string) {
-    if (this.examplescene) return
-
-    //this.interactive.selectable.clear()
-    //this.interactive.draggable.clear()
-    this.examplescene = this.router.navigateto(route)
-    this.examplescene.position.set(0, 1.5, -0.5)
-
-    this.hidehome = true
-  }
-
-  navigateback() {
-    if (this.examplescene) {
-      // @ts-ignore
-      this.examplescene.dispose()
-      this.examplescene = undefined
-      this.hidehome = false
+    this.uioptions = {
+      materials: new UIMaterials(),
+      fontCache: new FontCache(),
+      keyboard: new KeyboardInteraction(this)
     }
+
+
   }
 
+  showHome(scene: Scene): Object3D {
+    const items: Array<MenuItemParameters> = [
+      {
+        text: 'home', isicon: true, hint: 'Home', selected: () => {
+          this.router.navigate(['/'])
+        }
+      },
+      {
+        text: 'flip_camera_android', isicon: true, hint: 'Orbit On/Off', selected: () => {
+          this.enableRotate = !this.enableRotate
+        }
+      },
+    ]
+
+    const menuparams: MenuParameters = {
+      items,
+      hintLabel: {
+        alignX: 'left', size: 0.05, material: { color: 'white' }
+      }
+    }
+
+    const home = new UIMiniMenu(menuparams, this.interactive, this.uioptions)
+
+    scene.add(home)
+    return home
+  }
+
+  home?: UIMiniMenu
+
+
+  get enableRotate() { return this.orbit.enableRotate }
+  set enableRotate(newvalue: boolean) { this.orbit.enableRotate = newvalue }
+
+  get enableOrbit() { return this.orbit.enabled }
+  set enableOrbit(newvalue: boolean) { this.orbit.enabled = newvalue }
+
+  orbit: OrbitControls
+  vrbutton?: HTMLElement
 
   disableVR() {
     this.xr.enabled = false
@@ -131,7 +152,7 @@ export class ThreeJSApp extends WebGLRenderer {
   }
 
   enableVR(hidebutton = false) {
-    if (!this.startscene) return
+    const scene = this.scene!
 
     const geometry = new BufferGeometry();
     geometry.setFromPoints([new Vector3(0, 0, 0), new Vector3(0, 0, - 5)]);
@@ -139,22 +160,24 @@ export class ThreeJSApp extends WebGLRenderer {
     const controller1 = this.xr.getController(0);
     controller1.name = 'left'
     controller1.add(new Line(geometry));
-    this.startscene.add(controller1);
+    scene.add(controller1);
 
     const controller2 = this.xr.getController(1);
     controller2.name = 'right'
     controller2.add(new Line(geometry));
-    this.startscene.add(controller2);
+    scene.add(controller2);
 
     const controllerModelFactory = new XRControllerModelFactory();
 
     const controllerGrip1 = this.xr.getControllerGrip(0);
     controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-    this.startscene.add(controllerGrip1);
+    scene.add(controllerGrip1);
 
     const controllerGrip2 = this.xr.getControllerGrip(1);
     controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-    this.startscene.add(controllerGrip2);
+    scene.add(controllerGrip2);
+
+    if (this.xr.enabled) return
 
     this.xr.enabled = true
     this.vrbutton = VRButton.createButton(this)

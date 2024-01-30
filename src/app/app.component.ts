@@ -1,23 +1,23 @@
 import { Component, NgZone } from '@angular/core';
 import { ThreeJSApp } from './threejs-app';
-import { StartScene } from './start';
-import { HomeScene } from './home';
+import { Router } from '@angular/router';
 
 
 @Component({
   selector: 'app-root',
-  template: '',
+  template: '<router-outlet></router-outlet>',
+  providers: [ThreeJSApp]
 })
 export class AppComponent {
   title = 'test'
-  constructor(zone: NgZone) {
+  constructor(
+    router: Router,
+    zone: NgZone,
+    app: ThreeJSApp,
+  ) {
 
     zone.runOutsideAngular(() => {
 
-
-      const app = new ThreeJSApp()
-      app.startscene = new StartScene(app)
-      app.homescene = new HomeScene(app)
 
     })
 
