@@ -41,7 +41,10 @@ export class UIButton extends UIEntry {
     }
 
     this.addEventListener(InteractiveEventType.POINTERDOWN, buttonDown)
-    this.addEventListener(InteractiveEventType.POINTERUP, () => { buttonUp(true) })
+    this.addEventListener(InteractiveEventType.POINTERUP, (e: any) => {
+      buttonUp(true)
+      e.stop = true
+    })
     this.addEventListener(InteractiveEventType.POINTERMISSED, () => {
       buttonUp()
       this.unhighlight()
