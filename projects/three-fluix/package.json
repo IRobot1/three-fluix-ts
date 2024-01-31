@@ -1,9 +1,10 @@
 {
   "name": "three-fluix",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "peerDependencies": {
-    "three": "^0.160.1"
+    "three": "^0.161.0",
+    "troika-three-text": "^0.49.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
