@@ -4,12 +4,14 @@ import { HomeScene } from './home';
 import { PropertiesScene } from '../examples/properties';
 import { CustomPropertiesScene } from '../examples/custom-properties';
 import { LabelPerformanceScene } from '../examples/label-performance';
+import { Concept1Scene } from '../examples/concept1';
 
 export const routes: Routes = [
   { path: '', component: HomeScene },
   { path: 'properties', title: 'Properties', component: PropertiesScene },
   { path: 'customproperties', title: 'Custom Properties', component: CustomPropertiesScene },
   { path: 'labelperformance', title: 'Label Performance', component: LabelPerformanceScene },
+  { path: 'concept1', title: 'Concept One', component: Concept1Scene },
 
 ];
 

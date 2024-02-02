@@ -19,7 +19,7 @@ export * from './lib/expansion-panel';
 export * from './lib/input-field';
 export * from './lib/label';
 export * from './lib/list';
-export * from './lib/mini-menu';
+export * from './lib/button-menu';
 export * from './lib/number-entry';
 export * from './lib/pagination';
 export * from './lib/panel';

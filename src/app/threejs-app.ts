@@ -10,7 +10,7 @@ import { EffectComposer, Pass } from "three/examples/jsm/postprocessing/EffectCo
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-import { FontCache, InteractiveEventType, KeyboardInteraction, MenuItemParameters, MenuParameters, ThreeInteractive, UIMaterials, UIMiniMenu, UIOptions } from "three-fluix";
+import { FontCache, InteractiveEventType, KeyboardInteraction, MenuParameters, ThreeInteractive, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
 
@@ -105,14 +105,14 @@ export class ThreeJSApp extends WebGLRenderer {
   }
 
   showHome(scene: Scene): Object3D {
-    const items: Array<MenuItemParameters> = [
+    const items: Array<MenuButtonParameters> = [
       {
-        text: 'home', isicon: true, hint: 'Home', selected: () => {
+        label: { text: 'home', isicon: true }, hint: 'Home', selected: () => {
           this.router.navigate(['/'])
         }
       },
       {
-        text: 'flip_camera_android', isicon: true, hint: 'Orbit On/Off', selected: () => {
+        label: { text: 'flip_camera_android', isicon: true }, hint: 'Orbit On/Off', selected: () => {
           this.enableRotate = !this.enableRotate
         }
       },
@@ -125,13 +125,13 @@ export class ThreeJSApp extends WebGLRenderer {
       }
     }
 
-    const home = new UIMiniMenu(menuparams, this.interactive, this.uioptions)
+    const home = new UIButtonMenu(menuparams, this.interactive, this.uioptions)
 
     scene.add(home)
     return home
   }
 
-  home?: UIMiniMenu
+  home?: UIButtonMenu
 
 
   get enableRotate() { return this.orbit.enableRotate }

@@ -3,7 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { ThreeJSApp } from "../app/threejs-app";
 
-import { RoundedRectangleBorderShape,UIOptions,FontCache, MenuItemParameters, MenuParameters, UIMaterials, UIMiniMenu } from 'three-fluix'
+import { RoundedRectangleBorderShape,UIOptions,FontCache, MenuItemParameters, MenuParameters, UIMaterials, UIButtonMenu } from 'three-fluix'
 
 export class StartScene extends Scene {
 
@@ -104,10 +104,10 @@ export class StartScene extends Scene {
 
     const menuparams: MenuParameters = {
       items,
-      hintbelow: false,
+      hintoptions: false,
       hintLabel: { alignX: 'left', size: 0.05 }
     }
-    const menu = new UIMiniMenu(menuparams, app.interactive, options)
+    const menu = new UIButtonMenu(menuparams, app.interactive, options)
     screen.add(menu)
     menu.position.set(-menu.width / 2, -screenheight / 2, 0.03)
     menu.scale.setScalar(0.4)
