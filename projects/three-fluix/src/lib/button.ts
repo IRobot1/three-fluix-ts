@@ -6,8 +6,6 @@ import { UIEntry } from "./input-field";
 import { UIKeyboardEvent } from "./keyboard";
 
 export enum ButtonEventType {
-  HIGHLIGHT_BUTTON = 'highlight_button',
-  UNHIGHLIGHT_BUTTON = 'unhighlight_button',
   BUTTON_DOWN = 'button_down',
   BUTTON_UP = 'button_up',
   BUTTON_PRESSED = 'button_pressed',
@@ -31,13 +29,15 @@ export class UIButton extends UIEntry {
       if (this.disabled || this.clicking || !this.visible) return
       if (scaleOnClick) this.scale.addScalar(-0.04);
       this.clicking = true;
+      this.buttonDown()
     }
 
     const buttonUp = (generateEvent = false) => {
       if (!this.clicking || !this.visible) return
       if (scaleOnClick) this.scale.addScalar(0.04);
-      if (generateEvent) this.pressed()
       this.clicking = false;
+      this.buttonUp()
+      if (generateEvent) this.pressed()
     }
 
     this.addEventListener(InteractiveEventType.POINTERDOWN, buttonDown)
@@ -64,8 +64,6 @@ export class UIButton extends UIEntry {
     this.buttonDown = buttonDown
     this.buttonUp = buttonUp
 
-    this.addEventListener(ButtonEventType.HIGHLIGHT_BUTTON, () => { this.highlight() })
-    this.addEventListener(ButtonEventType.UNHIGHLIGHT_BUTTON, () => { this.unhighlight() })
     this.addEventListener(ButtonEventType.BUTTON_DOWN, buttonDown)
     this.addEventListener(ButtonEventType.BUTTON_UP, (e: any) => {
       buttonUp(e.generateEvent)

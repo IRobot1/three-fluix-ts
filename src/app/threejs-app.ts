@@ -9,6 +9,7 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { EffectComposer, Pass } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Timer } from 'three/examples/jsm/misc/Timer.js';
 
 import { FontCache, InteractiveEventType, KeyboardInteraction, MenuParameters, ThreeInteractive, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
 
@@ -20,7 +21,7 @@ export class ThreeJSApp extends WebGLRenderer {
   readonly interactive: ThreeInteractive
 
   uioptions: UIOptions
-
+  timer: Timer;
 
   private _scene: Scene | undefined
   get scene() { return this._scene }
@@ -72,10 +73,16 @@ export class ThreeJSApp extends WebGLRenderer {
 
     this.interactive = new ThreeInteractive(this, this.camera)
 
+    const timer = new Timer()
+    this.timer = timer
+
     const animate = () => {
       if (!this.scene) return
 
       if (this.stats) this.stats.update()
+
+      timer.update()
+      this.scene.dispatchEvent<any>({ type: 'tick', timer })
 
       this.render(this.scene, this.camera);
 

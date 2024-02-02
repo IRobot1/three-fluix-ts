@@ -17,6 +17,8 @@ export enum PanelEventType {
   DRAGGABLE_CHANGED = 'draggable_changed',
   SELECTABLE_CHANGED = 'selectable_changed',
   PANEL_DRAGGED = 'panel_dragged',
+  HIGHLIGHT = 'highlight',
+  UNHIGHLIGHT = 'unhighlight'
 }
 
 
@@ -72,7 +74,7 @@ export class UIPanel extends Mesh {
   protected _radius: number
   get radius() { return this._radius }
   set radius(newvalue: number) {
-    newvalue = MathUtils.clamp(newvalue, 0, this.height/2)
+    newvalue = MathUtils.clamp(newvalue, 0, this.height / 2)
     if (this._radius != newvalue) {
       this._radius = newvalue
       this._resizeGeometry()
@@ -167,14 +169,11 @@ export class UIPanel extends Mesh {
     this.autogrow = parameters.autogrow != undefined ? parameters.autogrow : false
     this.autoshrink = parameters.autoshrink != undefined ? parameters.autoshrink : false
 
-    if (parameters.fill) {
-      this._fill = parameters.fill
-      this.material = this.materials.getMaterial('geometry', this.name, this._fill)!;
-    }
-    else {
-      // match the default provided by three
+    if (!parameters.fill)
       parameters.fill = this._fill = { color: '#fff' }
-    }
+
+    this._fill = parameters.fill
+    this.material = this.materials.getMaterial('geometry', this.name, this._fill)!;
 
     this._selectable = parameters.selectable != undefined ? parameters.selectable : true
     this._draggable = parameters.draggable != undefined ? parameters.draggable : false
@@ -225,7 +224,7 @@ export class UIPanel extends Mesh {
         this.unhighlight()
       }
 
-      this.addEventListener(InteractiveEventType.POINTERLEAVE, (e:any) => {
+      this.addEventListener(InteractiveEventType.POINTERLEAVE, (e: any) => {
         if (this.selectable) unhighlight()
       })
 
@@ -337,7 +336,12 @@ export class UIPanel extends Mesh {
 
   resizeGeometry() { }
 
-  highlight() { }
-  unhighlight() { }
+  highlight() {
+    this.dispatchEvent<any>({ type: PanelEventType.HIGHLIGHT })
+
+  }
+  unhighlight() {
+    this.dispatchEvent<any>({ type: PanelEventType.UNHIGHLIGHT })
+  }
 
 }

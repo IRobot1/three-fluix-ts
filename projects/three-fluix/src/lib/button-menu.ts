@@ -37,7 +37,7 @@ export class UIButtonMenu extends Object3D {
   dispose() {
     if (this.hint) this.hint.dispose()
   }
-  constructor(parameters: MenuParameters, private interactive: ThreeInteractive, private options: UIOptions) {
+  constructor(parameters: MenuParameters, protected interactive: ThreeInteractive, protected options: UIOptions) {
     super()
 
     const orientation = parameters.orientation != undefined ? parameters.orientation : 'horizontal'
