@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { Color, Material, MeshBasicMaterial, Object3D, Scene, Vector3 } from "three";
+import { BoxGeometry, Color, Material, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, Scene, Vector3 } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
 import { MenuButtonParameters, MenuParameters, TextButtonParameters, ThreeInteractive, UIButton, UIButtonMenu, UIOptions, UITextButton } from "three-fluix";
@@ -13,6 +13,7 @@ export class Concept1Scene extends Scene {
   constructor(private app: ThreeJSApp) {
     super()
 
+
     const z = -0.5
 
     app.scene = this
@@ -21,16 +22,38 @@ export class Concept1Scene extends Scene {
     home.position.set(-0.1, 1.8, z + 0.01)
     home.scale.setScalar(0.5)
 
+    app.camera.position.z = 0.1
+
     const text: Array<string> = [
       'Images', 'Vector Graphics', '3D Models', 'Commerce Data', 'Visual Assets', 'Generative AI Assets', 'Text'
     ]
 
-    const items = text.map(text => <MenuButtonParameters>{ id: text, label: { id:text, text }, hint: text, width: 0.77 })
+    const items = text.map(text => <MenuButtonParameters>{ id: text, label: { id: text, text }, hint: text, width: 0.77 })
 
     const menu = new CustomButtonMenu({ items, orientation: 'vertical', spacing: 0.05 }, app.interactive, app.uioptions)
     this.add(menu)
-    menu.position.set(-0.5, 1.7, z)
+    menu.position.set(-0.8, 1.7, z)
     menu.scale.setScalar(0.5)
+
+    const center = new Vector3(0, 1.5, z)
+
+    const modelbutton = menu.buttons[2]
+    modelbutton.pressed = () => {
+      const world = new Vector3()
+      modelbutton.localToWorld(world)
+
+      const cube = new Mesh(new BoxGeometry(0.1, 0.1, 0.1), app.uioptions.materials?.getMaterial('geometry', 'cube', <MeshBasicMaterialParameters>{ color: 'green' }))
+      cube.position.copy(world)
+      this.add(cube)
+      cube.scale.set(0, 0, 0)
+
+      const scale = new Vector3(1, 1, 1)
+
+      LerpUtils.vector3(cube.scale, scale, 0.01)
+      LerpUtils.vector3(cube.position, center, 0.01, () => {
+
+      })
+    }
   }
 }
 
@@ -44,12 +67,12 @@ class CustomButtonMenu extends UIButtonMenu {
 
     const highlightScale = button.scale.clone().addScalar(0.2)
     button.highlight = () => {
-      LerpUtils.scale(button, highlightScale)
+      LerpUtils.vector3(button.scale, highlightScale)
     }
 
     const originalScale = button.scale.clone()
     button.unhighlight = () => {
-      LerpUtils.scale(button, originalScale)
+      LerpUtils.vector3(button.scale, originalScale)
     }
 
     const buttonmaterial = button.material as MeshBasicMaterial
@@ -75,34 +98,36 @@ class CustomButtonMenu extends UIButtonMenu {
 
 class LerpUtils {
 
-  static scale(object: Object3D, target: Vector3, rate = 0.1) {
+  static vector3(vector: Vector3, target: Vector3, rate = 0.1, complete: () => void = () => { }) {
     let alpha = 0
     const animateScale = () => {
       if (alpha < 1) {
-        // If the animation is not yet complete, interpolate the scale
-        object.scale.lerp(target, alpha);
+        vector.lerp(target, alpha);
         alpha += rate
         requestAnimationFrame(animateScale);
       }
-      else
-        object.scale.copy(target)
+      else {
+        vector.copy(target)
+        complete()
+      }
     }
     requestAnimationFrame(animateScale);
   }
 
-  static color(color: Color, target: Color, rate = 0.1) {
+  static color(color: Color, target: Color, rate = 0.1, complete: () => void = () => { },) {
     let alpha = 0
     const animateColor = () => {
       if (alpha < 1) {
-        // If the animation is not yet complete, interpolate the scale
         color.lerp(target, alpha)
         alpha += rate
         requestAnimationFrame(animateColor);
       }
       else {
         color.copy(target)
+        complete()
       }
     }
     requestAnimationFrame(animateColor);
   }
+
 }
