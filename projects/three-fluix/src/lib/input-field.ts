@@ -1,12 +1,11 @@
 import { Mesh } from "three"
 import { UIKeyboardEvent } from "./keyboard";
-import { PanelEventType, PanelOptions, UIPanel } from "./panel";
+import { PanelOptions, UIPanel } from "./panel";
 import { ThreeInteractive } from "./three-interactive";
 import { InputParameters, PanelParameters } from "./model";
 
 export enum InputFieldEventType {
   ACTIVE_CHANGED = 'active_changed',
-  DISABLE_CHANGED = 'disable_changed',
   TEXT_CHANGED = 'text_changed',
   KEYDOWN = 'keydown',
   KEYUP = "keyup"
@@ -35,21 +34,9 @@ export abstract class UIEntry extends UIPanel implements InputField {
     }
   }
 
-  private _disabled: boolean
-
-  get disabled(): boolean { return this._disabled }
-  set disabled(newvalue: boolean) {
-    if (this._disabled != newvalue) {
-      this._disabled = newvalue
-      this.dispatchEvent<any>({ type: InputFieldEventType.DISABLE_CHANGED, active: newvalue })
-    }
-  }
-
   constructor(parameters: InputParameters, protected interactive: ThreeInteractive, options: PanelOptions) {
     super(parameters, options)
 
-    this._disabled = parameters.disabled != undefined ? parameters.disabled : false
-    this.selectable = !this._disabled
 
     this.addEventListener(InputFieldEventType.KEYDOWN, (event: any) => {
       const e = event.keyboard as UIKeyboardEvent

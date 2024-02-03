@@ -61,7 +61,7 @@ export class PropertiesScene extends Scene implements OnDestroy {
 
     const group = new Group()
     this.guis.forEach((data, index) => {
-      const ui = new UIProperties({ width: 1.5, selectable:false }, app.interactive, app.uioptions, data.gui)
+      const ui = new UIProperties({ width: 1.5, disabled: true }, app.interactive, app.uioptions, data.gui)
       group.add(ui)
       ui.position.set(data.x, data.y, 0)
       ui.getColorPicker = () => { return colorpicker }

@@ -58,7 +58,7 @@ export interface PanelParameters extends TranformParameters, SizeParameters {
   value?: any                  // default is undefined, assigned to Object3D userData
 
   // interaction
-  selectable?: boolean | undefined  // default is true, interaction is allowed.  Set to false to disable interaction
+  disabled?: boolean | undefined  // default is false, interaction is allowed.  Set to true to disable interaction
   draggable?: boolean | undefined   // default is false, button can be moved
   highlightable?: boolean
 
@@ -90,7 +90,6 @@ export interface LabelParameters {
 }
 
 export interface InputParameters extends PanelParameters {
-  disabled?: boolean // default is false
   disabledMaterial?: MeshBasicMaterialParameters // default is dark gray
 }
 export interface ButtonParameters extends InputParameters {
