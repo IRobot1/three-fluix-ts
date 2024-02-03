@@ -1,5 +1,4 @@
-import { Vector2, Raycaster, Renderer, Camera, Object3D, Plane, Vector3, Matrix4, Intersection, BaseEvent, WebGLRenderer, EventDispatcher, Scene, Layers } from 'three';
-import { UIRaycaster } from './raycaster';
+import { Vector2, Raycaster, Camera, Object3D, Plane, Vector3, Matrix4, Intersection, WebGLRenderer, EventDispatcher, Scene, Layers } from 'three';
 
 export enum InteractiveLayers {
   SELECABLE = 1,
@@ -40,7 +39,7 @@ export class ThreeInteractive extends EventDispatcher<any> {
 
     const _event = { type: '', position: _intersection, data: _pointer, intersections: [] as Array<Intersection>, stop: false };
 
-    const raycaster = new UIRaycaster();
+    const raycaster = new Raycaster();
     const selectableLayer = new Layers()
     selectableLayer.set(InteractiveLayers.SELECABLE)
 
@@ -74,10 +73,15 @@ export class ThreeInteractive extends EventDispatcher<any> {
       handleEvent(event)
     }
 
+    const visible : Array<Object3D> = []
     const handleEvent = (newevent: PointerEvent | MouseEvent) => {
       if (!this.scene) return
-      raycaster.intersectLayer(selectableLayer, this.scene)
-      const selectIntersects = raycaster.result.intersects;
+
+      visible.length = 0
+      this.scene.traverseVisible(object => visible.push(object))
+
+      raycaster.layers = selectableLayer
+      const selectIntersects = raycaster.intersectObjects(visible)
 
       _event.type = events[newevent.type];
       _event.intersections = selectIntersects
@@ -148,8 +152,8 @@ export class ThreeInteractive extends EventDispatcher<any> {
       // prevent dragging if last event was stopped
       if (!_selected && _event.stop) return
 
-      raycaster.intersectLayer(draggableLayer, this.scene)
-      const dragIntersects = raycaster.result.intersects;
+      raycaster.layers = draggableLayer
+      const dragIntersects = raycaster.intersectObjects(visible)
 
       if (dragIntersects.length > 0) {
         const intersection = dragIntersects[0];
