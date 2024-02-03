@@ -1,7 +1,7 @@
 import { BufferGeometry, ColorRepresentation, MathUtils, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, Shape, ShapeGeometry, Vector3 } from "three";
 import { PanelParameters, UIOptions } from "./model";
 import { FontCache } from "./cache";
-import { InteractiveEventType } from "./three-interactive";
+import { InteractiveEventType, InteractiveLayers } from "./three-interactive";
 import { UIMaterials } from "./materials";
 import { RoundedRectangleBorderShape, RoundedRectangleShape } from "./shapes/rounded-rectangle-shape";
 
@@ -94,20 +94,28 @@ export class UIPanel extends Mesh {
   }
 
 
-  private _draggable: boolean;
+  private _draggable = false
   get draggable() { return this._draggable }
   set draggable(newvalue: boolean) {
     if (this._draggable != newvalue) {
       this._draggable = newvalue;
+      if (newvalue)
+        this.layers.enable(InteractiveLayers.DRAGGABLE)
+      else
+        this.layers.disable(InteractiveLayers.DRAGGABLE)
       this.dispatchEvent<any>({ type: PanelEventType.DRAGGABLE_CHANGED })
     }
   }
 
-  private _selectable: boolean;
+  private _selectable = false
   get selectable() { return this._selectable }
   set selectable(newvalue: boolean) {
     if (this._selectable != newvalue) {
       this._selectable = newvalue;
+      if (newvalue)
+        this.layers.enable(InteractiveLayers.SELECABLE)
+      else
+        this.layers.disable(InteractiveLayers.SELECABLE)
       this.dispatchEvent<any>({ type: PanelEventType.SELECTABLE_CHANGED })
     }
   }
@@ -176,8 +184,8 @@ export class UIPanel extends Mesh {
       parameters.fill = this._fill = { color: '#fff' }
     }
 
-    this._selectable = parameters.selectable != undefined ? parameters.selectable : true
-    this._draggable = parameters.draggable != undefined ? parameters.draggable : false
+    this.selectable = parameters.selectable != undefined ? parameters.selectable : true
+    this.draggable = parameters.draggable != undefined ? parameters.draggable : false
 
     this.userData = parameters.value
 

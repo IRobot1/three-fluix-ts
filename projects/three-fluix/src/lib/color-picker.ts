@@ -1,7 +1,7 @@
 import { BufferGeometry, CanvasTexture, MathUtils, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, PlaneGeometry, RingGeometry, SRGBColorSpace, Shape, Vector2 } from "three";
 import { PanelParameters } from "./model";
 import { PanelOptions, UIPanel } from "./panel";
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, InteractiveLayers, ThreeInteractive } from "./three-interactive";
 import { UIColorEntry } from "./color-entry";
 
 export interface ColorPickerParameters extends PanelParameters {
@@ -23,8 +23,6 @@ export class UIColorPicker extends UIPanel {
       this.dispatchEvent<any>({ type: ColorPickerEventType.COLOR_VALUE_CHANGED, color: newvalue })
     }
   }
-
-  private interactives: Array<Object3D>
 
   private colorentry: UIColorEntry | undefined
 
@@ -79,8 +77,9 @@ export class UIColorPicker extends UIPanel {
 
     this.addRangeMesh(shademesh, rangemesh)
 
-    this.interactives = [this, shademesh, ringmesh, innerringmesh, rangemesh]
-    interaction.selectable.add(...this.interactives)
+    const interactives = [this, shademesh, ringmesh, innerringmesh, rangemesh]
+    interactives.forEach(object => object.layers.enable(InteractiveLayers.SELECABLE))
+
 
     this.disablePointerInteraction()
 
@@ -89,7 +88,6 @@ export class UIColorPicker extends UIPanel {
   }
 
   dispose() {
-    this.interaction.selectable.remove(...this.interactives)
   }
 
   private shadecontext!: CanvasRenderingContext2D;

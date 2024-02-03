@@ -191,7 +191,7 @@ export class UIList extends UIEntry implements Pagination {
     if (scrollbar) scrollbar.value = this.selectedindex
 
     // block pointer from passing through panel
-    interactive.selectable.add(this)
+    //interactive.selectable.add(this)
     this.disablePointerInteraction()
   }
 
@@ -271,7 +271,7 @@ export class UIList extends UIEntry implements Pagination {
 
     this.visuals.forEach(visual => visual.dispose())
     if (this.scrollbar) this.scrollbar.dispose()
-    this.interactive.selectable.remove(this)
+   // this.interactive.selectable.remove(this)
     this.empty.dispose()
   }
 

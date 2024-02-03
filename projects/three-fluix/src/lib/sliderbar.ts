@@ -1,6 +1,6 @@
 import { MathUtils, Mesh, Vector3 } from "three";
 
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, InteractiveLayers, ThreeInteractive } from "./three-interactive";
 import { PanelOptions } from "./panel";
 import { UIOrientationType, SliderbarParameters } from "./model";
 import { UIEntry } from "./input-field";
@@ -118,8 +118,8 @@ export class UISliderbar extends UIEntry {
     this.slidermesh = slidermesh
     this.slidersize = parameters.slidersize != undefined ? parameters.slidersize : 0.1
 
-    interactive.selectable.add(slidermesh)
-    interactive.draggable.add(slidermesh)
+    //slidermesh.layers.enable(InteractiveLayers.SELECABLE)
+    slidermesh.layers.enable(InteractiveLayers.DRAGGABLE)
 
     this._min = parameters.min != undefined ? parameters.min : 0
     this._max = parameters.max != undefined ? parameters.max : 100
@@ -237,9 +237,9 @@ export class UISliderbar extends UIEntry {
     }
   }
 
-  override dispose() {
-    super.dispose()
-    this.interactive.selectable.remove(this.slidermesh)
-    this.interactive.draggable.remove(this.slidermesh)
-  }
+//  override dispose() {
+//    super.dispose()
+//    this.interactive.selectable.remove(this.slidermesh)
+//    this.interactive.draggable.remove(this.slidermesh)
+//  }
 }

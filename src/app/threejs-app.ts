@@ -26,12 +26,8 @@ export class ThreeJSApp extends WebGLRenderer {
   get scene() { return this._scene }
   set scene(newvalue: Scene | undefined) {
     if (this._scene != newvalue) {
-      if (this._scene) {
-        this.interactive.selectable.clear()
-        this.interactive.draggable.clear()
-        if (this.home) this.home.dispose()
-      }
       this._scene = newvalue
+      this.interactive.scene = newvalue
       this.camera.position.set(0, 1.5, 0)
       this.orbit.target.set(0, 1.5, -1)
       this.enableVR()
