@@ -73,7 +73,7 @@ export class ThreeInteractive extends EventDispatcher<any> {
       handleEvent(event)
     }
 
-    const visible : Array<Object3D> = []
+    const visible: Array<Object3D> = []
     const handleEvent = (newevent: PointerEvent | MouseEvent) => {
       if (!this.scene) return
 
@@ -81,7 +81,7 @@ export class ThreeInteractive extends EventDispatcher<any> {
       this.scene.traverseVisible(object => visible.push(object))
 
       raycaster.layers = selectableLayer
-      const selectIntersects = raycaster.intersectObjects(visible)
+      const selectIntersects = raycaster.intersectObjects(visible, false)
 
       _event.type = events[newevent.type];
       _event.intersections = selectIntersects
@@ -153,7 +153,7 @@ export class ThreeInteractive extends EventDispatcher<any> {
       if (!_selected && _event.stop) return
 
       raycaster.layers = draggableLayer
-      const dragIntersects = raycaster.intersectObjects(visible)
+      const dragIntersects = raycaster.intersectObjects(visible, false)
 
       if (dragIntersects.length > 0) {
         const intersection = dragIntersects[0];

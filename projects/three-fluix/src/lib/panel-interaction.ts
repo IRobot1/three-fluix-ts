@@ -8,16 +8,6 @@ export class PanelInteraction {
 
   constructor(public panel: UIPanel, private interactive: ThreeInteractive, gridsize = 0) {
 
-    //const selectableChanged = () => {
-    //  if (panel.selectable)
-    //    this.interactive.selectable.add(panel)
-    //  else
-    //    this.interactive.selectable.remove(panel)
-    //}
-    //panel.addEventListener(PanelEventType.SELECTABLE_CHANGED, () => { selectableChanged() })
-    //selectableChanged()
-
-
     const snapToGrid = (position: THREE.Vector3): THREE.Vector3 => {
       if (gridsize > 0) {
         // Assuming position is the position of the object being dragged
