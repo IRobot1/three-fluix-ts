@@ -113,9 +113,9 @@ export class UIPanel extends Mesh {
     if (this._selectable != newvalue) {
       this._selectable = newvalue;
       if (newvalue)
-        this.layers.enable(InteractiveLayers.SELECABLE)
+        this.layers.enable(InteractiveLayers.SELECTABLE)
       else
-        this.layers.disable(InteractiveLayers.SELECABLE)
+        this.layers.disable(InteractiveLayers.SELECTABLE)
       this.dispatchEvent<any>({ type: PanelEventType.SELECTABLE_CHANGED })
     }
   }

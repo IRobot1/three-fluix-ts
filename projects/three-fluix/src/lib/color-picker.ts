@@ -77,10 +77,10 @@ export class UIColorPicker extends UIPanel {
 
     this.addRangeMesh(shademesh, rangemesh)
 
-    const interactives = [this, shademesh, ringmesh, innerringmesh, rangemesh]
-    interactives.forEach(object => object.layers.enable(InteractiveLayers.SELECABLE))
+    const interactives = [shademesh, ringmesh, innerringmesh, rangemesh]
+    interactives.forEach(object => object.layers.enable(InteractiveLayers.SELECTABLE))
 
-
+    this.layers.enable(InteractiveLayers.SELECTABLE)
     this.disablePointerInteraction()
 
     // hide, when click away

@@ -1,7 +1,7 @@
 import { Vector2, Raycaster, Camera, Object3D, Plane, Vector3, Matrix4, Intersection, WebGLRenderer, EventDispatcher, Scene, Layers } from 'three';
 
 export enum InteractiveLayers {
-  SELECABLE = 1,
+  SELECTABLE = 1,
   DRAGGABLE = 2,
 }
 
@@ -41,7 +41,7 @@ export class ThreeInteractive extends EventDispatcher<any> {
 
     const raycaster = new Raycaster();
     const selectableLayer = new Layers()
-    selectableLayer.set(InteractiveLayers.SELECABLE)
+    selectableLayer.set(InteractiveLayers.SELECTABLE)
 
     const draggableLayer = new Layers()
     draggableLayer.set(InteractiveLayers.DRAGGABLE)
