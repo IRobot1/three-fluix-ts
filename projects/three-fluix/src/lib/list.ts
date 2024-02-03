@@ -1,7 +1,7 @@
 import { MathUtils, Mesh, PlaneGeometry, Vector3 } from "three";
 import { UIEntry } from "./input-field";
 import { LabelParameters, UIOrientationType, ListParameters } from "./model";
-import { InteractiveLayers, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, InteractiveLayers, ThreeInteractive } from "./three-interactive";
 import { PanelOptions } from "./panel";
 import { ButtonEventType, UIButton } from "./button";
 import { UITextButton } from "./button-text";
@@ -97,6 +97,7 @@ export class UIList extends UIEntry implements Pagination {
       parameters.height = itemHeight + spacing * 2
     }
     parameters.highlightable = false
+    parameters.selectable = true
 
     super(parameters, interactive, options)
 
@@ -141,7 +142,7 @@ export class UIList extends UIEntry implements Pagination {
         slidersize = MathUtils.mapLinear(this.itemcount, 0, this.data.length, 0, this.width)
       const max = this.data.length - this.itemcount
 
-      scrollbar = new UIScrollbar({ disabled: true, orientation, slidersize, max, height: this.height }, interactive, options)
+      scrollbar = new UIScrollbar({ selectable: false, orientation, slidersize, max, height: this.height }, interactive, options)
       this.add(scrollbar)
       if (orientation == 'vertical') {
         scrollbar.position.x = (this.width - scrollbar.width) / 2
@@ -162,6 +163,8 @@ export class UIList extends UIEntry implements Pagination {
       button.position.copy(position)
 
       button.addEventListener(ButtonEventType.BUTTON_PRESSED, () => {
+        if (this.disabled || !this.visible) return
+
         let text = button.data
         if (this.field) text = button.data[this.field]
 

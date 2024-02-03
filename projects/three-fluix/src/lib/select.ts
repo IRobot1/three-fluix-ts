@@ -27,7 +27,7 @@ export class UISelect extends UITextButton {
   constructor(parameters: SelectParameters, interactive: ThreeInteractive, options: ButtonOptions) {
     parameters.disableScaleOnClick = false
     parameters.label.alignX = 'left'
-    parameters.list.disabled = true
+    parameters.list.selectable = false
     super(parameters, interactive, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'select'

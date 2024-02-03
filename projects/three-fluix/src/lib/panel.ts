@@ -15,7 +15,7 @@ export enum PanelEventType {
   RADIUS_CHANGED = 'radius_changed',
   COLOR_CHANGED = 'color_changed',
   DRAGGABLE_CHANGED = 'draggable_changed',
-  DISABLED_CHANGED = 'disabled_changed',
+  SELECTABLE_CHANGED = 'selectable_changed',
   PANEL_DRAGGED = 'panel_dragged',
 }
 
@@ -107,16 +107,16 @@ export class UIPanel extends Mesh {
     }
   }
 
-  private _disabled = false
-  get disabled() { return this._disabled }
-  set disabled(newvalue: boolean) {
-    if (this._disabled != newvalue) {
-      this._disabled = newvalue;
+  private _selectable = false
+  get selectable() { return this._selectable }
+  set selectable(newvalue: boolean) {
+    if (this._selectable != newvalue) {
+      this._selectable = newvalue;
       if (newvalue)
-        this.layers.disable(InteractiveLayers.SELECTABLE)
-      else
         this.layers.enable(InteractiveLayers.SELECTABLE)
-      this.dispatchEvent<any>({ type: PanelEventType.DISABLED_CHANGED })
+      else
+        this.layers.disable(InteractiveLayers.SELECTABLE)
+      this.dispatchEvent<any>({ type: PanelEventType.SELECTABLE_CHANGED })
     }
   }
 
@@ -184,9 +184,7 @@ export class UIPanel extends Mesh {
       parameters.fill = this._fill = { color: '#fff' }
     }
 
-    this.disabled = parameters.disabled != undefined ? parameters.disabled : false
-    if (!this.disabled) this.layers.enable(InteractiveLayers.SELECTABLE)
-
+    this.selectable = parameters.selectable != undefined ? parameters.selectable : true
     this.draggable = parameters.draggable != undefined ? parameters.draggable : false
 
     this.userData = parameters.value
@@ -227,7 +225,7 @@ export class UIPanel extends Mesh {
       this.addEventListener(InteractiveEventType.POINTERENTER, (e: any) => {
         if (this.clicking || !this.visible) return
         e.stop = true
-        if (!this.disabled) highlight()
+        if (this.selectable) highlight()
       })
 
       const unhighlight = () => {
@@ -236,7 +234,7 @@ export class UIPanel extends Mesh {
       }
 
       this.addEventListener(InteractiveEventType.POINTERLEAVE, (e:any) => {
-        if (!this.disabled) unhighlight()
+        if (this.selectable) unhighlight()
       })
 
       this.isHighlighted = () => { return highlightMesh.visible }

@@ -174,6 +174,7 @@ export class UIProperties extends UIPanel {
         fill,
         panel: {
           width: this.width,
+          selectable: false,
         }
       }
 
