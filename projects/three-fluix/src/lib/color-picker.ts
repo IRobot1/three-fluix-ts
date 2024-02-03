@@ -38,7 +38,7 @@ export class UIColorPicker extends UIPanel {
     this.colorvalue = colorentry.color as string
   }
 
-  constructor(parameters: ColorPickerParameters, protected interaction: ThreeInteractive, options: ColorPickerOptions) {
+  constructor(parameters: ColorPickerParameters, protected interactive: ThreeInteractive, options: ColorPickerOptions) {
     parameters.highlightable = false
 
     super(parameters, options)
@@ -84,7 +84,7 @@ export class UIColorPicker extends UIPanel {
     this.disablePointerInteraction()
 
     // hide, when click away
-    this.addEventListener(InteractiveEventType.POINTERMISSED, () => { this.visible = false });
+    interactive.addEventListener(InteractiveEventType.POINTERMISSED, () => { this.visible = false });
   }
 
   dispose() {

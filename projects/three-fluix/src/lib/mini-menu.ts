@@ -68,13 +68,8 @@ export class UIMiniMenu extends Object3D {
         hint.text = item.hint
         hint.visible = true
       })
-      button.addEventListener(InteractiveEventType.POINTERLEAVE, () => {
+      interactive.addEventListener(InteractiveEventType.POINTERLEAVE, () => {
         hint.visible = false
-      })
-
-      // note, all buttons will fire this event, but likely only first will close the menu
-      button.addEventListener(InteractiveEventType.POINTERMISSED, () => {
-        this.missed()
       })
 
       button.addEventListener(ButtonEventType.BUTTON_PRESSED, () => {
@@ -90,6 +85,11 @@ export class UIMiniMenu extends Object3D {
       position.x += spacing
       width = item.width / 2
     })
+
+    interactive.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+      this.missed()
+    })
+
     this.width = width
   }
 

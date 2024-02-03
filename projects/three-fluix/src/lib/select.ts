@@ -43,7 +43,7 @@ export class UISelect extends UITextButton {
     this.add(mesh)
     this.indicator = mesh
 
-    this.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+    interactive.addEventListener(InteractiveEventType.POINTERMISSED, () => {
       this.closelist()
     })
 

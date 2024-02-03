@@ -172,6 +172,8 @@ export class KeyboardInteraction extends EventDispatcher {
         if (object.disabled) return
         object.active = true
       })
+
+      // TODO: this event now on ThreeInteactive
       object.addEventListener(InteractiveEventType.POINTERMISSED, () => {
         object.active = false
       })

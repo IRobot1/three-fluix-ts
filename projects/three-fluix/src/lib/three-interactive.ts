@@ -141,9 +141,7 @@ export class ThreeInteractive extends EventDispatcher<any> {
         // some popup selectables close when clicking outside of them, for example, dropdown menu and color picker
         if (_event.type == 'click') {
           _event.type = InteractiveEventType.POINTERMISSED;
-          raycaster.result.checked.forEach(item => {
-            item.dispatchEvent<any>(_event)
-          })
+          this.dispatchEvent<any>(_event)
         }
       }
 
