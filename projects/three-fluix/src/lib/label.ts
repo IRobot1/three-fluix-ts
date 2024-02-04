@@ -164,7 +164,12 @@ export class UILabel extends Object3D {
 
     label.addEventListener('synccomplete', () => {
       const bounds = label.textRenderInfo!.blockBounds!
-      this.height = (bounds[3] - bounds[1])
+      const height = (bounds[3] - bounds[1])
+
+      // update clip size if initial text was empty and height was unknown
+      if (this.height != height) {
+        this.cliptowidth()
+      }
       this.width = (bounds[2] - bounds[0])
 
       if (this.isicon) return

@@ -129,15 +129,14 @@ export class UITextEntry extends UIEntry implements InputField {
       this.text = this.text.slice(0, -1)
 
     if (e.ctrlKey) {
-      const key = e.code.toLowerCase();
-      if (key == 'v') {
+      if (e.code == 'KeyV') {
         navigator.clipboard.readText().then(text => {
           this.text += text;
         });
       }
-      else if (key == 'c' || key == 'x') {
+      else if (e.code == 'KeyC' || e.code == 'KeyX') {
         navigator.clipboard.writeText(this.text).then(() => {
-          if (e.code == 'x') {
+          if (e.code == 'KeyX') {
             this.text = '';
           }
         });

@@ -11,7 +11,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Timer } from 'three/examples/jsm/misc/Timer.js';
 
-import { FontCache, InteractiveEventType, KeyboardInteraction, MenuParameters, PointerInteraction, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
+import { FontCache, InteractiveEventType, KeyboardInteraction, ButtonMenuParameters, PointerInteraction, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
 
@@ -121,7 +121,7 @@ export class ThreeJSApp extends WebGLRenderer {
       },
     ]
 
-    const menuparams: MenuParameters = {
+    const menuparams: ButtonMenuParameters = {
       items,
       hintLabel: {
         alignX: 'left', size: 0.05, material: { color: 'white' }

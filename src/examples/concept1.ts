@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { BoxGeometry, Color, Material, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, Scene, Vector3 } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
-import { MenuButtonParameters, MenuParameters, TextButtonParameters, PointerInteraction, UIButton, UIButtonMenu, UIOptions, UITextButton } from "three-fluix";
+import { MenuButtonParameters, ButtonMenuParameters, TextButtonParameters, PointerInteraction, UIButton, UIButtonMenu, UIOptions, UITextButton } from "three-fluix";
 
 @Component({
   template: '',
@@ -58,7 +58,7 @@ export class Concept1Scene extends Scene {
 }
 
 class CustomButtonMenu extends UIButtonMenu {
-  constructor(parameters: MenuParameters, pointer: PointerInteraction, options: UIOptions) {
+  constructor(parameters: ButtonMenuParameters, pointer: PointerInteraction, options: UIOptions) {
     super(parameters, pointer, options)
   }
 

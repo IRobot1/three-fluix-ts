@@ -19,7 +19,7 @@ export enum MenuItemEventType {
 export type MenuOrientation = 'horizontal' | 'vertical'
 export type HintOptions = 'none' | 'above' | 'below'
 
-export interface MenuParameters {
+export interface ButtonMenuParameters {
   orientation?: MenuOrientation         // default is horizontal
   spacing?: number                      // default is 0.02
   items: Array<MenuButtonParameters>
@@ -31,13 +31,14 @@ export class UIButtonMenu extends Object3D {
   buttons: Array<UIButton> = []
   width: number
   height: number
+  spacing:number
 
   private hint?: UILabel;
 
   dispose() {
     if (this.hint) this.hint.dispose()
   }
-  constructor(parameters: MenuParameters, protected interactive: PointerInteraction, protected options: UIOptions) {
+  constructor(parameters: ButtonMenuParameters, protected interactive: PointerInteraction, protected options: UIOptions) {
     super()
 
     const orientation = parameters.orientation != undefined ? parameters.orientation : 'horizontal'
@@ -54,6 +55,7 @@ export class UIButtonMenu extends Object3D {
     }
 
     const spacing = parameters.spacing != undefined ? parameters.spacing : 0.02
+    this.spacing = spacing
 
     const position = new Vector3()
     let offset = 0
