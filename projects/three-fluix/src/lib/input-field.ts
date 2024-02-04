@@ -49,7 +49,7 @@ export abstract class UIEntry extends UIPanel implements InputField {
     super(parameters, options)
 
     this._disabled = parameters.disabled != undefined ? parameters.disabled : false
-    this.selectable = !this._disabled
+    if (this.disabled) this.selectable = false
 
     this.addEventListener(InputFieldEventType.KEYDOWN, (event: any) => {
       const e = event.keyboard as UIKeyboardEvent

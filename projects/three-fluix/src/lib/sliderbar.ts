@@ -110,6 +110,7 @@ export class UISliderbar extends UIEntry {
     this.orientation = orientation
 
     const slidermesh = new Mesh()
+    slidermesh.name = 'slider'
     slidermesh.material = checkmaterial
     this.add(slidermesh)
     slidermesh.position.z = 0.001
@@ -118,7 +119,7 @@ export class UISliderbar extends UIEntry {
     this.slidermesh = slidermesh
     this.slidersize = parameters.slidersize != undefined ? parameters.slidersize : 0.1
 
-    //slidermesh.layers.enable(InteractiveLayers.SELECABLE)
+    slidermesh.layers.enable(InteractiveLayers.SELECTABLE)
     slidermesh.layers.enable(InteractiveLayers.DRAGGABLE)
 
     this._min = parameters.min != undefined ? parameters.min : 0
@@ -164,7 +165,6 @@ export class UISliderbar extends UIEntry {
     let offset: Vector3
     slidermesh.addEventListener(InteractiveEventType.DRAGSTART, (e: any) => {
       if (this.disabled || !this.visible) return
-
       // remember where in the mesh the mouse was clicked to avoid jump on first drag
       offset = e.position.sub(slidermesh.position).clone()
       document.body.style.cursor = 'grabbing'

@@ -149,9 +149,6 @@ export class ThreeInteractive extends EventDispatcher<any> {
         }
       }
 
-      // prevent dragging if last event was stopped
-      if (!_selected && _event.stop) return
-
       raycaster.layers = draggableLayer
       const dragIntersects = raycaster.intersectObjects(visible, false)
 
