@@ -11,7 +11,7 @@ export const routes: Routes = [
   { path: 'properties', title: 'Properties', component: PropertiesScene },
   { path: 'customproperties', title: 'Custom Properties', component: CustomPropertiesScene },
   { path: 'labelperformance', title: 'Label Performance', component: LabelPerformanceScene },
-  { path: 'concept1', title: 'Concept One', component: Concept1Scene },
+  //{ path: 'concept1', title: 'Concept One', component: Concept1Scene },
 
 ];
 
