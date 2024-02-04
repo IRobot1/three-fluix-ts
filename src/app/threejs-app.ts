@@ -103,15 +103,17 @@ export class ThreeJSApp extends WebGLRenderer {
       fontCache: new FontCache(),
       keyboard: new KeyboardInteraction(this)
     }
+  }
 
-
+  home() {
+    this.router.navigate(['/'])
   }
 
   showHome(scene: Scene): Object3D {
     const items: Array<MenuButtonParameters> = [
       {
         label: { text: 'home', isicon: true }, hint: 'Home', selected: () => {
-          this.router.navigate(['/'])
+          this.home()
         }
       },
       {
@@ -133,8 +135,6 @@ export class ThreeJSApp extends WebGLRenderer {
     scene.add(home)
     return home
   }
-
-  home?: UIButtonMenu
 
 
   get enableRotate() { return this.orbit.enableRotate }

@@ -1,8 +1,8 @@
-import { Mesh } from "three"
+import { Material, Mesh } from "three"
 import { UIKeyboardEvent } from "./keyboard";
-import { PanelEventType, PanelOptions, UIPanel } from "./panel";
+import { PanelOptions, UIPanel } from "./panel";
 import { PointerInteraction } from "./pointer-interaction";
-import { InputParameters, PanelParameters } from "./model";
+import { InputParameters } from "./model";
 
 export enum InputFieldEventType {
   ACTIVE_CHANGED = 'active_changed',
@@ -41,15 +41,33 @@ export abstract class UIEntry extends UIPanel implements InputField {
   set disabled(newvalue: boolean) {
     if (this._disabled != newvalue) {
       this._disabled = newvalue
+
+      this.applyDisabled()
       this.dispatchEvent<any>({ type: InputFieldEventType.DISABLE_CHANGED, active: newvalue })
     }
   }
 
+  protected enabledMaterial: Material | Material[]
+  protected disabledMaterial: Material
+
   constructor(parameters: InputParameters, protected pointer: PointerInteraction, options: PanelOptions) {
     super(parameters, options)
 
+    this.enabledMaterial = this.material
+
+    let disabledMaterialParams = parameters.disabledMaterial
+    if (!disabledMaterialParams) disabledMaterialParams = { color: 'gray' }
+    this.disabledMaterial = this.materials.getMaterial('geometry', this.name + '-disabled', disabledMaterialParams)
+
     this._disabled = parameters.disabled != undefined ? parameters.disabled : false
-    if (this.disabled) this.selectable = false
+    if (this.disabled) {
+      this.selectable = false
+
+      // allow construction to complete before setting material
+      requestAnimationFrame(() => {
+        this.applyDisabled()
+      })
+    }
 
     this.addEventListener(InputFieldEventType.KEYDOWN, (event: any) => {
       const e = event.keyboard as UIKeyboardEvent
@@ -67,9 +85,17 @@ export abstract class UIEntry extends UIPanel implements InputField {
 
   }
 
-  dispose() {  }
+  // overridables
+
+  dispose() { }
 
   handleKeyDown(keyboard: UIKeyboardEvent) { }
   handleKeyUp(keyboard: UIKeyboardEvent) { }
+
+  applyDisabled() {
+    this.material = this.disabled ? this.disabledMaterial : this.enabledMaterial
+  }
+
+
 }
 

@@ -6,8 +6,8 @@ import { ButtonEventType, UIButton } from "./button"
 import { UITextButton } from "./button-text"
 
 export interface MenuButtonParameters extends TextButtonParameters {
-  hint: string             // hint to show when hovering over button
-  selected?: () => void    // action to take on pressing button
+  hint?: string             // hint to show when hovering over button
+  selected?: (parameters: MenuButtonParameters) => void    // action to take on pressing button
 }
 
 export enum MenuItemEventType {
@@ -75,7 +75,7 @@ export class UIButtonMenu extends Object3D {
 
       if (hintoptions != 'none') {
         button.addEventListener(InteractiveEventType.POINTERENTER, () => {
-          if (!this.hint) return
+          if (!this.hint || !item.hint) return
           this.hint.text = item.hint
           this.hint.visible = true
         })
@@ -93,8 +93,8 @@ export class UIButtonMenu extends Object3D {
       button.addEventListener(ButtonEventType.BUTTON_PRESSED, () => {
         if (item.selected) {
           // three methods to intercept - callback, override or event
-          item.selected()
-          this.pressed(item)
+          item.selected(item)
+          this.selected(button, item)
         }
       })
 
@@ -111,12 +111,12 @@ export class UIButtonMenu extends Object3D {
     })
 
     if (orientation == 'horizontal') {
-      this.width = offset
+      this.width = position.x
       this.height = 0.1
     }
     else {
       this.width = 1
-      this.height = offset
+      this.height = -position.y
     }
 
 
@@ -129,8 +129,8 @@ export class UIButtonMenu extends Object3D {
     return new UITextButton(parameters, this.interactive, this.options)
   }
 
-  pressed(item: MenuButtonParameters) {
-    this.dispatchEvent<any>({ type: MenuItemEventType.MENU_SELECTED, item })
+  selected(button: UIButton, item: MenuButtonParameters) {
+    this.dispatchEvent<any>({ type: MenuItemEventType.MENU_SELECTED, button, item })
   }
 
   missed() {

@@ -216,27 +216,16 @@ export class UIPanel extends Mesh {
     const highlightable = parameters.highlightable != undefined ? parameters.highlightable : true
 
     if (highlightable) {
-      const highlight = () => {
-        highlightMesh.visible = true
-        this.highlight()
-      }
-
       this.addEventListener(InteractiveEventType.POINTERENTER, (e: any) => {
         if (this.clicking || !this.visible) return
         e.stop = true
-        if (this.selectable) highlight()
+        if (this.selectable) this.highlight()
       })
-
-      const unhighlight = () => {
-        highlightMesh.visible = false
-        this.unhighlight()
-      }
 
       this.addEventListener(InteractiveEventType.POINTERLEAVE, (e: any) => {
-        if (this.selectable) unhighlight()
+        if (this.selectable) this.unhighlight()
       })
 
-      this.isHighlighted = () => { return highlightMesh.visible }
     }
 
     // allow derived classes access to "this" by delaying one frame or to override methods
@@ -326,7 +315,9 @@ export class UIPanel extends Mesh {
     this.resizeGeometry()
   }
 
-  isHighlighted(): boolean { return false }
+  isHighlighted(): boolean {
+    return this.highlightMesh.visible
+}
 
   // overridable
 
@@ -345,10 +336,11 @@ export class UIPanel extends Mesh {
   resizeGeometry() { }
 
   highlight() {
+    this.highlightMesh.visible = true
     this.dispatchEvent<any>({ type: PanelEventType.HIGHLIGHT })
-
   }
   unhighlight() {
+    this.highlightMesh.visible = false
     this.dispatchEvent<any>({ type: PanelEventType.UNHIGHLIGHT })
   }
 

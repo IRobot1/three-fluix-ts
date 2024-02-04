@@ -4,7 +4,7 @@ import { Mesh, MeshBasicMaterialParameters, Scene, ShapeGeometry } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
 import { PointerInteraction, PanelParameters, UIOptions, UIPanel, UITextButton, UIButtonMenu, MenuButtonParameters, ButtonMenuParameters, UITextEntry, InputFieldEventType } from "three-fluix";
-import { RoundedRectangleBorderGeometry, TextEntryParameters } from "../../dist/three-fluix";
+import { InteractiveEventType, RoundedRectangleBorderGeometry, TextEntryParameters } from "three-fluix";
 
 @Component({
   template: '',
@@ -19,9 +19,9 @@ export class WidgetsScene extends Scene {
     app.scene = this
 
     const home = app.showHome(this)
-    home.position.set(-0.1, 1.3, z)
+    home.position.set(-0.1, 1, z)
 
-    app.camera.position.y = 2
+    //app.camera.position.y = 2
     app.camera.position.z = 1
 
     const toolbar = new UIToolbar({}, app.pointer, app.uioptions)
@@ -41,20 +41,74 @@ class UIToolbar extends UIPanel {
     parameters.selectable = false
     super(parameters, options)
 
+    let activemenu: UIMenuPanel | undefined
+    const setactive = (menu: UIMenuPanel | undefined) => {
+      if (activemenu) {
+        activemenu.parent = null
+      }
+      activemenu = menu
+    }
+
+    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+      setactive(undefined)
+    })
+
     const items: Array<MenuButtonParameters> = [
-      { hint: 'Home', label: { text: 'home', isicon: true } },
-      { hint: 'Products', label: { text: 'Products' }, width: 0.4 },
-      { hint: 'Services', label: { text: 'Services' }, width: 0.4 },
-      { hint: 'Support', label: { text: 'Support' }, width: 0.4 },
+      { hint: 'Home', label: { text: 'home', isicon: true }, selected: () => { } },
+      { 
+        id: 'products', label: { text: 'Products' }, width: 0.4, disableScaleOnClick: true,
+        selected: (parameters: MenuButtonParameters) => {
+          if (activemenu && activemenu.name == parameters.id) return
+
+          const width = 0.7
+          const items: Array<MenuButtonParameters> = [
+            {label: { text:'semi-transparent'}, width },
+            {label: { text:'menu'}, width },
+            { label: { text: 'third item' }, width },
+            { label: { text: 'final item' }, width },
+          ]
+          const params: ButtonMenuParameters = {
+             items, orientation: 'vertical', spacing: 0.01
+          }
+          const menu = new UIMenuPanel({ id:'products', menu: params, width, fill: { color: 'black' } } , pointer, options)
+          const products = mainmenu.buttons[1]
+          products.add(menu)
+          menu.position.set(0, -menu.height / 2 - 0.15, 0.002)
+          setactive(menu)
+        }
+      },
+      {
+        id: 'services', label: { text: 'Services' }, width: 0.4, disableScaleOnClick: true,
+        selected: (parameters: MenuButtonParameters) => {
+          if (activemenu && activemenu.name == parameters.id) return
+
+          const width = 0.7
+          const items: Array<MenuButtonParameters> = [
+            { label: { text: 'semi-transparent' }, width },
+            { label: { text: 'menu' }, width },
+            { label: { text: 'third item' }, width },
+            { label: { text: 'final item' }, width },
+          ]
+          const params: ButtonMenuParameters = {
+            items, orientation: 'vertical', spacing: 0.01
+          }
+          const menu = new UIMenuPanel({ id:'services', menu: params, width, fill: { color: 'black' } }, pointer, options)
+          const services = mainmenu.buttons[2]
+          services.add(menu)
+          menu.position.set(0, -menu.height / 2 - 0.15, 0.002)
+          setactive(menu)
+        }
+      },
+      { hint: 'Support', disabled: true, label: { text: 'Support' }, width: 0.4 },
     ]
 
     const params: ButtonMenuParameters = {
-      items
+      items, hintoptions: 'none'
     }
 
-    const menu = new UIButtonMenu(params, pointer, options)
-    this.add(menu)
-    menu.position.x = -this.width / 2 + (menu.width - menu.spacing * 2) / 2
+    const mainmenu = new UIButtonMenu(params, pointer, options)
+    this.add(mainmenu)
+    mainmenu.position.x = -this.width / 2 + 0.05
 
     const searchwidth = 0.5
     const searchheight = 0.12
@@ -81,6 +135,7 @@ class UIToolbar extends UIPanel {
     searchoutline.add(search)
     search.position.x = searchwidth / 2 - search.width / 1.5 - searchbutton.width / 2
     search.position.z = 0.001
+    search.highlight = () => { }
 
     if (options.keyboard) {
       options.keyboard.add(search)
@@ -89,4 +144,25 @@ class UIToolbar extends UIPanel {
       search.active = true
     }
   }
+}
+
+interface MenuPanelParameters extends PanelParameters {
+  menu: ButtonMenuParameters
+}
+class UIMenuPanel extends UIPanel {
+  constructor(parameters: MenuPanelParameters, pointer: PointerInteraction, options: UIOptions) {
+    parameters.selectable = false
+
+    super(parameters, options)
+
+    const menu = new UIButtonMenu(parameters.menu, pointer, options)
+    this.add(menu)
+    menu.position.z = 0.001
+
+    this.height = menu.height
+
+    menu.position.y = menu.height/2
+  }
+
+
 }
