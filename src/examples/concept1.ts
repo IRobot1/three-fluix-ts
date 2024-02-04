@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { BoxGeometry, Color, Material, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, Scene, Vector3 } from "three";
+import { BoxGeometry, Color, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Scene, Vector3 } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
 import { MenuButtonParameters, ButtonMenuParameters, TextButtonParameters, PointerInteraction, UIButton, UIButtonMenu, UIOptions, UITextButton } from "three-fluix";
@@ -28,7 +28,11 @@ export class Concept1Scene extends Scene {
       'Images', 'Vector Graphics', '3D Models', 'Commerce Data', 'Visual Assets', 'Generative AI Assets', 'Text'
     ]
 
-    const items = text.map(text => <MenuButtonParameters>{ id: text, label: { id: text, text }, hint: text, width: 0.77 })
+    const items = text.map(text => <MenuButtonParameters>{
+      id: text, button: {
+        label: { id: text, text }, hint: text, width: 0.77
+      }
+    })
 
     const menu = new CustomButtonMenu({ items, orientation: 'vertical', spacing: 0.05 }, app.pointer, app.uioptions)
     this.add(menu)
@@ -63,7 +67,7 @@ class CustomButtonMenu extends UIButtonMenu {
   }
 
   override createButton(parameters: TextButtonParameters): UIButton {
-    const button = new UITextButton(parameters, this.interactive, this.options)
+    const button = new UITextButton(parameters, this.pointer, this.options)
 
     const highlightScale = button.scale.clone().addScalar(0.2)
     button.highlight = () => {

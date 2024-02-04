@@ -11,7 +11,8 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Timer } from 'three/examples/jsm/misc/Timer.js';
 
-import { FontCache, InteractiveEventType, KeyboardInteraction, ButtonMenuParameters, PointerInteraction, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
+import { TextButtonParameters, FontCache, InteractiveEventType, KeyboardInteraction, ButtonMenuParameters, PointerInteraction, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
+
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
 
@@ -112,14 +113,24 @@ export class ThreeJSApp extends WebGLRenderer {
   showHome(scene: Scene): Object3D {
     const items: Array<MenuButtonParameters> = [
       {
-        label: { text: 'home', isicon: true }, hint: 'Home', selected: () => {
+        button: <TextButtonParameters>{
+          label: { text: 'home', isicon: true },
+        },
+        hint: 'Home',
+        selected: () => {
           this.home()
         }
+
       },
       {
-        label: { text: 'flip_camera_android', isicon: true }, hint: 'Orbit On/Off', selected: () => {
+        button: <TextButtonParameters>{
+          label: { text: 'flip_camera_android', isicon: true },
+        },
+        hint: 'Orbit On/Off',
+        selected: () => {
           this.enableRotate = !this.enableRotate
         }
+
       },
     ]
 

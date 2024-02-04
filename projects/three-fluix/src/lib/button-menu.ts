@@ -1,11 +1,12 @@
 import { Object3D, Vector3 } from "three"
 import { InteractiveEventType, PointerInteraction } from "./pointer-interaction"
 import { UILabel } from "./label"
-import { LabelParameters, TextButtonParameters, UIOptions } from "./model"
+import { ButtonParameters, LabelParameters, TextButtonParameters, UIOptions } from "./model"
 import { ButtonEventType, UIButton } from "./button"
 import { UITextButton } from "./button-text"
 
-export interface MenuButtonParameters extends TextButtonParameters {
+export interface MenuButtonParameters {
+  button: ButtonParameters
   hint?: string             // hint to show when hovering over button
   selected?: (parameters: MenuButtonParameters) => void    // action to take on pressing button
 }
@@ -31,14 +32,14 @@ export class UIButtonMenu extends Object3D {
   buttons: Array<UIButton> = []
   width: number
   height: number
-  spacing:number
+  spacing: number
 
   private hint?: UILabel;
 
   dispose() {
     if (this.hint) this.hint.dispose()
   }
-  constructor(parameters: ButtonMenuParameters, protected interactive: PointerInteraction, protected options: UIOptions) {
+  constructor(parameters: ButtonMenuParameters, protected pointer: PointerInteraction, protected options: UIOptions) {
     super()
 
     const orientation = parameters.orientation != undefined ? parameters.orientation : 'horizontal'
@@ -60,17 +61,14 @@ export class UIButtonMenu extends Object3D {
     const position = new Vector3()
     let offset = 0
     parameters.items.forEach(item => {
-      const isicon = item.label.isicon != undefined ? item.label.isicon : false
-      if (item.width == undefined) item.width = isicon ? 0.1 : 1
-      if (item.height == undefined) item.height = 0.1
+      const button = this.createButton(item.button)
+      this.add(button)
 
       if (orientation == 'horizontal')
-        position.x += offset + item.width / 2
+        position.x += offset + item.button.width! / 2
       else
-        position.y -= offset + item.height / 2
+        position.y -= offset + item.button.height! / 2
 
-      const button = this.createButton(item)
-      this.add(button)
       button.position.copy(position)
 
       if (hintoptions != 'none') {
@@ -91,22 +89,20 @@ export class UIButtonMenu extends Object3D {
       })
 
       button.addEventListener(ButtonEventType.BUTTON_PRESSED, () => {
-        if (item.selected) {
-          // three methods to intercept - callback, override or event
-          item.selected(item)
-          this.selected(button, item)
-        }
+        // three methods to intercept - callback, override or event
+        if (item.selected) item.selected(item)
+        this.selected(button, item)
       })
 
       this.buttons.push(button)
 
       if (orientation == 'horizontal') {
         position.x += spacing
-        offset = item.width / 2
+        offset = item.button.width! / 2
       }
       else {
         position.y -= spacing
-        offset = item.height / 2
+        offset = item.button.height! / 2
       }
     })
 
@@ -124,9 +120,14 @@ export class UIButtonMenu extends Object3D {
 
   // overridables
 
-  createButton(parameters: TextButtonParameters): UIButton {
+  createButton(parameters: ButtonParameters): UIButton {
+    const textparams = parameters as TextButtonParameters
+    const isicon = textparams.label.isicon != undefined ? textparams.label.isicon : false
+    if (textparams.width == undefined) textparams.width = isicon ? 0.1 : 1
+    if (textparams.height == undefined) textparams.height = 0.1
+
     // default is a text button, but can be something else
-    return new UITextButton(parameters, this.interactive, this.options)
+    return new UITextButton(textparams, this.pointer, this.options)
   }
 
   selected(button: UIButton, item: MenuButtonParameters) {

@@ -24,6 +24,8 @@ export class UITextButton extends UIButton {
   }
 
   constructor(parameters: TextButtonParameters, pointer: PointerInteraction, options: ButtonOptions) {
+    parameters.buttontype = 'text'
+
     if (!parameters.height) parameters.height = 0.1
     if (parameters.width == undefined && parameters.label.isicon)
       parameters.width = 0.1

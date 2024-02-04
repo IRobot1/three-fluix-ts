@@ -94,6 +94,7 @@ export interface InputParameters extends PanelParameters {
   disabledMaterial?: MeshBasicMaterialParameters // default is dark gray
 }
 export interface ButtonParameters extends InputParameters {
+  buttontype?: string              // button type - text, icon, etc
   disableScaleOnClick?: boolean    // default is false
 }
 export interface TextButtonParameters extends ButtonParameters {
