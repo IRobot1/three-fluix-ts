@@ -9,8 +9,9 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { EffectComposer, Pass } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Timer } from 'three/examples/jsm/misc/Timer.js';
 
-import { FontCache, InteractiveEventType, KeyboardInteraction, MenuItemParameters, MenuParameters, PointerInteraction, UIMaterials, UIMiniMenu, UIOptions } from "three-fluix";
+import { FontCache, InteractiveEventType, KeyboardInteraction, MenuParameters, PointerInteraction, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
 
@@ -20,7 +21,7 @@ export class ThreeJSApp extends WebGLRenderer {
   readonly pointer: PointerInteraction
 
   uioptions: UIOptions
-
+  timer: Timer;
 
   private _scene: Scene | undefined
   get scene() { return this._scene }
@@ -68,10 +69,16 @@ export class ThreeJSApp extends WebGLRenderer {
 
     this.pointer = new PointerInteraction(this, this.camera)
 
+    const timer = new Timer()
+    this.timer = timer
+
     const animate = () => {
       if (!this.scene) return
 
       if (this.stats) this.stats.update()
+
+      timer.update()
+      this.scene.dispatchEvent<any>({ type: 'tick', timer })
 
       this.render(this.scene, this.camera);
 
@@ -101,14 +108,14 @@ export class ThreeJSApp extends WebGLRenderer {
   }
 
   showHome(scene: Scene): Object3D {
-    const items: Array<MenuItemParameters> = [
+    const items: Array<MenuButtonParameters> = [
       {
-        text: 'home', isicon: true, hint: 'Home', selected: () => {
+        label: { text: 'home', isicon: true }, hint: 'Home', selected: () => {
           this.router.navigate(['/'])
         }
       },
       {
-        text: 'flip_camera_android', isicon: true, hint: 'Orbit On/Off', selected: () => {
+        label: { text: 'flip_camera_android', isicon: true }, hint: 'Orbit On/Off', selected: () => {
           this.enableRotate = !this.enableRotate
         }
       },
@@ -121,13 +128,13 @@ export class ThreeJSApp extends WebGLRenderer {
       }
     }
 
-    const home = new UIMiniMenu(menuparams, this.pointer, this.uioptions)
+    const home = new UIButtonMenu(menuparams, this.pointer, this.uioptions)
 
     scene.add(home)
     return home
   }
 
-  home?: UIMiniMenu
+  home?: UIButtonMenu
 
 
   get enableRotate() { return this.orbit.enableRotate }
