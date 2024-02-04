@@ -100,7 +100,7 @@ class CustomButtonMenu extends UIButtonMenu {
   }
 }
 
-class LerpUtils {
+export class LerpUtils {
 
   static vector3(vector: Vector3, target: Vector3, rate = 0.1, complete: () => void = () => { }) {
     let alpha = 0

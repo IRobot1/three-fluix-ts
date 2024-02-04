@@ -7,6 +7,7 @@ import { PointerInteraction, PanelParameters, UIOptions, UIPanel, UITextButton, 
 import { InteractiveEventType, RoundedRectangleBorderGeometry, TextEntryParameters } from "three-fluix";
 import { SVGButtonMenu, SVGButtonParameters } from "./svg-button";
 import { TextButtonParameters } from "../../dist/three-fluix";
+import { MediaPlayerParameters, UIMediaPlayer } from "./media-player";
 
 @Component({
   template: '',
@@ -21,14 +22,22 @@ export class WidgetsScene extends Scene {
     app.scene = this
 
     const home = app.showHome(this)
-    home.position.set(-0.1, 1, z)
+    home.position.set(-0.1, 2.4, z)
 
     //app.camera.position.y = 2
     app.camera.position.z = 1
 
     const toolbar = new UIToolbar({}, app.pointer, app.uioptions)
     this.add(toolbar)
-    toolbar.position.set(0, 2, z)
+    toolbar.position.set(0, 2.2, z)
+
+    const mediaparams: MediaPlayerParameters = {
+      width: 4 / 3, 
+    }
+    const mediaplayer = new UIMediaPlayer(mediaparams, app.pointer, app.uioptions)
+    this.add(mediaplayer)
+    mediaplayer.position.set(0, 1.5, z)
+    mediaplayer.load('assets/sintel.mp4')
   }
 }
 
