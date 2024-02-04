@@ -1,7 +1,7 @@
 import { Mesh } from "three"
 import { UIKeyboardEvent } from "./keyboard";
 import { PanelEventType, PanelOptions, UIPanel } from "./panel";
-import { ThreeInteractive } from "./three-interactive";
+import { PointerInteraction } from "./pointer-interaction";
 import { InputParameters, PanelParameters } from "./model";
 
 export enum InputFieldEventType {
@@ -45,20 +45,11 @@ export abstract class UIEntry extends UIPanel implements InputField {
     }
   }
 
-  constructor(parameters: InputParameters, protected interactive: ThreeInteractive, options: PanelOptions) {
+  constructor(parameters: InputParameters, protected pointer: PointerInteraction, options: PanelOptions) {
     super(parameters, options)
 
     this._disabled = parameters.disabled != undefined ? parameters.disabled : false
-
-    const selectableChanged = () => {
-      if (this.selectable)
-        interactive.selectable.add(this)
-      else
-        interactive.selectable.remove(this)
-    }
-    this.addEventListener(PanelEventType.SELECTABLE_CHANGED, () => { selectableChanged() })
-    selectableChanged()
-
+    if (this.disabled) this.selectable = false
 
     this.addEventListener(InputFieldEventType.KEYDOWN, (event: any) => {
       const e = event.keyboard as UIKeyboardEvent
@@ -76,9 +67,7 @@ export abstract class UIEntry extends UIPanel implements InputField {
 
   }
 
-  dispose() {
-    this.interactive.selectable.remove(this)
-  }
+  dispose() {  }
 
   handleKeyDown(keyboard: UIKeyboardEvent) { }
   handleKeyUp(keyboard: UIKeyboardEvent) { }

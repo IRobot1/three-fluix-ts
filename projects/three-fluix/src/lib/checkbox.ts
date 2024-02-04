@@ -1,6 +1,6 @@
 import { ColorRepresentation, Material, Mesh, MeshBasicMaterial } from "three";
 
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
 import { PanelEventType, PanelOptions } from "./panel";
 import { CheckboxParameters } from "./model";
 import { UIEntry } from "./input-field";
@@ -49,11 +49,11 @@ export class UICheckbox extends UIEntry {
     }
   }
 
-  constructor(parameters: CheckboxParameters, interactive: ThreeInteractive, options: CheckboxOptions = {}) {
+  constructor(parameters: CheckboxParameters, pointer: PointerInteraction, options: CheckboxOptions = {}) {
     if (parameters.width == undefined) parameters.width = 0.1
     if (parameters.height == undefined) parameters.height = 0.1
 
-    super(parameters, interactive, options)
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'checkbox'
 

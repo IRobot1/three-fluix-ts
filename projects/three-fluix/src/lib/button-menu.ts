@@ -1,5 +1,5 @@
 import { Object3D, Vector3 } from "three"
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive"
+import { InteractiveEventType, PointerInteraction } from "./pointer-interaction"
 import { UILabel } from "./label"
 import { LabelParameters, TextButtonParameters, UIOptions } from "./model"
 import { ButtonEventType, UIButton } from "./button"
@@ -37,7 +37,7 @@ export class UIButtonMenu extends Object3D {
   dispose() {
     if (this.hint) this.hint.dispose()
   }
-  constructor(parameters: MenuParameters, protected interactive: ThreeInteractive, protected options: UIOptions) {
+  constructor(parameters: MenuParameters, protected interactive: PointerInteraction, protected options: UIOptions) {
     super()
 
     const orientation = parameters.orientation != undefined ? parameters.orientation : 'horizontal'

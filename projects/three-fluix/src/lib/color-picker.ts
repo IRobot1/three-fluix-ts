@@ -1,7 +1,7 @@
 import { BufferGeometry, CanvasTexture, MathUtils, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, PlaneGeometry, RingGeometry, SRGBColorSpace, Shape, Vector2 } from "three";
 import { PanelParameters } from "./model";
 import { PanelOptions, UIPanel } from "./panel";
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, InteractiveLayers, PointerInteraction } from "./pointer-interaction";
 import { UIColorEntry } from "./color-entry";
 
 export interface ColorPickerParameters extends PanelParameters {
@@ -24,8 +24,6 @@ export class UIColorPicker extends UIPanel {
     }
   }
 
-  private interactives: Array<Object3D>
-
   private colorentry: UIColorEntry | undefined
 
   public setColorEntry(colorentry: UIColorEntry, z = 0.003) {
@@ -40,7 +38,7 @@ export class UIColorPicker extends UIPanel {
     this.colorvalue = colorentry.color as string
   }
 
-  constructor(parameters: ColorPickerParameters, protected interaction: ThreeInteractive, options: ColorPickerOptions) {
+  constructor(parameters: ColorPickerParameters, protected pointer: PointerInteraction, options: ColorPickerOptions) {
     parameters.highlightable = false
 
     super(parameters, options)
@@ -79,17 +77,17 @@ export class UIColorPicker extends UIPanel {
 
     this.addRangeMesh(shademesh, rangemesh)
 
-    this.interactives = [this, shademesh, ringmesh, innerringmesh, rangemesh]
-    interaction.selectable.add(...this.interactives)
+    const interactives = [shademesh, ringmesh, innerringmesh, rangemesh]
+    interactives.forEach(object => object.layers.enable(InteractiveLayers.SELECTABLE))
 
+    this.layers.enable(InteractiveLayers.SELECTABLE)
     this.disablePointerInteraction()
 
     // hide, when click away
-    this.addEventListener(InteractiveEventType.POINTERMISSED, () => { this.visible = false });
+    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => { this.visible = false });
   }
 
   dispose() {
-    this.interaction.selectable.remove(...this.interactives)
   }
 
   private shadecontext!: CanvasRenderingContext2D;

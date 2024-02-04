@@ -11,14 +11,14 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Timer } from 'three/examples/jsm/misc/Timer.js';
 
-import { FontCache, InteractiveEventType, KeyboardInteraction, MenuParameters, ThreeInteractive, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
+import { FontCache, InteractiveEventType, KeyboardInteraction, MenuParameters, PointerInteraction, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
 
 @Injectable()
 export class ThreeJSApp extends WebGLRenderer {
   public camera!: Camera;
-  readonly interactive: ThreeInteractive
+  readonly pointer: PointerInteraction
 
   uioptions: UIOptions
   timer: Timer;
@@ -27,12 +27,8 @@ export class ThreeJSApp extends WebGLRenderer {
   get scene() { return this._scene }
   set scene(newvalue: Scene | undefined) {
     if (this._scene != newvalue) {
-      if (this._scene) {
-        this.interactive.selectable.clear()
-        this.interactive.draggable.clear()
-        if (this.home) this.home.dispose()
-      }
       this._scene = newvalue
+      this.pointer.scene = newvalue
       this.camera.position.set(0, 1.5, 0)
       this.orbit.target.set(0, 1.5, -1)
       this.enableVR()
@@ -71,7 +67,7 @@ export class ThreeJSApp extends WebGLRenderer {
       }
     });
 
-    this.interactive = new ThreeInteractive(this, this.camera)
+    this.pointer = new PointerInteraction(this, this.camera)
 
     const timer = new Timer()
     this.timer = timer
@@ -100,7 +96,7 @@ export class ThreeJSApp extends WebGLRenderer {
     this.orbit = orbit
 
     const disableRotate = () => { orbit.enableRotate = false }
-    this.interactive.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
+    this.pointer.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
 
     this.uioptions = {
       materials: new UIMaterials(),
@@ -132,7 +128,7 @@ export class ThreeJSApp extends WebGLRenderer {
       }
     }
 
-    const home = new UIButtonMenu(menuparams, this.interactive, this.uioptions)
+    const home = new UIButtonMenu(menuparams, this.pointer, this.uioptions)
 
     scene.add(home)
     return home

@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { BoxGeometry, Color, Material, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, Scene, Vector3 } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
-import { MenuButtonParameters, MenuParameters, TextButtonParameters, ThreeInteractive, UIButton, UIButtonMenu, UIOptions, UITextButton } from "three-fluix";
+import { MenuButtonParameters, MenuParameters, TextButtonParameters, PointerInteraction, UIButton, UIButtonMenu, UIOptions, UITextButton } from "three-fluix";
 
 @Component({
   template: '',
@@ -30,7 +30,7 @@ export class Concept1Scene extends Scene {
 
     const items = text.map(text => <MenuButtonParameters>{ id: text, label: { id: text, text }, hint: text, width: 0.77 })
 
-    const menu = new CustomButtonMenu({ items, orientation: 'vertical', spacing: 0.05 }, app.interactive, app.uioptions)
+    const menu = new CustomButtonMenu({ items, orientation: 'vertical', spacing: 0.05 }, app.pointer, app.uioptions)
     this.add(menu)
     menu.position.set(-0.8, 1.7, z)
     menu.scale.setScalar(0.5)
@@ -58,8 +58,8 @@ export class Concept1Scene extends Scene {
 }
 
 class CustomButtonMenu extends UIButtonMenu {
-  constructor(parameters: MenuParameters, interactive: ThreeInteractive, options: UIOptions) {
-    super(parameters, interactive, options)
+  constructor(parameters: MenuParameters, pointer: PointerInteraction, options: UIOptions) {
+    super(parameters, pointer, options)
   }
 
   override createButton(parameters: TextButtonParameters): UIButton {

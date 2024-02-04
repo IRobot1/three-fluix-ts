@@ -3,7 +3,7 @@ import { PanelEventType, PanelOptions } from "./panel"
 import { UIKeyboardEvent } from "./keyboard"
 import { UILabel } from "./label"
 import { TextEntryParameters } from "./model"
-import { ThreeInteractive } from "./three-interactive"
+import { PointerInteraction } from "./pointer-interaction"
 
 export interface TextOptions extends PanelOptions {
 }
@@ -54,10 +54,10 @@ export class UITextEntry extends UIEntry implements InputField {
   }
 
 
-  constructor(parameters: TextEntryParameters = {}, interactive: ThreeInteractive, options: TextOptions = {}) {
+  constructor(parameters: TextEntryParameters = {}, pointer: PointerInteraction, options: TextOptions = {}) {
     if (parameters.height == undefined) parameters.height = 0.1
 
-    super(parameters, interactive, options)
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'text-entry'
 

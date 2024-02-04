@@ -1,4 +1,4 @@
-import { ThreeInteractive } from "./three-interactive"
+import { PointerInteraction } from "./pointer-interaction"
 
 import { TextOptions, UITextEntry } from "./text-entry"
 import { NumberEntryParameters } from "./model"
@@ -92,8 +92,8 @@ export class UINumberEntry extends UITextEntry {
     }
   }
 
-  constructor(parameters: NumberEntryParameters, interactive: ThreeInteractive, options: NumberOptions = {}) {
-    super(parameters, interactive, options)
+  constructor(parameters: NumberEntryParameters, pointer: PointerInteraction, options: NumberOptions = {}) {
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'number-entry'
 

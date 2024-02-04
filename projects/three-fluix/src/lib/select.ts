@@ -1,4 +1,4 @@
-import { ThreeInteractive, InteractiveEventType } from "./three-interactive";
+import { PointerInteraction, InteractiveEventType } from "./pointer-interaction";
 import { UITextButton } from "./button-text";
 import { ButtonOptions } from "./button";
 import { ListEventType, UIList } from "./list";
@@ -24,11 +24,11 @@ export class UISelect extends UITextButton {
   }
   private indicator: Mesh
   private listz: number
-  constructor(parameters: SelectParameters, interactive: ThreeInteractive, options: ButtonOptions) {
+  constructor(parameters: SelectParameters, pointer: PointerInteraction, options: ButtonOptions) {
     parameters.disableScaleOnClick = false
     parameters.label.alignX = 'left'
     parameters.list.selectable = false
-    super(parameters, interactive, options)
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'select'
 
@@ -43,7 +43,7 @@ export class UISelect extends UITextButton {
     this.add(mesh)
     this.indicator = mesh
 
-    this.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
       this.closelist()
     })
 
@@ -71,7 +71,7 @@ export class UISelect extends UITextButton {
       const params = this.parameters as SelectParameters
       params.list.selected = this.selected
 
-      const list = new UIList(params.list, this.interactive, this.options)
+      const list = new UIList(params.list, this.pointer, this.options)
       this.add(list)
       list.position.set(0, -(this.height + list.height) / 2 - list.spacing, this.listz)
 

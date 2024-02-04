@@ -1,6 +1,6 @@
 import { MathUtils, Mesh, Vector3 } from "three";
 
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, InteractiveLayers, PointerInteraction } from "./pointer-interaction";
 import { PanelOptions } from "./panel";
 import { UIOrientationType, SliderbarParameters } from "./model";
 import { UIEntry } from "./input-field";
@@ -93,12 +93,12 @@ export class UISliderbar extends UIEntry {
   private sliderradius: number
   private orientation: UIOrientationType
 
-  constructor(parameters: SliderbarParameters, interactive: ThreeInteractive, options: SliderbarOptions = {}) {
+  constructor(parameters: SliderbarParameters, pointer: PointerInteraction, options: SliderbarOptions = {}) {
     const orientation = parameters.orientation != undefined ? parameters.orientation : 'horizontal'
     if (orientation == 'horizontal' && parameters.height == undefined) parameters.height = 0.1
     if (orientation == 'vertical' && parameters.width == undefined) parameters.width = 0.1
 
-    super(parameters, interactive, options)
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'sliderbar'
 
@@ -110,6 +110,7 @@ export class UISliderbar extends UIEntry {
     this.orientation = orientation
 
     const slidermesh = new Mesh()
+    slidermesh.name = 'slider'
     slidermesh.material = checkmaterial
     this.add(slidermesh)
     slidermesh.position.z = 0.001
@@ -118,8 +119,8 @@ export class UISliderbar extends UIEntry {
     this.slidermesh = slidermesh
     this.slidersize = parameters.slidersize != undefined ? parameters.slidersize : 0.1
 
-    interactive.selectable.add(slidermesh)
-    interactive.draggable.add(slidermesh)
+    slidermesh.layers.enable(InteractiveLayers.SELECTABLE)
+    slidermesh.layers.enable(InteractiveLayers.DRAGGABLE)
 
     this._min = parameters.min != undefined ? parameters.min : 0
     this._max = parameters.max != undefined ? parameters.max : 100
@@ -164,7 +165,6 @@ export class UISliderbar extends UIEntry {
     let offset: Vector3
     slidermesh.addEventListener(InteractiveEventType.DRAGSTART, (e: any) => {
       if (this.disabled || !this.visible) return
-
       // remember where in the mesh the mouse was clicked to avoid jump on first drag
       offset = e.position.sub(slidermesh.position).clone()
       document.body.style.cursor = 'grabbing'
@@ -237,9 +237,9 @@ export class UISliderbar extends UIEntry {
     }
   }
 
-  override dispose() {
-    super.dispose()
-    this.interactive.selectable.remove(this.slidermesh)
-    this.interactive.draggable.remove(this.slidermesh)
-  }
+//  override dispose() {
+//    super.dispose()
+//    this.interactive.selectable.remove(this.slidermesh)
+//    this.interactive.draggable.remove(this.slidermesh)
+//  }
 }

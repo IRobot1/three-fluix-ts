@@ -1,4 +1,9 @@
-import { Vector2, Raycaster, Renderer, Camera, Object3D, Plane, Vector3, Matrix4, Intersection, BaseEvent, WebGLRenderer, EventDispatcher } from 'three';
+import { Vector2, Raycaster, Camera, Object3D, Plane, Vector3, Matrix4, Intersection, WebGLRenderer, EventDispatcher, Scene, Layers } from 'three';
+
+export enum InteractiveLayers {
+  SELECTABLE = 1,
+  DRAGGABLE = 2,
+}
 
 export const InteractiveEventType = {
   POINTERMOVE: 'pointermove',
@@ -14,38 +19,10 @@ export const InteractiveEventType = {
   DRAGEND: 'dragend',
 }
 
-export interface InteractiveDragStartEvent extends BaseEvent { position: Vector3, data: Array<Intersection> }
-export interface InteractiveDragEvent extends BaseEvent { position: Vector3 }
-export interface InteractiveDragEnd extends BaseEvent { position: Vector3 }
+export class PointerInteraction extends EventDispatcher<any> {
+  scene: Scene | undefined
 
-
-export class FlowObjects {
-  private _list: Array<Object3D> = [];
-
-  get list(): Array<Object3D> { return this._list; }
-
-  add(...object: Object3D[]) {
-    this._list.push(...object);
-  }
-
-  remove(...object: Object3D[]) {
-    object.forEach(item => {
-      const index = this._list.findIndex(x => x == item);
-      if (index != undefined && index != -1)
-        this._list.splice(index, 1);
-    });
-  }
-
-  clear() { this._list.length = 0 }
-}
-
-
-export class ThreeInteractive extends EventDispatcher<any> {
-  public selectable = new FlowObjects()
-  public draggable = new FlowObjects()
-
-
-  dispose = () => { }
+  dispose: () => void
 
   constructor(public renderer: WebGLRenderer, public camera: Camera) {
     super()
@@ -63,6 +40,11 @@ export class ThreeInteractive extends EventDispatcher<any> {
     const _event = { type: '', position: _intersection, data: _pointer, intersections: [] as Array<Intersection>, stop: false };
 
     const raycaster = new Raycaster();
+    const selectableLayer = new Layers()
+    selectableLayer.set(InteractiveLayers.SELECTABLE)
+
+    const draggableLayer = new Layers()
+    draggableLayer.set(InteractiveLayers.DRAGGABLE)
 
     // Pointer Events
     const events: any = {
@@ -91,8 +73,15 @@ export class ThreeInteractive extends EventDispatcher<any> {
       handleEvent(event)
     }
 
+    const visible: Array<Object3D> = []
     const handleEvent = (newevent: PointerEvent | MouseEvent) => {
-      const selectIntersects = raycaster.intersectObjects(this.selectable.list, false);
+      if (!this.scene) return
+
+      visible.length = 0
+      this.scene.traverseVisible(object => visible.push(object))
+
+      raycaster.layers = selectableLayer
+      const selectIntersects = raycaster.intersectObjects(visible, false)
 
       _event.type = events[newevent.type];
       _event.intersections = selectIntersects
@@ -156,17 +145,12 @@ export class ThreeInteractive extends EventDispatcher<any> {
         // some popup selectables close when clicking outside of them, for example, dropdown menu and color picker
         if (_event.type == 'click') {
           _event.type = InteractiveEventType.POINTERMISSED;
-          this.selectable.list.forEach(item => {
-            if (item.visible)
-              item.dispatchEvent<any>(_event)
-          })
+          this.dispatchEvent<any>(_event)
         }
       }
 
-      // prevent dragging if last event was stopped
-      if (!_selected && _event.stop) return
-
-      const dragIntersects = raycaster.intersectObjects(this.draggable.list, false);
+      raycaster.layers = draggableLayer
+      const dragIntersects = raycaster.intersectObjects(visible, false)
 
       if (dragIntersects.length > 0) {
         const intersection = dragIntersects[0];
