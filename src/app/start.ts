@@ -107,7 +107,7 @@ export class StartScene extends Scene {
       hintbelow: false,
       hintLabel: { alignX: 'left', size: 0.05 }
     }
-    const menu = new UIMiniMenu(menuparams, app.interactive, options)
+    const menu = new UIMiniMenu(menuparams, app.pointer, options)
     screen.add(menu)
     menu.position.set(-menu.width / 2, -screenheight / 2, 0.03)
     menu.scale.setScalar(0.4)

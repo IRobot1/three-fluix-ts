@@ -1,7 +1,7 @@
 import { BufferGeometry, ColorRepresentation, MathUtils, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, Shape, ShapeGeometry, Vector3 } from "three";
 import { PanelParameters, UIOptions } from "./model";
 import { FontCache } from "./cache";
-import { InteractiveEventType, InteractiveLayers } from "./three-interactive";
+import { InteractiveEventType, InteractiveLayers } from "./pointer-interaction";
 import { UIMaterials } from "./materials";
 import { RoundedRectangleBorderShape, RoundedRectangleShape } from "./shapes/rounded-rectangle-shape";
 

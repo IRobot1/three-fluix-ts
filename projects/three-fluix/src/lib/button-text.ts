@@ -1,4 +1,4 @@
-import { ThreeInteractive } from "./three-interactive";
+import { PointerInteraction } from "./pointer-interaction";
 
 import { TextButtonParameters } from "./model";
 import { UILabel } from "./label";
@@ -23,10 +23,10 @@ export class UITextButton extends UIButton {
     }
   }
 
-  constructor(parameters: TextButtonParameters, interactive: ThreeInteractive, options: ButtonOptions) {
+  constructor(parameters: TextButtonParameters, pointer: PointerInteraction, options: ButtonOptions) {
     if (!parameters.height) parameters.height = 0.1
     
-    super(parameters, interactive, options)
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'text-button'
 

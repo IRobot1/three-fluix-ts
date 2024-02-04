@@ -1,7 +1,7 @@
 import { MathUtils, Mesh, PlaneGeometry, Vector3 } from "three";
 import { UIEntry } from "./input-field";
 import { LabelParameters, UIOrientationType, ListParameters } from "./model";
-import { InteractiveEventType, InteractiveLayers, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, InteractiveLayers, PointerInteraction } from "./pointer-interaction";
 import { PanelOptions } from "./panel";
 import { ButtonEventType, UIButton } from "./button";
 import { UITextButton } from "./button-text";
@@ -79,7 +79,7 @@ export class UIList extends UIEntry implements Pagination {
   private itemcount: number
   private scrollbar?: UIScrollbar
 
-  constructor(parameters: ListParameters, interactive: ThreeInteractive, options: ListOptions = {}) {
+  constructor(parameters: ListParameters, pointer: PointerInteraction, options: ListOptions = {}) {
     const itemCount = parameters.itemcount != undefined ? parameters.itemcount : 6
     const itemHeight = parameters.itemheight != undefined ? parameters.itemheight : 0.1
     const spacing = parameters.spacing != undefined ? parameters.spacing : 0.02
@@ -99,7 +99,7 @@ export class UIList extends UIEntry implements Pagination {
     parameters.highlightable = false
     parameters.selectable = true
 
-    super(parameters, interactive, options)
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'list'
 
@@ -142,7 +142,7 @@ export class UIList extends UIEntry implements Pagination {
         slidersize = MathUtils.mapLinear(this.itemcount, 0, this.data.length, 0, this.width)
       const max = this.data.length - this.itemcount
 
-      scrollbar = new UIScrollbar({ selectable: false, orientation, slidersize, max, height: this.height }, interactive, options)
+      scrollbar = new UIScrollbar({ selectable: false, orientation, slidersize, max, height: this.height }, pointer, options)
       this.add(scrollbar)
       if (orientation == 'vertical') {
         scrollbar.position.x = (this.width - scrollbar.width) / 2
@@ -347,7 +347,7 @@ export class UIList extends UIEntry implements Pagination {
       font
     }
 
-    return new UITextButton({ width, height, label }, this.interactive, this.options);
+    return new UITextButton({ width, height, label }, this.pointer, this.options);
   }
 
   public createEmpty(emptyText: string): UILabel {

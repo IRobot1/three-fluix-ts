@@ -123,8 +123,8 @@ export class LabelPerformanceScene extends Scene implements OnDestroy {
     //gui.add(label, 'fontWeight', ['normal', 'bold']).name('Font Weight')
     gui.add(label, 'maxwidth', 0.1, 1, 0.1).name('Maximum Width')
 
-    const properties = new UIProperties({selectable:false}, app.interactive, app.uioptions, gui)
-    properties.getColorPicker = () => { return new UIColorPicker({}, app.interactive, app.uioptions) }
+    const properties = new UIProperties({selectable:false}, app.pointer, app.uioptions, gui)
+    properties.getColorPicker = () => { return new UIColorPicker({}, app.pointer, app.uioptions) }
     this.add(properties)
     properties.scale.setScalar(0.3)
     properties.position.set(0, 1.6, z)

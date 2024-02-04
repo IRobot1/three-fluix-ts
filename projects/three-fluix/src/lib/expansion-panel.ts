@@ -1,4 +1,4 @@
-import { ThreeInteractive } from "./three-interactive";
+import { PointerInteraction } from "./pointer-interaction";
 import { UITextButton } from "./button-text";
 import { PanelParameters, TextButtonParameters } from "./model";
 import { Mesh, MeshBasicMaterialParameters } from "three";
@@ -39,12 +39,12 @@ export class UIExpansionPanel extends UITextButton {
     this.collapsedIndicator.dispose()
   }
 
-  constructor(parameters: ExpansionPanelParameters, interactive: ThreeInteractive, options: PanelOptions) {
+  constructor(parameters: ExpansionPanelParameters, pointer: PointerInteraction, options: PanelOptions) {
     parameters.disableScaleOnClick = true
     parameters.label.alignX = 'left'
     parameters.label.padding = 0.05
 
-    super(parameters, interactive, options)
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'expansion-panel'
 

@@ -1,4 +1,4 @@
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
 
 import { ButtonParameters } from "./model";
 import { PanelEventType, PanelOptions } from "./panel";
@@ -20,8 +20,8 @@ export class UIButton extends UIEntry {
   override inputtype: string = 'button'
   public data: any
 
-  constructor(parameters: ButtonParameters, interactive: ThreeInteractive, options: ButtonOptions) {
-    super(parameters, interactive, options)
+  constructor(parameters: ButtonParameters, pointer: PointerInteraction, options: ButtonOptions) {
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'button'
 
@@ -45,7 +45,7 @@ export class UIButton extends UIEntry {
       buttonUp(true)
       e.stop = true
     })
-    interactive.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
       buttonUp()
       this.unhighlight()
     })

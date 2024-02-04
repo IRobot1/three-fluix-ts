@@ -1,5 +1,5 @@
 import { MeshBasicMaterialParameters, Object3D, Vector3 } from "three"
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive"
+import { InteractiveEventType, PointerInteraction } from "./pointer-interaction"
 import { UILabel } from "./label"
 import { LabelParameters, TextButtonParameters, UIOptions } from "./model"
 import { ButtonEventType, UIButton } from "./button"
@@ -39,7 +39,7 @@ export class UIMiniMenu extends Object3D {
   dispose() {
     this.hint.dispose()
   }
-  constructor(parameters: MenuParameters, private interactive: ThreeInteractive, private options: UIOptions) {
+  constructor(parameters: MenuParameters, private pointer: PointerInteraction, private options: UIOptions) {
     super()
 
     const below = parameters.hintbelow != undefined ? parameters.hintbelow : true
@@ -68,7 +68,7 @@ export class UIMiniMenu extends Object3D {
         hint.text = item.hint
         hint.visible = true
       })
-      interactive.addEventListener(InteractiveEventType.POINTERLEAVE, () => {
+      pointer.addEventListener(InteractiveEventType.POINTERLEAVE, () => {
         hint.visible = false
       })
 
@@ -86,7 +86,7 @@ export class UIMiniMenu extends Object3D {
       width = item.width / 2
     })
 
-    interactive.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
       this.missed()
     })
 
@@ -105,7 +105,7 @@ export class UIMiniMenu extends Object3D {
     }
 
     // default is a text button, but can be something else
-    const button = new UITextButton(params, this.interactive, this.options)
+    const button = new UITextButton(params, this.pointer, this.options)
     this.add(button)
 
     return button

@@ -3,7 +3,7 @@
  */
 
 export * from './lib/materials';
-export * from './lib/three-interactive';
+export * from './lib/pointer-interaction';
 export * from './lib/model';
 export * from './lib/cache';
 

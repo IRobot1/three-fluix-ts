@@ -10,14 +10,14 @@ import { EffectComposer, Pass } from "three/examples/jsm/postprocessing/EffectCo
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-import { FontCache, InteractiveEventType, KeyboardInteraction, MenuItemParameters, MenuParameters, ThreeInteractive, UIMaterials, UIMiniMenu, UIOptions } from "three-fluix";
+import { FontCache, InteractiveEventType, KeyboardInteraction, MenuItemParameters, MenuParameters, PointerInteraction, UIMaterials, UIMiniMenu, UIOptions } from "three-fluix";
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
 
 @Injectable()
 export class ThreeJSApp extends WebGLRenderer {
   public camera!: Camera;
-  readonly interactive: ThreeInteractive
+  readonly pointer: PointerInteraction
 
   uioptions: UIOptions
 
@@ -27,7 +27,7 @@ export class ThreeJSApp extends WebGLRenderer {
   set scene(newvalue: Scene | undefined) {
     if (this._scene != newvalue) {
       this._scene = newvalue
-      this.interactive.scene = newvalue
+      this.pointer.scene = newvalue
       this.camera.position.set(0, 1.5, 0)
       this.orbit.target.set(0, 1.5, -1)
       this.enableVR()
@@ -66,7 +66,7 @@ export class ThreeJSApp extends WebGLRenderer {
       }
     });
 
-    this.interactive = new ThreeInteractive(this, this.camera)
+    this.pointer = new PointerInteraction(this, this.camera)
 
     const animate = () => {
       if (!this.scene) return
@@ -89,7 +89,7 @@ export class ThreeJSApp extends WebGLRenderer {
     this.orbit = orbit
 
     const disableRotate = () => { orbit.enableRotate = false }
-    this.interactive.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
+    this.pointer.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
 
     this.uioptions = {
       materials: new UIMaterials(),
@@ -121,7 +121,7 @@ export class ThreeJSApp extends WebGLRenderer {
       }
     }
 
-    const home = new UIMiniMenu(menuparams, this.interactive, this.uioptions)
+    const home = new UIMiniMenu(menuparams, this.pointer, this.uioptions)
 
     scene.add(home)
     return home

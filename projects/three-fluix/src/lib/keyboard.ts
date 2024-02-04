@@ -1,5 +1,5 @@
 import { Box3, Object3D, Vector3 } from "three";
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
 
 import { TextButtonParameters, UIOptions } from "./model";
 import { englishDesktopANSI } from "./englishDesktopANSI";
@@ -48,7 +48,7 @@ export class UIKeyboard extends Object3D {
   private stateKeys: Array<StateKeyData> = []
   private shift = false
 
-  constructor(private parameters: UIKeyboardParameters, private interactive: ThreeInteractive, private options: UIKeyboardOptions = {}) {
+  constructor(private parameters: UIKeyboardParameters, protected pointer: PointerInteraction, protected options: UIKeyboardOptions = {}) {
     super()
 
     let first = true
@@ -237,7 +237,7 @@ export class UIKeyboard extends Object3D {
       }, value: setting
     }
 
-    const key = new UIKey(params, this.interactive, this.options)
+    const key = new UIKey(params, this.pointer, this.options)
     key.position.copy(setting.position)
     this.add(key)
 

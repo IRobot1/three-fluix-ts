@@ -1,4 +1,4 @@
-import { ThreeInteractive } from "./three-interactive";
+import { PointerInteraction } from "./pointer-interaction";
 import { LabelParameters, SliderbarParameters, TextButtonParameters } from "./model";
 import { SliderbarEventType, SliderbarOptions, UISliderbar } from "./sliderbar";
 import { UITextButton } from "./button-text";
@@ -12,7 +12,7 @@ export interface ScrollbarParameters extends SliderbarParameters {
 export class UIScrollbar extends UISliderbar {
   paginate?: Pagination
 
-  constructor(parameters: ScrollbarParameters, interactive: ThreeInteractive, options: SliderbarOptions = {}) {
+  constructor(parameters: ScrollbarParameters, pointer: PointerInteraction, options: SliderbarOptions = {}) {
     const orientation = parameters.orientation != undefined ? parameters.orientation : 'horizontal'
     let height = parameters.height
     let width = parameters.width
@@ -28,7 +28,7 @@ export class UIScrollbar extends UISliderbar {
       parameters.width = width
       parameters.height = height - width * 2
     }
-    super(parameters, interactive, options)
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'scrollabar'
 
@@ -40,7 +40,7 @@ export class UIScrollbar extends UISliderbar {
     parameters.prevbutton.label.isicon = true
     parameters.prevbutton.width = parameters.prevbutton.height = size
 
-    const prevbutton = new UITextButton(parameters.prevbutton, this.interactive, this.options);
+    const prevbutton = new UITextButton(parameters.prevbutton, this.pointer, this.options);
     this.add(prevbutton)
     if (orientation == 'horizontal')
       prevbutton.position.x = -(this.width + size) / 2
@@ -59,7 +59,7 @@ export class UIScrollbar extends UISliderbar {
     parameters.nextbutton.label.isicon = true
     parameters.nextbutton.width = parameters.nextbutton.height = size
 
-    const nextbutton = new UITextButton(parameters.nextbutton, this.interactive, this.options);
+    const nextbutton = new UITextButton(parameters.nextbutton, this.pointer, this.options);
     this.add(nextbutton)
     if (orientation == 'horizontal')
       nextbutton.position.x = (this.width + size) / 2

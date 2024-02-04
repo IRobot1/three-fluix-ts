@@ -55,13 +55,13 @@ export class PropertiesScene extends Scene implements OnDestroy {
     this.makeListen(col5, 3.1, z, true);
     this.makeOnChange(col5, 1.8, z, true);
 
-    const colorpicker = new UIColorPicker({}, app.interactive, app.uioptions)
+    const colorpicker = new UIColorPicker({}, app.pointer, app.uioptions)
     this.add(colorpicker)
     colorpicker.visible = false
 
     const group = new Group()
     this.guis.forEach((data, index) => {
-      const ui = new UIProperties({ width: 1.5, selectable:false }, app.interactive, app.uioptions, data.gui)
+      const ui = new UIProperties({ width: 1.5, selectable:false }, app.pointer, app.uioptions, data.gui)
       group.add(ui)
       ui.position.set(data.x, data.y, 0)
       ui.getColorPicker = () => { return colorpicker }

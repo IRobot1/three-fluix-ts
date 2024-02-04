@@ -1,7 +1,7 @@
 import { Scene, Shape } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
-import { ExpansionPanelParameters, FontCache, GUI, KeyboardInteraction, LabelParameters, NumberEntryParameters, NumberOptions, PanelOptions, PropertiesParameters, SelectParameters, SliderbarParameters, TextButtonParameters, TextEntryParameters, ThreeInteractive, UIButton, UIColorPicker, UIExpansionPanel, UILabel, UIMaterials, UINumberEntry, UIOptions, UIProperties, UISelect, UISliderbar, UITextButton, UITextEntry } from "three-fluix";
+import { ExpansionPanelParameters, FontCache, GUI, KeyboardInteraction, LabelParameters, NumberEntryParameters, NumberOptions, PanelOptions, PropertiesParameters, SelectParameters, SliderbarParameters, TextButtonParameters, TextEntryParameters, PointerInteraction, UIButton, UIColorPicker, UIExpansionPanel, UILabel, UIMaterials, UINumberEntry, UIOptions, UIProperties, UISelect, UISliderbar, UITextButton, UITextEntry } from "three-fluix";
 import { Component, OnDestroy } from "@angular/core";
 
 @Component({
@@ -23,7 +23,7 @@ export class CustomPropertiesScene extends Scene implements OnDestroy {
     home.position.set(-0.1, 1.3, z + 0.01)
     home.scale.setScalar(0.5)
 
-    const colorpicker = new UIColorPicker({}, app.interactive, app.uioptions)
+    const colorpicker = new UIColorPicker({}, app.pointer, app.uioptions)
     this.add(colorpicker)
     colorpicker.visible = false
 
@@ -37,7 +37,7 @@ export class CustomPropertiesScene extends Scene implements OnDestroy {
       pickwidth: 0.6,
       inputwidth: 0.25
     }
-    const properties1 = new CustomProperties(params, app.interactive, app.uioptions, gui)
+    const properties1 = new CustomProperties(params, app.pointer, app.uioptions, gui)
     this.add(properties1)
     properties1.position.set(0, 1.6, z)
     properties1.scale.setScalar(0.2)
@@ -119,8 +119,8 @@ export class CustomPropertiesScene extends Scene implements OnDestroy {
 
 class CustomProperties extends UIProperties {
 
-  constructor(private customparams: PropertiesParameters, interactive: ThreeInteractive, options: PanelOptions, gui: GUI) {
-    super(customparams, interactive, options, gui)
+  constructor(private customparams: PropertiesParameters, pointer: PointerInteraction, options: PanelOptions, gui: GUI) {
+    super(customparams, pointer, options, gui)
   }
 
   override createLabel(parameters: LabelParameters): UILabel {
@@ -132,7 +132,7 @@ class CustomProperties extends UIProperties {
 
   override createTextButton(parameters: TextButtonParameters): UIButton {
     parameters.label!.material = { color: 'white' }
-    return new UITextButton(parameters, this.interactive, this.options)
+    return new UITextButton(parameters, this.pointer, this.options)
   }
 
   override createExpansionPanel(parameters: ExpansionPanelParameters): UIExpansionPanel {
@@ -140,36 +140,36 @@ class CustomProperties extends UIProperties {
     parameters.label!.material = { color: 'white' }
     parameters.panel!.fill = this.customparams.fill
     parameters.indicatorMaterial = { color: 'white' }
-    return new UIExpansionPanel(parameters, this.interactive, this.options)
+    return new UIExpansionPanel(parameters, this.pointer, this.options)
   }
 
   override createSliderbar(parameters: SliderbarParameters): UISliderbar {
     parameters.slidermaterial = { color: 'orange' }
-    return new UISliderbar(parameters, this.interactive, this.options)
+    return new UISliderbar(parameters, this.pointer, this.options)
   }
 
   override createNumberEntry(parameters: NumberEntryParameters, title: string): UINumberEntry {
     parameters.label!.material = { color: 'orange' }
     if (title == 'level') {
-      return new CustomNumberEntry(parameters, this.interactive, this.options, this.radius * 3, this.radius)
+      return new CustomNumberEntry(parameters, this.pointer, this.options, this.radius * 3, this.radius)
     }
     else if (title == 'gloss') {
-      return new CustomNumberEntry(parameters, this.interactive, this.options, this.radius, this.radius * 3)
+      return new CustomNumberEntry(parameters, this.pointer, this.options, this.radius, this.radius * 3)
     }
     else
-      return new UINumberEntry(parameters, this.interactive, this.options)
+      return new UINumberEntry(parameters, this.pointer, this.options)
   }
 
   override createTextEntry(parameters: TextEntryParameters): UITextEntry {
     if (!parameters.label) parameters.label = {}
     parameters.label.material = { color: 'orange' }
-    return new UITextEntry(parameters, this.interactive, this.options)
+    return new UITextEntry(parameters, this.pointer, this.options)
   }
 
   override createSelect(parameters: SelectParameters): UISelect {
     parameters.label!.material = { color: 'white' }
     parameters.indicatorMaterial = { color: 'white' }
-    return new UISelect(parameters, this.interactive, this.options)
+    return new UISelect(parameters, this.pointer, this.options)
   }
 }
 
@@ -204,8 +204,8 @@ export class CustomRectangleBorderShape extends CustomRectangleShape {
 
 
 class CustomNumberEntry extends UINumberEntry {
-  constructor(parameters: NumberEntryParameters = {}, interactive: ThreeInteractive, options: NumberOptions, private radiustr: number, private radiusbr: number) {
-    super(parameters, interactive, options)
+  constructor(parameters: NumberEntryParameters = {}, pointer: PointerInteraction, options: NumberOptions, private radiustr: number, private radiusbr: number) {
+    super(parameters, pointer, options)
   }
 
   override panelShape(): Shape {

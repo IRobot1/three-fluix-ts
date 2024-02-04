@@ -1,4 +1,4 @@
-import { ThreeInteractive } from "./three-interactive";
+import { PointerInteraction } from "./pointer-interaction";
 import { TextButtonParameters } from "./model";
 import { MeshBasicMaterial } from "three";
 import { UITextButton } from "./button-text";
@@ -9,8 +9,8 @@ export enum UIKeyEventType {
   SET_TEXT = 'set_text',
 }
 export class UIKey extends UITextButton {
-  constructor(parameters: TextButtonParameters, interactive: ThreeInteractive, options: ButtonOptions = {}) {
-    super(parameters, interactive, options)
+  constructor(parameters: TextButtonParameters, pointer: PointerInteraction, options: ButtonOptions = {}) {
+    super(parameters, pointer, options)
 
     const original = this.material
     const highlight = new MeshBasicMaterial({ color: 'green' })

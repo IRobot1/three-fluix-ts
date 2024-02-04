@@ -1,4 +1,4 @@
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
 import { PanelEventType, UIPanel } from "./panel";
 import { Vector3 } from "three";
 
@@ -6,7 +6,7 @@ export class PanelInteraction {
 
   private dragging = false
 
-  constructor(public panel: UIPanel, private interactive: ThreeInteractive, gridsize = 0) {
+  constructor(public panel: UIPanel, private pointer: PointerInteraction, gridsize = 0) {
 
     const snapToGrid = (position: THREE.Vector3): THREE.Vector3 => {
       if (gridsize > 0) {

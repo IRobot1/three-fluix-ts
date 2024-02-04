@@ -1,6 +1,6 @@
 import { MathUtils, Mesh, Vector3 } from "three";
 
-import { InteractiveEventType, InteractiveLayers, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, InteractiveLayers, PointerInteraction } from "./pointer-interaction";
 import { PanelOptions } from "./panel";
 import { UIOrientationType, SliderbarParameters } from "./model";
 import { UIEntry } from "./input-field";
@@ -93,12 +93,12 @@ export class UISliderbar extends UIEntry {
   private sliderradius: number
   private orientation: UIOrientationType
 
-  constructor(parameters: SliderbarParameters, interactive: ThreeInteractive, options: SliderbarOptions = {}) {
+  constructor(parameters: SliderbarParameters, pointer: PointerInteraction, options: SliderbarOptions = {}) {
     const orientation = parameters.orientation != undefined ? parameters.orientation : 'horizontal'
     if (orientation == 'horizontal' && parameters.height == undefined) parameters.height = 0.1
     if (orientation == 'vertical' && parameters.width == undefined) parameters.width = 0.1
 
-    super(parameters, interactive, options)
+    super(parameters, pointer, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'sliderbar'
 

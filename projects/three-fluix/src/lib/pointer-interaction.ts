@@ -19,7 +19,7 @@ export const InteractiveEventType = {
   DRAGEND: 'dragend',
 }
 
-export class ThreeInteractive extends EventDispatcher<any> {
+export class PointerInteraction extends EventDispatcher<any> {
   scene: Scene | undefined
 
   dispose: () => void

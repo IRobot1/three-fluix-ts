@@ -1,6 +1,6 @@
 import { Group, MeshBasicMaterialParameters } from "three";
 
-import { InteractiveEventType, ThreeInteractive } from "./three-interactive";
+import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
 import { PanelEventType, PanelOptions, UIPanel } from "./panel";
 import { Controller, GUI } from "./gui-model";
 import { CheckboxParameters, ColorEntryParameters, LabelParameters, ListParameters, NumberEntryParameters, PanelParameters, SelectParameters, SliderbarParameters, TextButtonParameters, TextEntryParameters } from "./model";
@@ -56,7 +56,7 @@ export class UIProperties extends UIPanel {
   private inputs: Array<InputField> = []
   private labels: Array<UILabel> = []
 
-  constructor(parameters: PropertiesParameters, protected interactive: ThreeInteractive, options: PanelOptions, gui: GUI) {
+  constructor(parameters: PropertiesParameters, protected pointer: PointerInteraction, options: PanelOptions, gui: GUI) {
     super(parameters, options)
 
     this.name = parameters.id != undefined ? parameters.id : 'properties'
@@ -538,35 +538,35 @@ export class UIProperties extends UIPanel {
   }
 
   createTextButton(parameters: TextButtonParameters, title: string): UIButton {
-    return new UITextButton(parameters, this.interactive, this.options)
+    return new UITextButton(parameters, this.pointer, this.options)
   }
 
   createExpansionPanel(parameters: ExpansionPanelParameters, title: string): UIExpansionPanel {
-    return new UIExpansionPanel(parameters, this.interactive, this.options)
+    return new UIExpansionPanel(parameters, this.pointer, this.options)
   }
 
   createSliderbar(parameters: SliderbarParameters, title: string): UISliderbar {
-    return new UISliderbar(parameters, this.interactive, this.options)
+    return new UISliderbar(parameters, this.pointer, this.options)
   }
 
   createNumberEntry(parameters: NumberEntryParameters, title: string): UINumberEntry {
-    return new UINumberEntry(parameters, this.interactive, this.options)
+    return new UINumberEntry(parameters, this.pointer, this.options)
   }
 
   createTextEntry(parameters: TextEntryParameters, title: string): UITextEntry {
-    return new UITextEntry(parameters, this.interactive, this.options)
+    return new UITextEntry(parameters, this.pointer, this.options)
   }
 
   createCheckBox(parameters: CheckboxParameters, title: string): UICheckbox {
-    return new UICheckbox(parameters, this.interactive, this.options)
+    return new UICheckbox(parameters, this.pointer, this.options)
   }
 
   createSelect(parameters: SelectParameters, title: string): UISelect {
-    return new UISelect(parameters, this.interactive, this.options)
+    return new UISelect(parameters, this.pointer, this.options)
   }
 
   createColorEntry(parameters: ColorEntryParameters, title: string): UIColorEntry {
-    return new UIColorEntry(parameters, this.interactive, this.options)
+    return new UIColorEntry(parameters, this.pointer, this.options)
   }
 
   getColorPicker(): UIColorPicker | undefined { return undefined }
