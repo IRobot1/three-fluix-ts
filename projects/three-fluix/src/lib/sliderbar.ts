@@ -8,7 +8,8 @@ import { UIKeyboardEvent } from "./keyboard";
 import { RoundedRectangleGeometry } from "./shapes/rounded-rectangle-geometry";
 
 export enum SliderbarEventType {
-  VALUE_CHANGED = 'value_changed'
+  VALUE_CHANGED = 'value_changed',
+  SLIDER_MOVED = 'slider_moved',
 }
 export interface SliderbarOptions extends PanelOptions { }
 
@@ -92,7 +93,7 @@ export class UISliderbar extends UIEntry {
 
   orientation: UIOrientationType
 
-  private slidermesh: Mesh
+  protected slidermesh: Mesh
   private sliderradius: number
 
 
@@ -107,14 +108,14 @@ export class UISliderbar extends UIEntry {
 
 
     if (!parameters.slidermaterial) parameters.slidermaterial = { color: 'black' }
-    const checkmaterial = this.materials.getMaterial('geometry', 'sliderbar', parameters.slidermaterial)
+    const slidermaterial = this.materials.getMaterial('geometry', 'sliderbar', parameters.slidermaterial)
 
     this.sliderradius = parameters.sliderradius != undefined ? parameters.sliderradius : 0.02
     this.orientation = orientation
 
     const slidermesh = new Mesh()
     slidermesh.name = 'slider'
-    slidermesh.material = checkmaterial
+    slidermesh.material = slidermaterial
     this.add(slidermesh)
     slidermesh.position.z = 0.003
 
@@ -162,6 +163,7 @@ export class UISliderbar extends UIEntry {
         }
 
         this.value = value
+        this.dispatchEvent<any>({ type: SliderbarEventType.SLIDER_MOVED, value })
       }
     }
 

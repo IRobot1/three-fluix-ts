@@ -144,9 +144,7 @@ export class UIMediaPlayer extends UIPanel {
 
     slider.createSlider = this.createSlider
 
-    slider.addEventListener(SliderbarEventType.VALUE_CHANGED, () => {
-      if (video.currentTime = slider.value) return
-
+    slider.addEventListener(SliderbarEventType.SLIDER_MOVED, () => {
       video.currentTime = slider.value
       updateCurrentTime()
     })

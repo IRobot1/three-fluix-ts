@@ -18,7 +18,7 @@ export class UIProgressbar extends UISliderbar {
     this.name = parameters.id != undefined ? parameters.id : 'progressbar'
 
     const progressmesh = new Mesh()
-    progressmesh.material = this.materials.getMaterial('geometry', 'progressbar', <MeshBasicMaterialParameters>{ color: 'blue' })
+    progressmesh.material = this.slidermesh.material
     progressmesh.geometry = this.createGeometry(this.panelShape())
     progressmesh.geometry.center()
     this.add(progressmesh)
