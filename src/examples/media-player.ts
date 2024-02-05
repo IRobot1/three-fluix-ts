@@ -52,8 +52,15 @@ export class UIMediaPlayer extends UIPanel {
     video.addEventListener('canplaythrough', () => {
       texture.needsUpdate = true
 
+      this.setButtonToPause()
       video.play();
     })
+
+    video.addEventListener('ended', () => {
+      this.setButtonToPlay()
+      video.pause()
+    })
+
     this.video = video
 
     pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
@@ -71,9 +78,11 @@ export class UIMediaPlayer extends UIPanel {
     playButton.pressed = () => { this.togglePlay() }
     this.playButton = playButton
 
+    this.addEventListener(InteractiveEventType.CLICK, () => { this.togglePlay() })
+
     const currentTime = new UILabel({ text: '0:00 / 00:00', alignX: 'left' }, options)
     controls.add(currentTime)
-    currentTime.position.x = playButton.position.x + this.padding + 0.1
+    currentTime.position.set(playButton.position.x + this.padding + 0.1, 0, 0.001)
     this.currentTime = currentTime
 
     let duration: string
@@ -85,12 +94,11 @@ export class UIMediaPlayer extends UIPanel {
       currentTime.text = `${this.formatTime(video.currentTime)} / ${duration}`
     })
 
-
-    const volumeparams: TextButtonParameters = {
+    const volumeButtonParams: TextButtonParameters = {
       label: { text: this.getVolumeIcon(), isicon: true }, radius: 0.04
     }
 
-    const volumeButton = new UITextButton(volumeparams, pointer, options)
+    const volumeButton = new UITextButton(volumeButtonParams, pointer, options)
     controls.add(volumeButton)
     volumeButton.position.set((controlswidth - volumeButton.width) / 2 - this.padding * 2, 0, 0.001)
 
@@ -123,6 +131,14 @@ export class UIMediaPlayer extends UIPanel {
       return 'volume_down'
     return 'volume_off'
   }
+
+  private setButtonToPlay() {
+    this.playButton.label.text = 'play_arrow' 
+  }
+  private setButtonToPause() {
+    this.playButton.label.text = 'pause'
+  }
+
   private togglePlayButton() {
     this.playButton.label.text = this.playButton.label.text == 'play_arrow' ? 'pause' : 'play_arrow'
   }
@@ -144,8 +160,6 @@ export class UIMediaPlayer extends UIPanel {
   private createVideoElement(): HTMLVideoElement {
     const video: HTMLVideoElement = document.createElement('video');
     video.id = 'video';
-    video.loop = true;
-    video.muted = true;
     video.crossOrigin = 'anonymous';
     video.playsInline = true;
     video.style.display = 'none';
@@ -159,11 +173,12 @@ export class UIMediaPlayer extends UIPanel {
   }
 
   togglePlay() {
-    this.togglePlayButton()
-    if (this.playButton.label.text == 'play_arrow')
+    if (this.playButton.label.text == 'play_arrow') 
       this.video.play()
-    else
+    else if (this.video.duration>0)
       this.video.pause()
+
+    this.togglePlayButton()
   }
 
   load(src: string) {
