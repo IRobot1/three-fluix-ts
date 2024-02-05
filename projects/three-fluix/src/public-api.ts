@@ -23,6 +23,7 @@ export * from './lib/button-menu';
 export * from './lib/number-entry';
 export * from './lib/pagination';
 export * from './lib/panel';
+export * from './lib/progressbar';
 export * from './lib/scrollbar';
 export * from './lib/select';
 export * from './lib/sliderbar';

@@ -1,12 +1,10 @@
 import { Component } from "@angular/core";
 
-import { Mesh, MeshBasicMaterialParameters, Scene, ShapeGeometry } from "three";
+import { Mesh, MeshBasicMaterialParameters, Scene } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
-import { PointerInteraction, PanelParameters, UIOptions, UIPanel, UITextButton, UIButtonMenu, MenuButtonParameters, ButtonMenuParameters, UITextEntry, InputFieldEventType } from "three-fluix";
-import { InteractiveEventType, RoundedRectangleBorderGeometry, TextEntryParameters } from "three-fluix";
+import { TextButtonParameters, PointerInteraction, PanelParameters, UIOptions, UIPanel, UITextButton, UIButtonMenu, MenuButtonParameters, ButtonMenuParameters, UITextEntry, InteractiveEventType, RoundedRectangleBorderGeometry, TextEntryParameters } from "three-fluix";
 import { SVGButtonMenu, SVGButtonParameters } from "./svg-button";
-import { TextButtonParameters } from "../../dist/three-fluix";
 import { MediaPlayerParameters, UIMediaPlayer } from "./media-player";
 
 @Component({
@@ -32,13 +30,19 @@ export class WidgetsScene extends Scene {
     toolbar.position.set(0, 2.2, z)
 
     const mediaparams: MediaPlayerParameters = {
-      width: 4 / 3, 
+      width: 4 / 3,
     }
     const mediaplayer = new UIMediaPlayer(mediaparams, app.pointer, app.uioptions)
     this.add(mediaplayer)
     mediaplayer.position.set(0, 1.5, z)
     mediaplayer.load('assets/sintel.mp4')
+
+    this.addEventListener('dispose', () => {
+      mediaplayer.dispose()
+    })
+
   }
+
 }
 
 interface ToolbarParameters extends PanelParameters {
@@ -238,6 +242,5 @@ class UIMenuPanel extends UIPanel {
     menu.position.y = menu.height / 2
     this.menu = menu
   }
-
 
 }

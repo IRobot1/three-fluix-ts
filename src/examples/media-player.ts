@@ -1,8 +1,9 @@
-import { ButtonMenuParameters, MenuButtonParameters, PanelParameters, PointerInteraction, TextButtonParameters, UIButton, UIButtonMenu, UIOptions, UIPanel } from "three-fluix";
-import { ButtonParameters, InteractiveEventType, UITextButton } from "three-fluix";
-import { MeshBasicMaterial, SRGBColorSpace, Vector3, VideoTexture } from "three";
+import { CircleGeometry, MeshBasicMaterial, SRGBColorSpace, Vector3, VideoTexture } from "three";
+
+import { UILabel, PanelParameters, PointerInteraction, TextButtonParameters, UIButton, UIOptions, UIPanel, ButtonParameters, InteractiveEventType, UITextButton, UISliderbar, UIOrientationType } from "three-fluix";
+
 import { LerpUtils } from "./concept1";
-import { UILabel } from "three-fluix";
+import { UIProgressbar , SliderbarEventType, SliderbarParameters } from "three-fluix";
 
 export interface MediaPlayerParameters extends PanelParameters {
   padding?: number
@@ -15,16 +16,17 @@ export class UIMediaPlayer extends UIPanel {
   protected padding: number
   private controlsposition: Vector3
   private playButton: UITextButton
-  private currentTime: UILabel
+  private slider: UISliderbar
 
   constructor(parameters: MediaPlayerParameters, protected pointer: PointerInteraction, options: UIOptions) {
     const padding = parameters.padding != undefined ? parameters.padding : 0.01
     const width = parameters.width != undefined ? parameters.width : 1
 
     const controlswidth = width - padding * 2
+    const controlsheight = 0.2
     if (!parameters.controls) parameters.controls = {
       fill: { color: 'gray' },
-      height: 0.2, width: controlswidth,
+      height: controlsheight, width: controlswidth,
       selectable: false,
     }
     if (!parameters.id) parameters.id = 'mediaplayer'
@@ -36,7 +38,7 @@ export class UIMediaPlayer extends UIPanel {
     const controls = new UIPanel(parameters.controls, options)
     controls.position.y = -(this.height - controls.height - padding) / 2
     this.add(controls)
-    controls.position.z = -0.01
+    controls.position.z = -0.003
     this.controls = controls
     this.controlsposition = controls.position.clone()
 
@@ -47,25 +49,28 @@ export class UIMediaPlayer extends UIPanel {
 
     const material = this.material as MeshBasicMaterial
     material.map = texture
-    texture.needsUpdate = true
 
-    video.addEventListener('canplaythrough', () => {
+    const canplaythrough = () => {
       texture.needsUpdate = true
 
       this.setButtonToPause()
       video.play();
-    })
+    }
 
-    video.addEventListener('ended', () => {
+    video.addEventListener('canplaythrough', canplaythrough)
+
+    const videoended = () => {
       this.setButtonToPlay()
       video.pause()
-    })
+    }
+    video.addEventListener('ended', videoended)
 
     this.video = video
 
     pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
       const target = this.controlsposition
       LerpUtils.vector3(this.controls.position, target)
+      slider.visible = false
     })
 
     const playparams: TextButtonParameters = {
@@ -83,16 +88,24 @@ export class UIMediaPlayer extends UIPanel {
     const currentTime = new UILabel({ text: '0:00 / 00:00', alignX: 'left' }, options)
     controls.add(currentTime)
     currentTime.position.set(playButton.position.x + this.padding + 0.1, 0, 0.001)
-    this.currentTime = currentTime
 
     let duration: string
-    video.addEventListener('durationchange', (e: any) => {
+    const durationchange = () => {
       duration = this.formatTime(video.duration)
-    })
+      slider.max = video.duration
+    }
 
-    video.addEventListener('timeupdate', (e: any) => {
+    video.addEventListener('durationchange', durationchange)
+
+    const updateCurrentTime = () => {
       currentTime.text = `${this.formatTime(video.currentTime)} / ${duration}`
-    })
+    }
+
+    const timeupdate = () => {
+      slider.value = video.currentTime
+      updateCurrentTime()
+    }
+    video.addEventListener('timeupdate', timeupdate)
 
     const volumeButtonParams: TextButtonParameters = {
       label: { text: this.getVolumeIcon(), isicon: true }, radius: 0.04
@@ -111,16 +124,49 @@ export class UIMediaPlayer extends UIPanel {
         video.volume = lastvolume
       }
       volumeButton.label.text = this.getVolumeIcon()
-      console.warn(video.volume, volumeButton.label.text)
     }
     this.playButton = playButton
 
+    const sliderparams: SliderbarParameters = {
+      width: controlswidth, height: 0.02, radius: 0,
+      fill: { color: 'darkgray' },
+      slidersize: 0.03,
+      sliderradius: 0.05,
+      slidermaterial: { color: 'red' },
+      selectable: false
+    }
+
+    const slider = new UIProgressbar(sliderparams, pointer, options)
+    controls.add(slider)
+    slider.position.set(0, controlsheight / 2, 0.003)
+    slider.visible = false
+    this.slider = slider
+
+    slider.createSlider = this.createSlider
+
+    slider.addEventListener(SliderbarEventType.VALUE_CHANGED, () => {
+      if (video.currentTime = slider.value) return
+
+      video.currentTime = slider.value
+      updateCurrentTime()
+    })
+
+    this._dispose = () => {
+      video.removeEventListener('canplaythrough', canplaythrough)
+      video.removeEventListener('ended', videoended)
+      video.removeEventListener('durationchange', durationchange)
+      video.removeEventListener('timeupdate', timeupdate)
+    }
   }
+
+  private _dispose() { }
 
   override highlight() {
     const target = this.controls.position.clone()
     target.y = -(this.height + this.controls.height) / 2 - this.padding
-    LerpUtils.vector3(this.controls.position, target)
+    LerpUtils.vector3(this.controls.position, target, 0.1, () => {
+      this.slider.visible = true
+    })
   }
 
   getVolumeIcon(): string {
@@ -133,7 +179,7 @@ export class UIMediaPlayer extends UIPanel {
   }
 
   private setButtonToPlay() {
-    this.playButton.label.text = 'play_arrow' 
+    this.playButton.label.text = 'play_arrow'
   }
   private setButtonToPause() {
     this.playButton.label.text = 'pause'
@@ -169,13 +215,15 @@ export class UIMediaPlayer extends UIPanel {
   }
 
   dispose() {
+    this._dispose()
+    this.video.pause()
     document.body.removeChild(this.video)
   }
 
   togglePlay() {
-    if (this.playButton.label.text == 'play_arrow') 
+    if (this.playButton.label.text == 'play_arrow')
       this.video.play()
-    else if (this.video.duration>0)
+    else if (this.video.duration > 0)
       this.video.pause()
 
     this.togglePlayButton()
@@ -196,5 +244,9 @@ export class UIMediaPlayer extends UIPanel {
     return new UIButton(parameters, this.pointer, this.options)
   }
 
-
+  createSlider(orientation: UIOrientationType, width: number, height: number, radius: number) {
+    if (orientation == 'horizontal')
+      return new CircleGeometry(width)
+    return new CircleGeometry(height)
+  }
 }

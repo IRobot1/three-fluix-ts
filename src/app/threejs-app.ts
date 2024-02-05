@@ -28,6 +28,9 @@ export class ThreeJSApp extends WebGLRenderer {
   get scene() { return this._scene }
   set scene(newvalue: Scene | undefined) {
     if (this._scene != newvalue) {
+      if (this._scene) {
+        this._scene.dispatchEvent<any>({ type: 'dispose' })
+      }
       this._scene = newvalue
       this.pointer.scene = newvalue
       this.camera.position.set(0, 1.5, 0)

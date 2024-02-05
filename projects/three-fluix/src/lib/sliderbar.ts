@@ -1,4 +1,4 @@
-import { MathUtils, Mesh, Vector3 } from "three";
+import { BufferGeometry, MathUtils, Mesh, Vector3 } from "three";
 
 import { InteractiveEventType, InteractiveLayers, PointerInteraction } from "./pointer-interaction";
 import { PanelOptions } from "./panel";
@@ -83,15 +83,18 @@ export class UISliderbar extends UIEntry {
     if (this._slidersize != newvalue) {
       this._slidersize = newvalue
       if (this.orientation == 'horizontal')
-        this.slidermesh.geometry = new RoundedRectangleGeometry(newvalue, this.height * 0.9, this.sliderradius)
+        this.slidermesh.geometry = this.createSlider(this.orientation, newvalue, this.height * 0.9, this.sliderradius)
       else
-        this.slidermesh.geometry = new RoundedRectangleGeometry(this.width * 0.9, newvalue, this.sliderradius)
+        this.slidermesh.geometry = this.createSlider(this.orientation, this.width * 0.9, newvalue, this.sliderradius)
       this.updateSliderPosition(this.value)
     }
   }
+
+  orientation: UIOrientationType
+
   private slidermesh: Mesh
   private sliderradius: number
-  private orientation: UIOrientationType
+
 
   constructor(parameters: SliderbarParameters, pointer: PointerInteraction, options: SliderbarOptions = {}) {
     const orientation = parameters.orientation != undefined ? parameters.orientation : 'horizontal'
@@ -104,7 +107,7 @@ export class UISliderbar extends UIEntry {
 
 
     if (!parameters.slidermaterial) parameters.slidermaterial = { color: 'black' }
-    const checkmaterial = this.materials.getMaterial('geometry', 'slider', parameters.slidermaterial)
+    const checkmaterial = this.materials.getMaterial('geometry', 'sliderbar', parameters.slidermaterial)
 
     this.sliderradius = parameters.sliderradius != undefined ? parameters.sliderradius : 0.02
     this.orientation = orientation
@@ -113,11 +116,13 @@ export class UISliderbar extends UIEntry {
     slidermesh.name = 'slider'
     slidermesh.material = checkmaterial
     this.add(slidermesh)
-    slidermesh.position.z = 0.001
+    slidermesh.position.z = 0.003
 
     // store the mesh and set its initial geometry by setting slider size
     this.slidermesh = slidermesh
-    this.slidersize = parameters.slidersize != undefined ? parameters.slidersize : 0.1
+    requestAnimationFrame(() => {
+      this.slidersize = parameters.slidersize != undefined ? parameters.slidersize : 0.1
+    })
 
     slidermesh.layers.enable(InteractiveLayers.SELECTABLE)
     slidermesh.layers.enable(InteractiveLayers.DRAGGABLE)
@@ -237,9 +242,8 @@ export class UISliderbar extends UIEntry {
     }
   }
 
-//  override dispose() {
-//    super.dispose()
-//    this.interactive.selectable.remove(this.slidermesh)
-//    this.interactive.draggable.remove(this.slidermesh)
-//  }
+  // overridables
+  createSlider(orientation: UIOrientationType, width: number, height: number, radius: number): BufferGeometry {
+    return new RoundedRectangleGeometry(width, height, radius)
+  }
 }
