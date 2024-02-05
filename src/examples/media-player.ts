@@ -2,6 +2,7 @@ import { ButtonMenuParameters, MenuButtonParameters, PanelParameters, PointerInt
 import { ButtonParameters, InteractiveEventType, UITextButton } from "three-fluix";
 import { MeshBasicMaterial, SRGBColorSpace, Vector3, VideoTexture } from "three";
 import { LerpUtils } from "./concept1";
+import { UILabel } from "three-fluix";
 
 export interface MediaPlayerParameters extends PanelParameters {
   padding?: number
@@ -14,6 +15,7 @@ export class UIMediaPlayer extends UIPanel {
   protected padding: number
   private controlsposition: Vector3
   private playButton: UITextButton
+  private currentTime: UILabel
 
   constructor(parameters: MediaPlayerParameters, protected pointer: PointerInteraction, options: UIOptions) {
     const padding = parameters.padding != undefined ? parameters.padding : 0.01
@@ -50,7 +52,6 @@ export class UIMediaPlayer extends UIPanel {
     video.addEventListener('canplaythrough', () => {
       texture.needsUpdate = true
 
-      console.log('Video is fully loaded and can play through.');
       video.play();
     })
     this.video = video
@@ -60,35 +61,52 @@ export class UIMediaPlayer extends UIPanel {
       LerpUtils.vector3(this.controls.position, target)
     })
 
-    const items: Array<MenuButtonParameters> = [
-      {
-        button: <TextButtonParameters>{
-          label: { text: 'skip_previous', isicon: true },
-        }
-      },
-      {
-        button: <TextButtonParameters>{
-          label: { text: 'play_arrow', isicon: true }, width: 0.15, height: 0.15, radius: 0.07
-        }
-      },
-      {
-        button: <TextButtonParameters>{
-          label: { text: 'skip_next', isicon: true },
-        }
-      },
-    ]
-    const controlButtons = new UIButtonMenu({ items }, pointer, options)
-    controls.add(controlButtons)
-    controlButtons.position.x = -controlswidth / 2 + this.padding * 2
-    controlButtons.position.z = 0.001
+    const playparams: TextButtonParameters = {
+      label: { text: 'play_arrow', isicon: true, size: 0.1 }, width: 0.15, height: 0.15, radius: 0.07,
+    }
+    const playButton = new UITextButton(playparams, pointer, options)
+    controls.add(playButton)
+    playButton.position.set(-(controlswidth - playButton.width) / 2 + this.padding * 2, 0, 0.001)
 
-    const skipPrevious = controlButtons.buttons[0] as UITextButton
-    this.playButton = controlButtons.buttons[1] as UITextButton
-    const skipNext = controlButtons.buttons[2] as UITextButton
+    playButton.pressed = () => { this.togglePlay() }
+    this.playButton = playButton
 
-    this.playButton.pressed = () => { this.togglePlay() }
+    const currentTime = new UILabel({ text: '0:00 / 00:00', alignX: 'left' }, options)
+    controls.add(currentTime)
+    currentTime.position.x = playButton.position.x + this.padding + 0.1
+    this.currentTime = currentTime
 
-    skipPrevious.pressed = () => { }
+    let duration: string
+    video.addEventListener('durationchange', (e: any) => {
+      duration = this.formatTime(video.duration)
+    })
+
+    video.addEventListener('timeupdate', (e: any) => {
+      currentTime.text = `${this.formatTime(video.currentTime)} / ${duration}`
+    })
+
+
+    const volumeparams: TextButtonParameters = {
+      label: { text: this.getVolumeIcon(), isicon: true }, radius: 0.04
+    }
+
+    const volumeButton = new UITextButton(volumeparams, pointer, options)
+    controls.add(volumeButton)
+    volumeButton.position.set((controlswidth - volumeButton.width) / 2 - this.padding * 2, 0, 0.001)
+
+    let lastvolume = video.volume
+    volumeButton.pressed = () => {
+      if (video.volume > 0) {
+        video.volume = 0
+      }
+      else {
+        video.volume = lastvolume
+      }
+      volumeButton.label.text = this.getVolumeIcon()
+      console.warn(video.volume, volumeButton.label.text)
+    }
+    this.playButton = playButton
+
   }
 
   override highlight() {
@@ -97,8 +115,30 @@ export class UIMediaPlayer extends UIPanel {
     LerpUtils.vector3(this.controls.position, target)
   }
 
+  getVolumeIcon(): string {
+    const volume = this.video.volume
+    if (volume > 0.5)
+      return 'volume_up'
+    else if (volume > 0)
+      return 'volume_down'
+    return 'volume_off'
+  }
   private togglePlayButton() {
     this.playButton.label.text = this.playButton.label.text == 'play_arrow' ? 'pause' : 'play_arrow'
+  }
+
+  private formatTime(currentTime: number): string {
+    const hours = Math.floor(currentTime / 3600);
+    const minutes = Math.floor((currentTime % 3600) / 60);
+    const secondsLeft = Math.floor(currentTime % 60);
+
+    // Pad each value with leading zeros to ensure they are at least two digits long, except hours which can be variable length
+    const paddedHours = String(hours).padStart(2, '0');
+    const paddedMinutes = String(minutes).padStart(2, '0');
+    const paddedSeconds = String(secondsLeft).padStart(2, '0');
+
+    // If there are hours, include them, otherwise just show minutes and seconds
+    return `${hours > 0 ? paddedHours + ':' : ''}${paddedMinutes}:${paddedSeconds}`;
   }
 
   private createVideoElement(): HTMLVideoElement {
