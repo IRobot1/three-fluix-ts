@@ -15,12 +15,12 @@ export class WidgetsScene extends Scene {
   constructor(private app: ThreeJSApp) {
     super()
 
-    const z = -0.5
+    const z = -0.8
 
     app.scene = this
 
     const home = app.showHome(this)
-    home.position.set(-0.1, 2.4, z)
+    home.position.set(-0.1, 2.5, z)
 
     //app.camera.position.y = 2
     app.camera.position.z = 1
@@ -30,7 +30,7 @@ export class WidgetsScene extends Scene {
     toolbar.position.set(0, 2.2, z)
 
     const mediaparams: MediaPlayerParameters = {
-      width: 4 / 3,
+      width: 16 / 9,
     }
     const mediaplayer = new UIMediaPlayer(mediaparams, app.pointer, app.uioptions)
     this.add(mediaplayer)

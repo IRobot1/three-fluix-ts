@@ -4,14 +4,11 @@ import { PointerInteraction } from "./pointer-interaction";
 import { SliderbarParameters } from "./model";
 import { SliderbarEventType, SliderbarOptions, UISliderbar } from "./sliderbar";
 
-export interface ProgressbarParameters extends SliderbarParameters {
-
-}
 export class UIProgressbar extends UISliderbar {
   override inputtype: string = 'progressbar'
 
 
-  constructor(parameters: ProgressbarParameters, pointer: PointerInteraction, options: SliderbarOptions) {
+  constructor(parameters: SliderbarParameters, pointer: PointerInteraction, options: SliderbarOptions) {
 
     super(parameters, pointer, options)
 
@@ -22,6 +19,7 @@ export class UIProgressbar extends UISliderbar {
     progressmesh.geometry = this.createGeometry(this.panelShape())
     progressmesh.geometry.center()
     this.add(progressmesh)
+    progressmesh.position.z = 0.001
     progressmesh.scale.x = 0
 
     this.addEventListener(SliderbarEventType.VALUE_CHANGED, () => {
