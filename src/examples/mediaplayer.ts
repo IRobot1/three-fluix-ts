@@ -2,11 +2,10 @@ import { Component } from "@angular/core";
 
 import { Scene } from "three";
 
-import { GUI, UIColorPicker, UIProperties } from "three-fluix";
+import { GUI, UIColorPicker, UIProperties, PropertiesParameters } from "three-fluix";
 
 import { ThreeJSApp } from "../app/threejs-app";
 import { MediaPlayerParameters, UIMediaPlayer } from "./media-player";
-import { PropertiesParameters } from "../../dist/three-fluix";
 import { MathUtils } from "three/src/math/MathUtils";
 
 @Component({
@@ -76,7 +75,7 @@ export class MediaPlayerScene extends Scene {
     const properties = new UIProperties(propertiesParams, app.pointer, app.uioptions, gui)
     properties.getColorPicker = () => { return colorpicker }
     this.add(properties)
-    properties.position.set(0.9, 1.2, z+0.2)
+    properties.position.set(0.9, 1.2, z + 0.2)
     properties.scale.setScalar(0.3)
     properties.rotation.y = MathUtils.degToRad(-45)
 

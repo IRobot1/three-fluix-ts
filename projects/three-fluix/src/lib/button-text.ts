@@ -59,6 +59,6 @@ export class UITextButton extends UIButton {
   }
 
   override applyDisabled() {
-    this.label.material = this.disabled ? this.disabledMaterial : this.enabledMaterial
+    this.material = this.disabled ? this.disabledMaterial : this.enabledMaterial
   }
 }
