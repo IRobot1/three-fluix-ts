@@ -1,30 +1,38 @@
-import { CircleGeometry, MeshBasicMaterial, SRGBColorSpace, Vector3, VideoTexture } from "three";
+import { CircleGeometry, SRGBColorSpace, Vector3, VideoTexture } from "three";
 
-import { UILabel, PanelParameters, PointerInteraction, TextButtonParameters, UIOptions, UIPanel, InteractiveEventType, UITextButton, UISliderbar, UIOrientationType, LabelParameters, UIProgressbar, SliderbarEventType, SliderbarParameters } from "three-fluix";
+import { InteractiveEventType, LabelParameters, PanelParameters, PointerInteraction, SliderbarEventType, SliderbarParameters, TextButtonParameters, UILabel, UIOptions, UIOrientationType, UIPanel, UIProgressbar, UISliderbar, UITextButton } from "three-fluix";
 
 import { LerpUtils } from "./concept1";
 
 export interface MediaPlayerParameters extends PanelParameters {
-  padding?: number
-  controls?: PanelParameters
+  controls?: PanelParameters     // control panel settings
+  play?: TextButtonParameters    // play button settings
+  playIcon?: string              // default is play_arrow
+  pauseIcon?: string             // default is pause
+  currentTime?: LabelParameters  // current time label settings
+  volume?: TextButtonParameters  // volume button settings
+  volumeUpIcon?: string          // volume up icon
+  volumeDownIcon?: string        // volume down icon
+  volumeOffIcon?: string         // volume off icon
+  slider?: SliderbarParameters   // time and volume slider settings
 }
 
 export class UIMediaPlayer extends UIPanel {
   protected video: HTMLVideoElement
   protected controls: UIPanel
-  protected padding: number
   private controlsposition: Vector3
   private playButton: UITextButton
   private progressSlider: UISliderbar
+  private padding:number
 
   constructor(parameters: MediaPlayerParameters, protected pointer: PointerInteraction, options: UIOptions) {
-    const padding = parameters.padding != undefined ? parameters.padding : 0.01
     const width = parameters.width != undefined ? parameters.width : 1
 
     if (!parameters.id) parameters.id = 'mediaplayer'
 
     super(parameters, options)
 
+    const padding = 0.01
     this.padding = padding
 
     const video = this.createVideoElement()
@@ -32,20 +40,20 @@ export class UIMediaPlayer extends UIPanel {
     texture.colorSpace = SRGBColorSpace;
     texture.repeat.set(1 / this.width, 1 / this.height)
 
-    const material = this.material as MeshBasicMaterial
-    material.map = texture
+    // @ts-ignore
+    this.material.map = texture
 
     const canplaythrough = () => {
       texture.needsUpdate = true
 
-      this.setButtonToPause()
+      this.setButtonToPause(pauseIcon)
       video.play();
     }
 
     video.addEventListener('canplaythrough', canplaythrough)
 
     const videoended = () => {
-      this.setButtonToPlay()
+      this.setButtonToPlay(playIcon)
       video.pause()
     }
     video.addEventListener('ended', videoended)
@@ -87,13 +95,14 @@ export class UIMediaPlayer extends UIPanel {
     // control panel
 
     const controlswidth = width - padding * 2
-    const controlsheight = 0.2
 
     if (!parameters.controls) parameters.controls = {}
     if (!parameters.controls.fill) parameters.controls.fill = { color: 'gray' }
-    if (parameters.controls.height == undefined) parameters.controls.height = controlsheight
-    if (parameters.controls.width == undefined) parameters.controls.width = controlswidth
+    if (parameters.controls.height == undefined) parameters.controls.height = 0.25
+    parameters.controls.width = controlswidth
     parameters.controls.selectable = false
+
+    const controlsheight = parameters.controls.height
 
     const controls = this.createPanel(parameters.controls)
     controls.position.y = -(this.height - controls.height - padding) / 2
@@ -103,31 +112,50 @@ export class UIMediaPlayer extends UIPanel {
     this.controlsposition = controls.position.clone()
 
     // play/pause button
-    const playparams: TextButtonParameters = {
-      label: { text: 'play_arrow', isicon: true, size: 0.1 }, width: 0.15, height: 0.15, radius: 0.07,
-    }
-    const playButton = this.createTextButton(playparams)
-    controls.add(playButton)
-    playButton.position.set(-(controlswidth - playButton.width) / 2 + this.padding * 2, 0, 0.001)
+    const playIcon = parameters.playIcon ? parameters.playIcon : 'play_arrow'
+    const pauseIcon = parameters.pauseIcon ? parameters.pauseIcon : 'pause'
 
-    playButton.pressed = () => { this.togglePlay() }
+    if (!parameters.play) parameters.play = { label: {} }
+    parameters.play.label.text = playIcon
+    parameters.play.label.isicon = true
+    if (parameters.play.label.size == undefined) parameters.play.label.size = 0.1
+    if (parameters.play.width == undefined) parameters.play.width = 0.15
+    if (parameters.play.height == undefined) parameters.play.height = 0.15
+    if (parameters.play.radius == undefined) parameters.play.radius = 0.07
+
+    const playButton = this.createTextButton(parameters.play)
+    controls.add(playButton)
+    playButton.position.set(-(controlswidth - playButton.width) / 2 + padding * 2, 0, 0.001)
+
+    playButton.pressed = () => { this.togglePlay(playIcon, pauseIcon) }
     this.playButton = playButton
 
-    this.addEventListener(InteractiveEventType.CLICK, () => { this.togglePlay() })
+    this.addEventListener(InteractiveEventType.CLICK, () => {
+      this.togglePlay(playIcon, pauseIcon)
+    })
 
     // time display
-    const currentTime = this.createLabel({ text: '0:00 / 00:00', alignX: 'left' })
+    if (!parameters.currentTime) parameters.currentTime = {}
+    parameters.currentTime.text = '0:00 / 00:00'
+    parameters.currentTime.alignX = 'left'
+
+    const currentTime = this.createLabel(parameters.currentTime)
     controls.add(currentTime)
-    currentTime.position.set(playButton.position.x + this.padding + 0.1, 0, 0.001)
+    currentTime.position.set(playButton.position.x + padding + 0.1, 0, 0.001)
 
     // volume button
-    const volumeButtonParams: TextButtonParameters = {
-      label: { text: this.getVolumeIcon(), isicon: true }, radius: 0.04
-    }
+    const volumeUpIcon = parameters.volumeUpIcon ? parameters.volumeUpIcon : 'volume_up'
+    const volumeDownIcon = parameters.volumeDownIcon ? parameters.volumeDownIcon : 'volume_down'
+    const volumeOffIcon = parameters.volumeOffIcon ? parameters.volumeOffIcon : 'volume_off'
 
-    const volumeButton = this.createTextButton(volumeButtonParams)
+    if (!parameters.volume) parameters.volume = { label: {} }
+    if (parameters.volume.radius == undefined) parameters.volume.radius = 0.04
+    parameters.volume.label.text = this.getVolumeIcon(volumeUpIcon, volumeDownIcon, volumeOffIcon)
+    parameters.volume.label.isicon = true
+
+    const volumeButton = this.createTextButton(parameters.volume)
     controls.add(volumeButton)
-    volumeButton.position.set((controlswidth - volumeButton.width) / 2 - this.padding * 2, 0, 0.001)
+    volumeButton.position.set((controlswidth - volumeButton.width) / 2 - padding * 2, 0, 0.001)
 
     let lastvolume = video.volume
     volumeButton.pressed = () => {
@@ -139,21 +167,22 @@ export class UIMediaPlayer extends UIPanel {
         video.volume = lastvolume
       }
       volumeSlider.value = video.volume
-      volumeButton.label.text = this.getVolumeIcon()
+      volumeButton.label.text = this.getVolumeIcon(volumeUpIcon, volumeDownIcon, volumeOffIcon)
     }
     this.playButton = playButton
 
     // video time position slider
-    const sliderparams: SliderbarParameters = {
-      width: controlswidth, height: 0.02, radius: 0,
-      fill: { color: 'darkgray' },
-      slidersize: 0.03,
-      sliderradius: 0.05,
-      slidermaterial: { color: 'red' },
-      selectable: false
-    }
+    if (!parameters.slider) parameters.slider = {}
+    if (!parameters.slider.height) parameters.slider.height = 0.02
+    if (!parameters.slider.radius) parameters.slider.radius = 0
+    if (!parameters.slider.fill) parameters.slider.fill = { color: 'black' }
+    if (!parameters.slider.slidersize) parameters.slider.slidersize = 0.03
+    if (!parameters.slider.sliderradius) parameters.slider.sliderradius = 0.05
+    if (!parameters.slider.slidermaterial) parameters.slider.slidermaterial = { color: 'white' }
+    parameters.slider.width = controlswidth
+    parameters.slider.selectable= false
 
-    const progressSlider = this.createProgressbar(sliderparams)
+    const progressSlider = this.createProgressbar(parameters.slider)
     controls.add(progressSlider)
     progressSlider.position.set(0, controlsheight / 2, 0.003)
     progressSlider.visible = false
@@ -168,43 +197,43 @@ export class UIMediaPlayer extends UIPanel {
 
     // volume slider
     const volumeSliderWidth = 0.2
-    sliderparams.width = volumeSliderWidth
-    sliderparams.max = 1
-    sliderparams.step = 0
-    sliderparams.initialvalue = video.volume
-    const volumeSlider = this.createProgressbar(sliderparams)
+    parameters.slider.width = volumeSliderWidth
+    parameters.slider.max = 1
+    parameters.slider.step = 0
+    parameters.slider.initialvalue = video.volume
+    const volumeSlider = this.createProgressbar(parameters.slider)
     controls.add(volumeSlider)
-    volumeSlider.position.set((controlswidth - volumeSliderWidth) / 2 - volumeButton.width - this.padding * 5, 0, 0.001)
+    volumeSlider.position.set((controlswidth - volumeSliderWidth) / 2 - volumeButton.width - padding * 5, 0, 0.001)
 
     volumeSlider.createSlider = this.createSlider
 
     volumeSlider.addEventListener(SliderbarEventType.SLIDER_MOVED, () => {
       video.volume = volumeSlider.value
-      volumeButton.label.text = this.getVolumeIcon()
+      volumeButton.label.text = this.getVolumeIcon(volumeUpIcon, volumeDownIcon, volumeOffIcon)
     })
 
   }
 
   private _dispose() { }
 
-  private getVolumeIcon(): string {
+  private getVolumeIcon(volumeUpIcon: string, volumeDownIcon: string, volumeOffIcon:string): string {
     const volume = this.video.volume
     if (volume > 0.5)
-      return 'volume_up'
+      return volumeUpIcon
     else if (volume > 0)
-      return 'volume_down'
-    return 'volume_off'
+      return volumeDownIcon
+    return volumeOffIcon
   }
 
-  private setButtonToPlay() {
-    this.playButton.label.text = 'play_arrow'
+  private setButtonToPlay(playicon: string) {
+    this.playButton.label.text = playicon
   }
-  private setButtonToPause() {
-    this.playButton.label.text = 'pause'
+  private setButtonToPause(pauseicon: string) {
+    this.playButton.label.text = pauseicon
   }
 
-  private togglePlayButton() {
-    this.playButton.label.text = this.playButton.label.text == 'play_arrow' ? 'pause' : 'play_arrow'
+  private togglePlayButton(playIcon:string, pauseIcon:string) {
+    this.playButton.label.text = this.playButton.label.text == playIcon ? pauseIcon : playIcon
   }
 
   private formatTime(currentTime: number): string {
@@ -232,13 +261,13 @@ export class UIMediaPlayer extends UIPanel {
     return video
   }
 
-  private togglePlay() {
-    if (this.playButton.label.text == 'play_arrow')
+  private togglePlay(playIcon: string, pauseIcon: string) {
+    if (this.playButton.label.text == playIcon)
       this.video.play()
     else if (this.video.duration > 0)
       this.video.pause()
 
-    this.togglePlayButton()
+    this.togglePlayButton(playIcon, pauseIcon)
   }
 
 
