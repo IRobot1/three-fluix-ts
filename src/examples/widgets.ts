@@ -5,7 +5,6 @@ import { Mesh, MeshBasicMaterialParameters, Scene } from "three";
 import { ThreeJSApp } from "../app/threejs-app";
 import { TextButtonParameters, PointerInteraction, PanelParameters, UIOptions, UIPanel, UITextButton, UIButtonMenu, MenuButtonParameters, ButtonMenuParameters, UITextEntry, InteractiveEventType, RoundedRectangleBorderGeometry, TextEntryParameters } from "three-fluix";
 import { SVGButtonMenu, SVGButtonParameters } from "./svg-button";
-import { MediaPlayerParameters, UIMediaPlayer } from "./media-player";
 
 @Component({
   template: '',
@@ -29,17 +28,6 @@ export class WidgetsScene extends Scene {
     this.add(toolbar)
     toolbar.position.set(0, 2.2, z)
 
-    const mediaparams: MediaPlayerParameters = {
-      width: 16 / 9,
-    }
-    const mediaplayer = new UIMediaPlayer(mediaparams, app.pointer, app.uioptions)
-    this.add(mediaplayer)
-    mediaplayer.position.set(0, 1.5, z)
-    mediaplayer.load('assets/sintel.mp4')
-
-    this.addEventListener('dispose', () => {
-      mediaplayer.dispose()
-    })
 
   }
 
