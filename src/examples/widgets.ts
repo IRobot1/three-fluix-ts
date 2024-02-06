@@ -35,10 +35,7 @@ export class WidgetsScene extends Scene {
     const mediaplayer = new UIMediaPlayer(mediaparams, app.pointer, app.uioptions)
     this.add(mediaplayer)
     mediaplayer.position.set(0, 1.5, z)
-    setTimeout(() => {
-
     mediaplayer.load('assets/sintel.mp4')
-    }, 2000)
 
     this.addEventListener('dispose', () => {
       mediaplayer.dispose()

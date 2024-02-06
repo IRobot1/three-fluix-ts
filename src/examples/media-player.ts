@@ -18,12 +18,19 @@ export interface MediaPlayerParameters extends PanelParameters {
 }
 
 export class UIMediaPlayer extends UIPanel {
+  readonly controls: UIPanel
+  readonly playButton: UITextButton
+  readonly currentTime: UILabel
+  readonly volumeSlider: UISliderbar
+  readonly volumeButton: UITextButton
+  readonly progressSlider: UISliderbar
+
   protected video: HTMLVideoElement
-  protected controls: UIPanel
+
+  private padding: number
   private controlsposition: Vector3
-  private playButton: UITextButton
-  private progressSlider: UISliderbar
-  private padding:number
+  private playIcon: string
+  private pauseIcon: string
 
   constructor(parameters: MediaPlayerParameters, protected pointer: PointerInteraction, options: UIOptions) {
     const width = parameters.width != undefined ? parameters.width : 1
@@ -113,7 +120,9 @@ export class UIMediaPlayer extends UIPanel {
 
     // play/pause button
     const playIcon = parameters.playIcon ? parameters.playIcon : 'play_arrow'
+    this.playIcon = playIcon
     const pauseIcon = parameters.pauseIcon ? parameters.pauseIcon : 'pause'
+    this.pauseIcon = pauseIcon
 
     if (!parameters.play) parameters.play = { label: {} }
     parameters.play.label.text = playIcon
@@ -128,11 +137,11 @@ export class UIMediaPlayer extends UIPanel {
     controls.add(playButton)
     playButton.position.set(-(controlswidth - playButton.width) / 2 + padding * 2, 0, 0.001)
 
-    playButton.pressed = () => { this.togglePlay(playIcon, pauseIcon) }
+    playButton.pressed = () => { this.togglePlay() }
     this.playButton = playButton
 
     this.addEventListener(InteractiveEventType.CLICK, () => {
-      this.togglePlay(playIcon, pauseIcon)
+      this.togglePlay()
     })
 
     // time display
@@ -143,6 +152,7 @@ export class UIMediaPlayer extends UIPanel {
     const currentTime = this.createLabel(parameters.currentTime)
     controls.add(currentTime)
     currentTime.position.set(playButton.position.x + padding + 0.1, 0, 0.001)
+    this.currentTime = currentTime
 
     // volume button
     const volumeUpIcon = parameters.volumeUpIcon ? parameters.volumeUpIcon : 'volume_up'
@@ -157,6 +167,7 @@ export class UIMediaPlayer extends UIPanel {
     const volumeButton = this.createTextButton(parameters.volume)
     controls.add(volumeButton)
     volumeButton.position.set((controlswidth - volumeButton.width) / 2 - padding * 2, 0, 0.001)
+    this.volumeButton = volumeButton
 
     let lastvolume = video.volume
     volumeButton.pressed = () => {
@@ -206,7 +217,9 @@ export class UIMediaPlayer extends UIPanel {
     const volumeSlider = this.createProgressbar(parameters.slider)
     controls.add(volumeSlider)
     volumeSlider.position.set((controlswidth - volumeSliderWidth) / 2 - volumeButton.width - padding * 5, 0, 0.001)
+    this.volumeSlider = volumeSlider
 
+    // override to draw a circle instead of bar
     volumeSlider.createSlider = this.createSlider
 
     volumeSlider.addEventListener(SliderbarEventType.SLIDER_MOVED, () => {
@@ -263,19 +276,22 @@ export class UIMediaPlayer extends UIPanel {
     return video
   }
 
-  private togglePlay(playIcon: string, pauseIcon: string) {
+  // public
+
+  togglePlay() {
     if (!this.video.duration) return
 
-    if (this.playButton.label.text == playIcon)
+    if (this.playButton.label.text == this.playIcon)
       this.video.play()
     else if (this.video.duration > 0)
       this.video.pause()
 
-    this.togglePlayButton(playIcon, pauseIcon)
+    this.togglePlayButton(this.playIcon, this.pauseIcon)
   }
 
-
-  // public
+  load(src: string) {
+    this.video.src = src
+  }
 
   override highlight() {
     const target = this.controls.position.clone()
@@ -290,11 +306,6 @@ export class UIMediaPlayer extends UIPanel {
     this.video.pause()
     document.body.removeChild(this.video)
   }
-
-  load(src: string) {
-    this.video.src = src
-  }
-
 
   // overridables
 
