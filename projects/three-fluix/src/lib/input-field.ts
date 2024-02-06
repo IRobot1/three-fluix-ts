@@ -41,6 +41,7 @@ export abstract class UIEntry extends UIPanel implements InputField {
   set disabled(newvalue: boolean) {
     if (this._disabled != newvalue) {
       this._disabled = newvalue
+      this.selectable = true
 
       this.applyDisabled()
       this.dispatchEvent<any>({ type: InputFieldEventType.DISABLE_CHANGED, active: newvalue })

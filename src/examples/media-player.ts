@@ -45,7 +45,7 @@ export class UIMediaPlayer extends UIPanel {
 
     const canplaythrough = () => {
       texture.needsUpdate = true
-
+      playButton.disabled = false
       this.setButtonToPause(pauseIcon)
       video.play();
     }
@@ -65,7 +65,7 @@ export class UIMediaPlayer extends UIPanel {
       progressSlider.visible = false
     })
 
-    let duration: string
+    let duration = this.formatTime(0)
     const durationchange = () => {
       duration = this.formatTime(video.duration)
       progressSlider.max = video.duration
@@ -122,6 +122,7 @@ export class UIMediaPlayer extends UIPanel {
     if (parameters.play.width == undefined) parameters.play.width = 0.15
     if (parameters.play.height == undefined) parameters.play.height = 0.15
     if (parameters.play.radius == undefined) parameters.play.radius = 0.07
+    parameters.play.disabled = true
 
     const playButton = this.createTextButton(parameters.play)
     controls.add(playButton)
@@ -179,6 +180,7 @@ export class UIMediaPlayer extends UIPanel {
     if (!parameters.slider.slidersize) parameters.slider.slidersize = 0.03
     if (!parameters.slider.sliderradius) parameters.slider.sliderradius = 0.05
     if (!parameters.slider.slidermaterial) parameters.slider.slidermaterial = { color: 'white' }
+    parameters.slider.max = 0
     parameters.slider.width = controlswidth
     parameters.slider.selectable= false
 
@@ -232,7 +234,7 @@ export class UIMediaPlayer extends UIPanel {
     this.playButton.label.text = pauseicon
   }
 
-  private togglePlayButton(playIcon:string, pauseIcon:string) {
+  private togglePlayButton(playIcon: string, pauseIcon: string) {
     this.playButton.label.text = this.playButton.label.text == playIcon ? pauseIcon : playIcon
   }
 
@@ -262,6 +264,8 @@ export class UIMediaPlayer extends UIPanel {
   }
 
   private togglePlay(playIcon: string, pauseIcon: string) {
+    if (!this.video.duration) return
+
     if (this.playButton.label.text == playIcon)
       this.video.play()
     else if (this.video.duration > 0)
