@@ -1,4 +1,4 @@
-import { BufferGeometry, MathUtils, Mesh, Vector3 } from "three";
+import { BufferGeometry, ColorRepresentation, MathUtils, Mesh, MeshBasicMaterial, Vector3 } from "three";
 
 import { InteractiveEventType, InteractiveLayers, PointerInteraction } from "./pointer-interaction";
 import { PanelOptions } from "./panel";
@@ -91,8 +91,17 @@ export class UISliderbar extends UIEntry {
     }
   }
 
-  orientation: UIOrientationType
+  get sliderColor() {
+    // @ts-ignore
+    return this.slidermesh.material.color
+  }
 
+  set sliderColor(color: ColorRepresentation) {
+    // @ts-ignore
+    this.slidermesh.material.color.set(color)
+  }
+
+  readonly orientation: UIOrientationType
   protected slidermesh: Mesh
   private sliderradius: number
 

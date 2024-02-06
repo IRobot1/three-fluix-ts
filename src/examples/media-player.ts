@@ -104,7 +104,7 @@ export class UIMediaPlayer extends UIPanel {
     const controlswidth = width - padding * 2
 
     if (!parameters.controls) parameters.controls = {}
-    if (!parameters.controls.fill) parameters.controls.fill = { color: 'gray' }
+    if (!parameters.controls.fill) parameters.controls.fill = { color: 0x888888 }
     if (parameters.controls.height == undefined) parameters.controls.height = 0.25
     parameters.controls.width = controlswidth
     parameters.controls.selectable = false
@@ -127,11 +127,13 @@ export class UIMediaPlayer extends UIPanel {
     if (!parameters.play) parameters.play = { label: {} }
     parameters.play.label.text = playIcon
     parameters.play.label.isicon = true
+    parameters.play.label.id = 'mediaplayer-icon'
     if (parameters.play.label.size == undefined) parameters.play.label.size = 0.1
     if (parameters.play.width == undefined) parameters.play.width = 0.15
     if (parameters.play.height == undefined) parameters.play.height = 0.15
     if (parameters.play.radius == undefined) parameters.play.radius = 0.07
     parameters.play.disabled = true
+    parameters.play.id = 'mediaplayer-button'
 
     const playButton = this.createTextButton(parameters.play)
     controls.add(playButton)
@@ -148,6 +150,7 @@ export class UIMediaPlayer extends UIPanel {
     if (!parameters.currentTime) parameters.currentTime = {}
     parameters.currentTime.text = '0:00 / 00:00'
     parameters.currentTime.alignX = 'left'
+    parameters.currentTime.id = 'mediaplayer-label'
 
     const currentTime = this.createLabel(parameters.currentTime)
     controls.add(currentTime)
@@ -163,6 +166,8 @@ export class UIMediaPlayer extends UIPanel {
     if (parameters.volume.radius == undefined) parameters.volume.radius = 0.04
     parameters.volume.label.text = this.getVolumeIcon(volumeUpIcon, volumeDownIcon, volumeOffIcon)
     parameters.volume.label.isicon = true
+    parameters.volume.label.id = 'mediaplayer-icon'
+    parameters.volume.id = 'mediaplayer-button'
 
     const volumeButton = this.createTextButton(parameters.volume)
     controls.add(volumeButton)
@@ -187,13 +192,14 @@ export class UIMediaPlayer extends UIPanel {
     if (!parameters.slider) parameters.slider = {}
     if (!parameters.slider.height) parameters.slider.height = 0.02
     if (!parameters.slider.radius) parameters.slider.radius = 0
-    if (!parameters.slider.fill) parameters.slider.fill = { color: 'black' }
+    if (!parameters.slider.fill) parameters.slider.fill = { color: 0x000000 }
     if (!parameters.slider.slidersize) parameters.slider.slidersize = 0.03
     if (!parameters.slider.sliderradius) parameters.slider.sliderradius = 0.05
-    if (!parameters.slider.slidermaterial) parameters.slider.slidermaterial = { color: 'white' }
+    if (!parameters.slider.slidermaterial) parameters.slider.slidermaterial = { color: 0xffffff }
     parameters.slider.max = 0
     parameters.slider.width = controlswidth
-    parameters.slider.selectable= false
+    parameters.slider.selectable = false
+    parameters.slider.id = 'mediaplayer-progress'
 
     const progressSlider = this.createProgressbar(parameters.slider)
     controls.add(progressSlider)
@@ -214,6 +220,7 @@ export class UIMediaPlayer extends UIPanel {
     parameters.slider.max = 1
     parameters.slider.step = 0
     parameters.slider.initialvalue = video.volume
+
     const volumeSlider = this.createProgressbar(parameters.slider)
     controls.add(volumeSlider)
     volumeSlider.position.set((controlswidth - volumeSliderWidth) / 2 - volumeButton.width - padding * 5, 0, 0.001)
@@ -231,7 +238,7 @@ export class UIMediaPlayer extends UIPanel {
 
   private _dispose() { }
 
-  private getVolumeIcon(volumeUpIcon: string, volumeDownIcon: string, volumeOffIcon:string): string {
+  private getVolumeIcon(volumeUpIcon: string, volumeDownIcon: string, volumeOffIcon: string): string {
     const volume = this.video.volume
     if (volume > 0.5)
       return volumeUpIcon
