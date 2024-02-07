@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { Mesh, MeshBasicMaterialParameters, Scene } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
-import { TextButtonParameters, PointerInteraction, PanelParameters, UIOptions, UIPanel, UITextButton, UIButtonMenu, MenuButtonParameters, ButtonMenuParameters, UITextEntry, InteractiveEventType, RoundedRectangleBorderGeometry, TextEntryParameters } from "three-fluix";
+import { TextButtonParameters, PointerInteraction, PanelParameters, UIOptions, UIPanel, UITextButton, UIButtonMenu, MenuButtonParameters, ButtonMenuParameters, UITextEntry, PointerEventType, RoundedRectangleBorderGeometry, TextEntryParameters } from "three-fluix";
 import { SVGButtonMenu, SVGButtonParameters } from "./svg-button";
 
 @Component({
@@ -52,7 +52,7 @@ class UIToolbar extends UIPanel {
       activemenu = menu
     }
 
-    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+    pointer.addEventListener(PointerEventType.POINTERMISSED, () => {
       setactive(undefined)
     })
 

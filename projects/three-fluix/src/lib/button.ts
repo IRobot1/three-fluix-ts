@@ -1,4 +1,4 @@
-import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
+import { PointerEventType, PointerInteraction } from "./pointer-interaction";
 
 import { ButtonParameters } from "./model";
 import { PanelEventType, PanelOptions } from "./panel";
@@ -40,17 +40,17 @@ export class UIButton extends UIEntry {
       if (generateEvent) this.pressed()
     }
 
-    this.addEventListener(InteractiveEventType.POINTERDOWN, buttonDown)
-    this.addEventListener(InteractiveEventType.POINTERUP, (e: any) => {
+    this.addEventListener(PointerEventType.POINTERDOWN, buttonDown)
+    this.addEventListener(PointerEventType.POINTERUP, (e: any) => {
       buttonUp(true)
       e.stop = true
     })
-    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+    pointer.addEventListener(PointerEventType.POINTERMISSED, () => {
       buttonUp()
       this.unhighlight()
     })
 
-    this.addEventListener(InteractiveEventType.CLICK, () => {
+    this.addEventListener(PointerEventType.CLICK, () => {
       if (this.disabled || !this.visible) return;
 
       // button down event already generated in POINTERDOWN event

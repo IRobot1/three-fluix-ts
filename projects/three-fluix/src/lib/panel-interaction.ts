@@ -1,4 +1,4 @@
-import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
+import { PointerEventType, PointerInteraction } from "./pointer-interaction";
 import { PanelEventType, UIPanel } from "./panel";
 import { Vector3 } from "three";
 
@@ -19,18 +19,18 @@ export class PanelInteraction {
     }
 
 
-    panel.addEventListener(InteractiveEventType.POINTERENTER, () => {
+    panel.addEventListener(PointerEventType.POINTERENTER, () => {
       if (!panel.draggable || !panel.visible) return
       document.body.style.cursor = 'grab'
     })
 
-    panel.addEventListener(InteractiveEventType.POINTERLEAVE, () => {
+    panel.addEventListener(PointerEventType.POINTERLEAVE, () => {
       if (document.body.style.cursor == 'grab')
         document.body.style.cursor = 'default'
     })
 
     let offset: Vector3
-    panel.addEventListener(InteractiveEventType.DRAGSTART, (e: any) => {
+    panel.addEventListener(PointerEventType.DRAGSTART, (e: any) => {
       if (!panel.draggable || !panel.visible) return
 
       // remember where in the mesh the mouse was clicked to avoid jump on first drag
@@ -39,9 +39,9 @@ export class PanelInteraction {
 
       this.dragging = true
     });
-    panel.addEventListener(InteractiveEventType.DRAGEND, () => { this.dragging = false });
+    panel.addEventListener(PointerEventType.DRAGEND, () => { this.dragging = false });
 
-    panel.addEventListener(InteractiveEventType.DRAG, (e: any) => {
+    panel.addEventListener(PointerEventType.DRAG, (e: any) => {
       if (!this.dragging || !panel.draggable || !panel.visible) return
 
       let position = e.position.clone() as Vector3
@@ -53,6 +53,6 @@ export class PanelInteraction {
   }
 
   stopDragging() {
-    this.panel.dispatchEvent<any>({ type: InteractiveEventType.DRAGEND })
+    this.panel.dispatchEvent<any>({ type: PointerEventType.DRAGEND })
   }
 }

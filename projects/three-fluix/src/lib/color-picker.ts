@@ -1,7 +1,7 @@
 import { BufferGeometry, CanvasTexture, MathUtils, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, PlaneGeometry, RingGeometry, SRGBColorSpace, Shape, Vector2 } from "three";
 import { PanelParameters } from "./model";
 import { PanelOptions, UIPanel } from "./panel";
-import { InteractiveEventType, InteractiveLayers, PointerInteraction } from "./pointer-interaction";
+import { PointerEventType, PointerInteractionLayers, PointerInteraction } from "./pointer-interaction";
 import { UIColorEntry } from "./color-entry";
 
 export interface ColorPickerParameters extends PanelParameters {
@@ -78,13 +78,13 @@ export class UIColorPicker extends UIPanel {
     this.addRangeMesh(shademesh, rangemesh)
 
     const interactives = [shademesh, ringmesh, innerringmesh, rangemesh]
-    interactives.forEach(object => object.layers.enable(InteractiveLayers.SELECTABLE))
+    interactives.forEach(object => object.layers.enable(PointerInteractionLayers.SELECTABLE))
 
-    this.layers.enable(InteractiveLayers.SELECTABLE)
+    this.layers.enable(PointerInteractionLayers.SELECTABLE)
     this.disablePointerInteraction()
 
     // hide, when click away
-    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => { this.visible = false });
+    pointer.addEventListener(PointerEventType.POINTERMISSED, () => { this.visible = false });
   }
 
   dispose() {
@@ -108,7 +108,7 @@ export class UIColorPicker extends UIPanel {
     let halfheight = shadeheight / 2
     ringmesh.position.set(halfwidth, halfheight, 0.001)
 
-    shademesh.addEventListener(InteractiveEventType.CLICK, (e: any) => {
+    shademesh.addEventListener(PointerEventType.CLICK, (e: any) => {
       if (!this.visible) return
 
       const uv = e.data as Vector2
@@ -170,7 +170,7 @@ export class UIColorPicker extends UIPanel {
     const material = this.initcolorrange()
     if (material) rangemesh.material = material
 
-    rangemesh.addEventListener(InteractiveEventType.CLICK, (e: any) => {
+    rangemesh.addEventListener(PointerEventType.CLICK, (e: any) => {
       if (!this.visible) return
 
       const uv = e.data as Vector2

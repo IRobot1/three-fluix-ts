@@ -1,5 +1,5 @@
 import { Object3D, Vector3 } from "three"
-import { InteractiveEventType, PointerInteraction } from "./pointer-interaction"
+import { PointerEventType, PointerInteraction } from "./pointer-interaction"
 import { UILabel } from "./label"
 import { ButtonParameters, LabelParameters, TextButtonParameters, UIOptions } from "./model"
 import { ButtonEventType, UIButton } from "./button"
@@ -72,19 +72,19 @@ export class UIButtonMenu extends Object3D {
       button.position.copy(position)
 
       if (hintoptions != 'none') {
-        button.addEventListener(InteractiveEventType.POINTERENTER, () => {
+        button.addEventListener(PointerEventType.POINTERENTER, () => {
           if (!this.hint || !item.hint) return
           this.hint.text = item.hint
           this.hint.visible = true
         })
-        button.addEventListener(InteractiveEventType.POINTERLEAVE, () => {
+        button.addEventListener(PointerEventType.POINTERLEAVE, () => {
           if (!this.hint) return
           this.hint.visible = false
         })
       }
 
       // note, all buttons will fire this event, but likely only first will close the menu
-      button.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+      button.addEventListener(PointerEventType.POINTERMISSED, () => {
         this.missed()
       })
 

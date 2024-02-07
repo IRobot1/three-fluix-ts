@@ -1,6 +1,6 @@
 import { BufferGeometry, ColorRepresentation, MathUtils, Mesh, MeshBasicMaterial, Vector3 } from "three";
 
-import { InteractiveEventType, InteractiveLayers, PointerInteraction } from "./pointer-interaction";
+import { PointerEventType, PointerInteractionLayers, PointerInteraction } from "./pointer-interaction";
 import { PanelOptions } from "./panel";
 import { UIOrientationType, SliderbarParameters } from "./model";
 import { UIEntry } from "./input-field";
@@ -134,20 +134,20 @@ export class UISliderbar extends UIEntry {
       this.slidersize = parameters.slidersize != undefined ? parameters.slidersize : 0.1
     })
 
-    slidermesh.layers.enable(InteractiveLayers.SELECTABLE)
-    slidermesh.layers.enable(InteractiveLayers.DRAGGABLE)
+    slidermesh.layers.enable(PointerInteractionLayers.SELECTABLE)
+    slidermesh.layers.enable(PointerInteractionLayers.DRAGGABLE)
 
     this._min = parameters.min != undefined ? parameters.min : 0
     this._max = parameters.max != undefined ? parameters.max : 100
     this._step = parameters.step != undefined ? parameters.step : 1
 
-    slidermesh.addEventListener(InteractiveEventType.POINTERENTER, (e: any) => {
+    slidermesh.addEventListener(PointerEventType.POINTERENTER, (e: any) => {
       if (this.disabled || !this.visible) return
       e.stop = true
       document.body.style.cursor = 'grab'
     })
 
-    slidermesh.addEventListener(InteractiveEventType.POINTERLEAVE, () => {
+    slidermesh.addEventListener(PointerEventType.POINTERLEAVE, () => {
       if (this.disabled) return
       if (document.body.style.cursor == 'grab')
         document.body.style.cursor = 'default'
@@ -179,7 +179,7 @@ export class UISliderbar extends UIEntry {
     let dragging = false
 
     let offset: Vector3
-    slidermesh.addEventListener(InteractiveEventType.DRAGSTART, (e: any) => {
+    slidermesh.addEventListener(PointerEventType.DRAGSTART, (e: any) => {
       if (this.disabled || !this.visible) return
       // remember where in the mesh the mouse was clicked to avoid jump on first drag
       offset = e.position.sub(slidermesh.position).clone()
@@ -187,14 +187,14 @@ export class UISliderbar extends UIEntry {
 
       dragging = true
     });
-    slidermesh.addEventListener(InteractiveEventType.DRAGEND, () => {
+    slidermesh.addEventListener(PointerEventType.DRAGEND, () => {
       if (this.disabled) return
       document.body.style.cursor = 'default'
       dragging = false
     });
 
 
-    slidermesh.addEventListener(InteractiveEventType.DRAG, (e: any) => {
+    slidermesh.addEventListener(PointerEventType.DRAG, (e: any) => {
       if (!dragging || this.disabled || !this.visible) return
 
       moveto(e.position.sub(offset))

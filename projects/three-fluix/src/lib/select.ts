@@ -1,4 +1,4 @@
-import { PointerInteraction, InteractiveEventType } from "./pointer-interaction";
+import { PointerInteraction, PointerEventType } from "./pointer-interaction";
 import { UITextButton } from "./button-text";
 import { ButtonOptions } from "./button";
 import { ListEventType, UIList } from "./list";
@@ -43,7 +43,7 @@ export class UISelect extends UITextButton {
     this.add(mesh)
     this.indicator = mesh
 
-    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+    pointer.addEventListener(PointerEventType.POINTERMISSED, () => {
       this.closelist()
     })
 

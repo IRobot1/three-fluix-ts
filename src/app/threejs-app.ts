@@ -11,7 +11,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Timer } from 'three/examples/jsm/misc/Timer.js';
 
-import { TextButtonParameters, FontCache, InteractiveEventType, KeyboardInteraction, ButtonMenuParameters, PointerInteraction, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
+import { TextButtonParameters, FontCache, PointerEventType, KeyboardInteraction, ButtonMenuParameters, PointerInteraction, UIMaterials, UIButtonMenu, UIOptions, MenuButtonParameters } from "three-fluix";
 
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
@@ -100,7 +100,7 @@ export class ThreeJSApp extends WebGLRenderer {
     this.orbit = orbit
 
     const disableRotate = () => { orbit.enableRotate = false }
-    this.pointer.addEventListener(InteractiveEventType.DRAGSTART, disableRotate)
+    this.pointer.addEventListener(PointerEventType.DRAGSTART, disableRotate)
 
     this.uioptions = {
       materials: new UIMaterials(),

@@ -1,7 +1,7 @@
 import { MathUtils, Mesh, PlaneGeometry, Vector3 } from "three";
 import { UIEntry } from "./input-field";
 import { LabelParameters, UIOrientationType, ListParameters } from "./model";
-import { InteractiveEventType, InteractiveLayers, PointerInteraction } from "./pointer-interaction";
+import { PointerEventType, PointerInteractionLayers, PointerInteraction } from "./pointer-interaction";
 import { PanelOptions } from "./panel";
 import { ButtonEventType, UIButton } from "./button";
 import { UITextButton } from "./button-text";
@@ -191,7 +191,7 @@ export class UIList extends UIEntry implements Pagination {
     if (scrollbar) scrollbar.value = this.selectedindex
 
     // block pointer from passing through panel
-    this.layers.enable(InteractiveLayers.SELECTABLE)
+    this.layers.enable(PointerInteractionLayers.SELECTABLE)
     this.disablePointerInteraction()
   }
 

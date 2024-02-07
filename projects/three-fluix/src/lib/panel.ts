@@ -1,7 +1,7 @@
 import { BufferGeometry, ColorRepresentation, MathUtils, Mesh, MeshBasicMaterial, MeshBasicMaterialParameters, Object3D, Shape, ShapeGeometry, Vector3 } from "three";
 import { PanelParameters, UIOptions } from "./model";
 import { FontCache } from "./cache";
-import { InteractiveEventType, InteractiveLayers } from "./pointer-interaction";
+import { PointerEventType, PointerInteractionLayers } from "./pointer-interaction";
 import { UIMaterials } from "./materials";
 import { RoundedRectangleBorderShape, RoundedRectangleShape } from "./shapes/rounded-rectangle-shape";
 
@@ -102,9 +102,9 @@ export class UIPanel extends Mesh {
     if (this._draggable != newvalue) {
       this._draggable = newvalue;
       if (newvalue)
-        this.layers.enable(InteractiveLayers.DRAGGABLE)
+        this.layers.enable(PointerInteractionLayers.DRAGGABLE)
       else
-        this.layers.disable(InteractiveLayers.DRAGGABLE)
+        this.layers.disable(PointerInteractionLayers.DRAGGABLE)
       this.dispatchEvent<any>({ type: PanelEventType.DRAGGABLE_CHANGED })
     }
   }
@@ -115,9 +115,9 @@ export class UIPanel extends Mesh {
     if (this._selectable != newvalue) {
       this._selectable = newvalue;
       if (newvalue)
-        this.layers.enable(InteractiveLayers.SELECTABLE)
+        this.layers.enable(PointerInteractionLayers.SELECTABLE)
       else
-        this.layers.disable(InteractiveLayers.SELECTABLE)
+        this.layers.disable(PointerInteractionLayers.SELECTABLE)
       this.dispatchEvent<any>({ type: PanelEventType.SELECTABLE_CHANGED })
     }
   }
@@ -216,13 +216,13 @@ export class UIPanel extends Mesh {
     const highlightable = parameters.highlightable != undefined ? parameters.highlightable : true
 
     if (highlightable) {
-      this.addEventListener(InteractiveEventType.POINTERENTER, (e: any) => {
+      this.addEventListener(PointerEventType.POINTERENTER, (e: any) => {
         if (this.clicking || !this.visible) return
         e.stop = true
         if (this.selectable) this.highlight()
       })
 
-      this.addEventListener(InteractiveEventType.POINTERLEAVE, (e: any) => {
+      this.addEventListener(PointerEventType.POINTERLEAVE, (e: any) => {
         if (this.selectable) this.unhighlight()
       })
 
@@ -244,7 +244,7 @@ export class UIPanel extends Mesh {
       return position;
     }
     let offset: Vector3
-    this.addEventListener(InteractiveEventType.DRAGSTART, (e: any) => {
+    this.addEventListener(PointerEventType.DRAGSTART, (e: any) => {
       if (!this.draggable || !this.visible) return
 
       // remember where in the mesh the mouse was clicked to avoid jump on first drag
@@ -253,9 +253,9 @@ export class UIPanel extends Mesh {
 
       this.dragging = true
     });
-    this.addEventListener(InteractiveEventType.DRAGEND, () => { this.dragging = false });
+    this.addEventListener(PointerEventType.DRAGEND, () => { this.dragging = false });
 
-    this.addEventListener(InteractiveEventType.DRAG, (e: any) => {
+    this.addEventListener(PointerEventType.DRAG, (e: any) => {
       if (!this.dragging || !this.draggable || !this.visible) return
 
       this.position.copy(snapToGrid(e.position.sub(offset)))
@@ -265,18 +265,18 @@ export class UIPanel extends Mesh {
   disablePointerInteraction() {
     const block = (e: any) => { if (this.visible) e.stop = true }
 
-    this.addEventListener(InteractiveEventType.POINTERMOVE, block)
-    this.addEventListener(InteractiveEventType.POINTERENTER, block)
-    this.addEventListener(InteractiveEventType.POINTERDOWN, block)
-    this.addEventListener(InteractiveEventType.POINTERUP, block)
-    this.addEventListener(InteractiveEventType.CLICK, block)
+    this.addEventListener(PointerEventType.POINTERMOVE, block)
+    this.addEventListener(PointerEventType.POINTERENTER, block)
+    this.addEventListener(PointerEventType.POINTERDOWN, block)
+    this.addEventListener(PointerEventType.POINTERUP, block)
+    this.addEventListener(PointerEventType.CLICK, block)
 
     this.enablePointerInteraction = () => {
-      this.removeEventListener(InteractiveEventType.POINTERMOVE, block)
-      this.removeEventListener(InteractiveEventType.POINTERENTER, block)
-      this.removeEventListener(InteractiveEventType.POINTERDOWN, block)
-      this.removeEventListener(InteractiveEventType.POINTERUP, block)
-      this.removeEventListener(InteractiveEventType.CLICK, block)
+      this.removeEventListener(PointerEventType.POINTERMOVE, block)
+      this.removeEventListener(PointerEventType.POINTERENTER, block)
+      this.removeEventListener(PointerEventType.POINTERDOWN, block)
+      this.removeEventListener(PointerEventType.POINTERUP, block)
+      this.removeEventListener(PointerEventType.CLICK, block)
     }
   }
   enablePointerInteraction() { }

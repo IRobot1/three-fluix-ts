@@ -1,6 +1,6 @@
 import { CircleGeometry, SRGBColorSpace, Vector3, VideoTexture } from "three";
 
-import { InteractiveEventType, LabelParameters, PanelParameters, PointerInteraction, SliderbarEventType, SliderbarParameters, TextButtonParameters, UILabel, UIOptions, UIOrientationType, UIPanel, UIProgressbar, UISliderbar, UITextButton } from "three-fluix";
+import { PointerEventType, LabelParameters, PanelParameters, PointerInteraction, SliderbarEventType, SliderbarParameters, TextButtonParameters, UILabel, UIOptions, UIOrientationType, UIPanel, UIProgressbar, UISliderbar, UITextButton } from "three-fluix";
 
 import { LerpUtils } from "./concept1";
 
@@ -66,7 +66,7 @@ export class UIMediaPlayer extends UIPanel {
     video.addEventListener('ended', videoended)
 
 
-    pointer.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+    pointer.addEventListener(PointerEventType.POINTERMISSED, () => {
       const target = this.controlsposition
       LerpUtils.vector3(this.controls.position, target)
       progressSlider.visible = false
@@ -142,7 +142,7 @@ export class UIMediaPlayer extends UIPanel {
     playButton.pressed = () => { this.togglePlay() }
     this.playButton = playButton
 
-    this.addEventListener(InteractiveEventType.CLICK, () => {
+    this.addEventListener(PointerEventType.CLICK, () => {
       this.togglePlay()
     })
 

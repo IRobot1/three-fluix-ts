@@ -1,5 +1,5 @@
 import { Box3, Object3D, Vector3 } from "three";
-import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
+import { PointerEventType, PointerInteraction } from "./pointer-interaction";
 
 import { TextButtonParameters, UIOptions } from "./model";
 import { englishDesktopANSI } from "./englishDesktopANSI";
@@ -247,10 +247,10 @@ export class UIKeyboard extends Object3D {
       const altKey = setting.keycode.startsWith('Alt')
       return { code: setting.keycode, key:'', shiftKey, ctrlKey, altKey }
     }
-    key.addEventListener(InteractiveEventType.POINTERDOWN, () => {
+    key.addEventListener(PointerEventType.POINTERDOWN, () => {
       this.keydown(generateEvent())
     })
-    key.addEventListener(InteractiveEventType.POINTERUP, () => {
+    key.addEventListener(PointerEventType.POINTERUP, () => {
       this.keyup(generateEvent())
     })
 

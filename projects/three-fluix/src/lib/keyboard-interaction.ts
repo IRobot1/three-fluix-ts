@@ -3,7 +3,7 @@ import { InputField, InputFieldEventType } from "./input-field";
 import { UIKeyboardEvent } from "./keyboard";
 import { UIMaterials } from "./materials";
 import { UIOptions } from "./model";
-import { InteractiveEventType } from "./pointer-interaction";
+import { PointerEventType } from "./pointer-interaction";
 
 export interface OffsetParameters {
   axis: 'x' | 'y',    // default is x
@@ -168,13 +168,13 @@ export class KeyboardInteraction extends EventDispatcher {
           this.selected = e.target
       })
 
-      object.addEventListener(InteractiveEventType.POINTERDOWN, () => {
+      object.addEventListener(PointerEventType.POINTERDOWN, () => {
         if (object.disabled) return
         object.active = true
       })
 
       // TODO: this event now on ThreeInteactive
-      object.addEventListener(InteractiveEventType.POINTERMISSED, () => {
+      object.addEventListener(PointerEventType.POINTERMISSED, () => {
         object.active = false
       })
 

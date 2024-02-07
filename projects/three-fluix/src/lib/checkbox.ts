@@ -1,6 +1,6 @@
 import { ColorRepresentation, Material, Mesh, MeshBasicMaterial } from "three";
 
-import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
+import { PointerEventType, PointerInteraction } from "./pointer-interaction";
 import { PanelEventType, PanelOptions } from "./panel";
 import { CheckboxParameters } from "./model";
 import { UIEntry } from "./input-field";
@@ -86,7 +86,7 @@ export class UICheckbox extends UIEntry {
     this.addEventListener(PanelEventType.RADIUS_CHANGED, updateGeometry)
 
 
-    this.addEventListener(InteractiveEventType.CLICK, () => {
+    this.addEventListener(PointerEventType.CLICK, () => {
       if (this.disabled) return
       this.checked = !this.checked
       // a user clicking will remove the indeterminate state

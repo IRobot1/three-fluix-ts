@@ -1,6 +1,6 @@
 import { Group, MeshBasicMaterialParameters } from "three";
 
-import { InteractiveEventType, PointerInteraction } from "./pointer-interaction";
+import { PointerEventType, PointerInteraction } from "./pointer-interaction";
 import { PanelEventType, PanelOptions, UIPanel } from "./panel";
 import { Controller, GUI } from "./gui-model";
 import { CheckboxParameters, ColorEntryParameters, LabelParameters, ListParameters, NumberEntryParameters, PanelParameters, SelectParameters, SliderbarParameters, TextButtonParameters, TextEntryParameters } from "./model";
@@ -434,7 +434,7 @@ export class UIProperties extends UIPanel {
           textentry.text = colorentry.color.toString()
         })
 
-        colorentry.addEventListener(InteractiveEventType.CLICK, () => {
+        colorentry.addEventListener(PointerEventType.CLICK, () => {
           if (colorentry.disabled) return
 
           const colorpicker = this.getColorPicker()
