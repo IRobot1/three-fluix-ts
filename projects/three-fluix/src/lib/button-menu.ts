@@ -8,7 +8,7 @@ import { UITextButton } from "./button-text"
 export interface MenuButtonParameters {
   button: ButtonParameters
   hint?: string             // hint to show when hovering over button
-  selected?: (parameters: MenuButtonParameters) => void    // action to take on pressing button
+  selected?: (parameters: MenuButtonParameters, button: UIButton) => void    // action to take on pressing button
 }
 
 export enum MenuItemEventType {
@@ -50,7 +50,7 @@ export class UIButtonMenu extends Object3D {
     if (hintoptions != 'none') {
       const labelparams = parameters.hintLabel != undefined ? parameters.hintLabel : <LabelParameters>{ alignX: 'left' }
       const hint = new UILabel(labelparams, options)
-      hint.position.y = hintoptions ? -0.12 : 0.12
+      hint.position.y = hintoptions == 'below' ? -0.12 : 0.12
       this.add(hint)
       this.hint = hint
     }
@@ -90,7 +90,7 @@ export class UIButtonMenu extends Object3D {
 
       button.addEventListener(ButtonEventType.BUTTON_PRESSED, () => {
         // three methods to intercept - callback, override or event
-        if (item.selected) item.selected(item)
+        if (item.selected) item.selected(item, button)
         this.selected(button, item)
       })
 
@@ -107,12 +107,12 @@ export class UIButtonMenu extends Object3D {
     })
 
     if (orientation == 'horizontal') {
-      this.width = position.x
+      this.width = position.x + offset
       this.height = 0.1
     }
     else {
       this.width = 1
-      this.height = -position.y
+      this.height = -position.y - offset
     }
 
 

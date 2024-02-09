@@ -1,6 +1,6 @@
 import { PointerInteraction } from "./pointer-interaction";
 
-import { TextButtonParameters } from "./model";
+import { LabelParameters, TextButtonParameters } from "./model";
 import { UILabel } from "./label";
 import { ButtonOptions, UIButton } from "./button";
 import { PanelEventType } from "./panel";
@@ -37,7 +37,7 @@ export class UITextButton extends UIButton {
     const padding = parameters.label.padding != undefined ? parameters.label.padding : 0.02
     if (parameters.label.maxwidth == undefined) parameters.label.maxwidth = this.width - padding * 2
 
-    const label = new UILabel(parameters.label, { fontCache: this.fontCache, materials: this.materials })
+    const label = this.createLabel(parameters.label)
     this.add(label)
 
     if (label.alignX == 'left')
@@ -61,4 +61,11 @@ export class UITextButton extends UIButton {
   override applyDisabled() {
     this.material = this.disabled ? this.disabledMaterial : this.enabledMaterial
   }
+
+  // overridables
+
+  createLabel(parameters: LabelParameters): UILabel {
+    return new UILabel(parameters, this.options)
+  }
+
 }

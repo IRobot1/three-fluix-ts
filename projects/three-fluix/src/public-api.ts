@@ -28,6 +28,7 @@ export * from './lib/scrollbar';
 export * from './lib/select';
 export * from './lib/sliderbar';
 export * from './lib/text-entry';
+export * from './lib/titlebar';
 
 export * from './lib/color-picker';
 
