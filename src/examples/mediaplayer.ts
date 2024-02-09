@@ -50,19 +50,10 @@ export class MediaPlayerScene extends Scene {
     mediaplayer.load(videos[fake.video])
 
     const gui = new GUI({})
-    gui.addColor(mediaplayer.controls, 'color').name('Controls Color')
-    gui.addColor(mediaplayer.progressSlider, 'color').name('Progress Color')
-    gui.addColor(mediaplayer.progressSlider, 'sliderColor').name('Slider Color')
-    gui.addColor(mediaplayer.playButton, 'color').name('Button Color')
-    gui.addColor(mediaplayer.currentTime, 'color').name('Text Color')
-    gui.addColor(mediaplayer.playButton.label, 'color').name('Icon Color').onChange(() => {
-      mediaplayer.volumeButton.label.color = mediaplayer.playButton.label.color
-    })
     gui.add(fake, 'video', videos).name('Select Video').onChange(() => {
       const url = videos[fake.video]
       mediaplayer.load(url)
     })
-    gui.add(fake, 'playpause').name('Play/Pause Video')
 
     const colorpicker = new UIColorPicker({}, app.pointer, app.uioptions)
 
@@ -75,9 +66,9 @@ export class MediaPlayerScene extends Scene {
     const properties = new UIProperties(propertiesParams, app.pointer, app.uioptions, gui)
     properties.getColorPicker = () => { return colorpicker }
     this.add(properties)
-    properties.position.set(0.9, 1.2, z + 0.2)
-    properties.scale.setScalar(0.3)
-    properties.rotation.y = MathUtils.degToRad(-45)
+    properties.position.set(0, mediaplayer.position.y+0.4, z)
+    //properties.position.set(0.9, 1.2, z + 0.2)
+    properties.scale.setScalar(0.6)
 
     this.addEventListener('dispose', () => {
       mediaplayer.dispose()

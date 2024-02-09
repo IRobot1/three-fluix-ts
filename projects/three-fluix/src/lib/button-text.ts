@@ -50,7 +50,7 @@ export class UITextButton extends UIButton {
 
     this.addEventListener(PanelEventType.WIDTH_CHANGED, () => { label.maxwidth = this.width })
 
-    this.enabledMaterial = this.label.material
+    this.enabledMaterial = this.material
   }
 
   override dispose() {
