@@ -1,7 +1,7 @@
 import { Scene, Shape } from "three";
 
 import { ThreeJSApp } from "../app/threejs-app";
-import { ExpansionPanelParameters, FontCache, GUI, KeyboardInteraction, LabelParameters, NumberEntryParameters, NumberOptions, PanelOptions, PropertiesParameters, SelectParameters, SliderbarParameters, TextButtonParameters, TextEntryParameters, PointerInteraction, UIButton, UIColorPicker, UIExpansionPanel, UILabel, UIMaterials, UINumberEntry, UIOptions, UIProperties, UISelect, UISliderbar, UITextButton, UITextEntry } from "three-fluix";
+import { ExpansionPanelParameters, FontCache, GUI, KeyboardInteraction, LabelParameters, NumberEntryParameters, NumberOptions, PanelOptions, PropertiesParameters, SelectParameters, SliderbarParameters, TextButtonParameters, TextEntryParameters, PointerInteraction, UIButton, UIColorPicker, UIExpansionPanel, UILabel, UIMaterials, UINumberEntry, UIOptions, UIProperties, UISelect, UISliderbar, UITextButton, UITextEntry, TitlebarParameters, UITitlebar } from "three-fluix";
 import { Component, OnDestroy } from "@angular/core";
 
 @Component({
@@ -20,7 +20,7 @@ export class CustomPropertiesScene extends Scene implements OnDestroy {
     app.scene = this
 
     const home = app.showHome(this)
-    home.position.set(-0.1, 1.3, z + 0.01)
+    home.position.set(-0.1, 1.8, z + 0.01)
     home.scale.setScalar(0.5)
 
     const colorpicker = new UIColorPicker({}, app.pointer, app.uioptions)
@@ -37,16 +37,30 @@ export class CustomPropertiesScene extends Scene implements OnDestroy {
       pickwidth: 0.6,
       inputwidth: 0.25
     }
-    const properties1 = new CustomProperties(params, app.pointer, app.uioptions, gui)
-    this.add(properties1)
-    properties1.position.set(0, 1.6, z)
-    properties1.scale.setScalar(0.2)
+    const customproperties = new CustomProperties(params, app.pointer, app.uioptions, gui)
+    this.add(customproperties)
 
-    properties1.getColorPicker = () => { return colorpicker }
-    this.properties = properties1
+    customproperties.getColorPicker = () => { return colorpicker }
+    this.properties = customproperties
+
+    const titlebarParams: TitlebarParameters = {
+      width: 1.31,
+      fill: { color: 'cornflowerblue', transparent: true, opacity: 0.5 },
+      title: { text: 'Custom Properties', material: { color: 'white' } },
+    }
+
+    const titlebar = new UITitlebar(titlebarParams, app.pointer, app.uioptions)
+    this.add(titlebar)
+
+    titlebar.position.set(0, 1.75, z)
+    titlebar.scale.setScalar(0.2)
+    titlebar.setPanel(customproperties)
+
 
     //})
     this.colorpicker = colorpicker
+
+
   }
   ngOnDestroy(): void {
     this.properties.dispose()
@@ -81,7 +95,7 @@ export class CustomPropertiesScene extends Scene implements OnDestroy {
 
     const four = gui.addFolder('EXPORT')
     four.add({ format: 0 }, 'format', { Image: 0, '3D Model': 1, 'Web Page': 2, 'JS Module': 3, 'URL Link': 4 })
-    gui.add({ func() { console.log('export'); } }, 'func').name('Export as *.png image file')
+    four.add({ func() { console.log('export'); } }, 'func').name('Export as *.png image file')
 
     return gui
   }
