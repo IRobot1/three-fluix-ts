@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 
 import { Scene } from "three";
 
-import { GUI, UIColorPicker, UIProperties, PropertiesParameters } from "three-fluix";
+import { GUI, UIColorPicker, UIProperties, PropertiesParameters, TitlebarParameters, UITitlebar } from "three-fluix";
 
 import { ThreeJSApp } from "../app/threejs-app";
 import { MediaPlayerParameters, UIMediaPlayer } from "./media-player";
@@ -31,8 +31,20 @@ export class MediaPlayerScene extends Scene {
     }
     const mediaplayer = new UIMediaPlayer(mediaparams, app.pointer, app.uioptions)
     this.add(mediaplayer)
-    mediaplayer.position.set(0, 1.35, z)
-    mediaplayer.scale.setScalar(0.7)
+
+    const titlebarparams: TitlebarParameters = {
+      width: mediaparams.width,
+      fill: { color: 'cornflowerblue', transparent: true, opacity: 0.5 },
+      title: { text: 'Media Player', material: { color: 'white' } },
+    }
+
+    const titlebar = new UITitlebar(titlebarparams, app.pointer, app.uioptions)
+    this.add(titlebar)
+
+    titlebar.position.set(0, 1.7, z)
+    titlebar.scale.setScalar(0.7)
+
+    titlebar.setPanel(mediaplayer)
 
     const videos: any = {
       'Sintel': 'assets/sintel.mp4',
@@ -65,10 +77,10 @@ export class MediaPlayerScene extends Scene {
     }
     const properties = new UIProperties(propertiesParams, app.pointer, app.uioptions, gui)
     properties.getColorPicker = () => { return colorpicker }
-    this.add(properties)
-    properties.position.set(0, mediaplayer.position.y+0.4, z)
-    //properties.position.set(0.9, 1.2, z + 0.2)
-    properties.scale.setScalar(0.6)
+    titlebar.add(properties)
+
+    properties.position.set(0, 0.12, 0.001)
+    properties.scale.setScalar(0.8)
 
     this.addEventListener('dispose', () => {
       mediaplayer.dispose()
