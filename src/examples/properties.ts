@@ -1,8 +1,8 @@
-import { AmbientLight, AxesHelper, Color, Group, PointLight, Scene } from "three";
+import { AmbientLight, AxesHelper, Color, Group, MathUtils, PointLight, Scene } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { ThreeJSApp } from "../app/threejs-app";
-import { UIColorPicker, KeyboardInteraction, UIOptions, GUI, UIMaterials, FontCache, UIProperties } from "three-fluix";
+import { UIColorPicker, KeyboardInteraction, UIOptions, GUI, UIMaterials, FontCache, UIProperties, TitlebarParameters, UITitlebar } from "three-fluix";
 import { Component, OnDestroy } from "@angular/core";
 
 //
@@ -61,11 +61,24 @@ export class PropertiesScene extends Scene implements OnDestroy {
 
     const group = new Group()
     this.guis.forEach((data, index) => {
-      const ui = new UIProperties({ width: 1.5, selectable:false }, app.pointer, app.uioptions, data.gui)
-      group.add(ui)
-      ui.position.set(data.x, data.y, 0)
+      const ui = new UIProperties({ width: 1.5, selectable: false }, app.pointer, app.uioptions, data.gui)
       ui.getColorPicker = () => { return colorpicker }
       this.properties.push(ui)
+
+      const params: TitlebarParameters = {
+        width: 1.5,
+        fill: { color: 'cornflowerblue', transparent: true, opacity: 0.5 },
+        title: { text: data.gui.title, material: { color: 'white' } },
+      }
+
+
+      const titlebar = new UITitlebar(params, app.pointer, app.uioptions)
+      this.add(titlebar)
+      titlebar.position.set(data.x, data.y, z + index * 0.005)
+      titlebar.setPanel(ui)
+
+      group.add(titlebar)
+
     })
     group.position.set(0, 1.25, z)
     group.scale.setScalar(0.15)
