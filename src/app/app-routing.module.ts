@@ -8,6 +8,7 @@ import { WidgetsScene } from '../examples/widgets';
 import { Concept1Scene } from '../examples/concept1';
 import { MediaPlayerScene } from '../examples/mediaplayer';
 import { TitlebarScene } from '../examples/titlebar';
+import { GenerativeArtScene } from '../examples/generative-art';
 
 export const routes: Routes = [
   { path: '', component: HomeScene },
@@ -17,6 +18,7 @@ export const routes: Routes = [
   { path: 'mediaplayer', title: 'Media Player', component: MediaPlayerScene },
   { path: 'widgets', title: 'Widgets', component: WidgetsScene },
   { path: 'titlebar', title: 'Draggable Windows', component: TitlebarScene },
+  { path: 'generativeart', title: 'Generative Art', component: GenerativeArtScene },
   //{ path: 'concept1', title: 'Concept One', component: Concept1Scene },
 
 ];
